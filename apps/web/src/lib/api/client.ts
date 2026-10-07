@@ -13,7 +13,9 @@ export class ApiError extends Error {
 
 function getBaseUrl(): string {
   const isServer = typeof window === "undefined";
-  return (isServer && env.apiInternalUrl) || env.apiUrl;
+  const url = (isServer && env.apiInternalUrl) || env.apiUrl;
+  if (!url) throw new ApiError("API URL is not configured (set NEXT_PUBLIC_API_URL).", 0, null);
+  return url;
 }
 
 async function parseBody(response: Response): Promise<unknown> {

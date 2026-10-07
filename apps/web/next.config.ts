@@ -4,7 +4,8 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   // Self-contained server bundle for the production Docker image.
-  output: "standalone",
+  // Vercel uses its own build output, so skip it there (VERCEL is set during Vercel builds).
+  output: process.env.VERCEL ? undefined : "standalone",
   // Trace from the monorepo root so workspace packages are included in the bundle.
   outputFileTracingRoot: path.join(__dirname, "../../"),
   cacheComponents: true,
