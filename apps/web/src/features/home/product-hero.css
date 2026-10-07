@@ -1,0 +1,149 @@
+/*
+ * Product hero (classes prefixed `hh-`; the project's Turbopack rule compiles
+ * every .css file as global CSS, so CSS modules are not used).
+ *
+ * On white, packshots float slowly around the copy at three depths (sharp and
+ * close, softly blurred, far and faded). A white pool keeps the copy legible.
+ */
+
+.hh-floaters {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* A white pool behind the copy, so a packshot drifting near it never fights
+   the text. Above everything but the nearest packshots. */
+.hh-floaters::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: radial-gradient(ellipse 40% 42% at 50% 50%, rgb(255 255 255 / 0.92), rgb(255 255 255 / 0.5) 60%, transparent 85%);
+}
+
+.hh-floater {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: clamp(var(--min), calc(var(--size) * 1vw), 22rem);
+  translate: -50% -50%;
+  opacity: var(--opacity);
+  /* Sideways roam on a longer cycle than the bob below: the two never line up,
+     so each packshot traces a path that keeps changing. */
+  animation:
+    hh-enter 1.6s cubic-bezier(0.22, 1, 0.36, 1) var(--enter) both,
+    hh-wander calc(var(--cycle) * 1.7) ease-in-out calc(var(--cycle) * -0.8) infinite;
+}
+
+/* Blur and float on the same element, so the browser can move the blurred
+   layer without redrawing it every frame. */
+.hh-pack {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: blur(var(--blur)) drop-shadow(0 1.5rem 1.75rem rgb(13 13 12 / var(--shadow)));
+  rotate: var(--rotate);
+  will-change: transform;
+  animation: hh-float var(--cycle) ease-in-out calc(var(--cycle) * -0.5) infinite;
+}
+
+/* ---- Headline ------------------------------------------------------------- */
+
+.hh-title {
+  font-size: clamp(2.75rem, 0.5rem + 9.5vw, 8rem);
+  font-weight: 600;
+  line-height: 0.92;
+  letter-spacing: -0.05em;
+}
+
+/* The closing sentence: smaller, lighter and grey under the bold lines. */
+.hh-title-sub {
+  display: block;
+  margin-top: 0.22em;
+  font-size: 0.56em;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.035em;
+  color: var(--color-text-tertiary);
+}
+
+/* Each word rises out of its own mask. The padding keeps accents and descenders
+   (ë, ç, p) inside the mask; the negative margin gives the space back. */
+.hh-word {
+  display: inline-block;
+  overflow: clip;
+  padding: 0.08em 0.03em 0.14em;
+  margin: -0.08em -0.03em -0.14em;
+  vertical-align: top;
+}
+
+.hh-word > span {
+  display: inline-block;
+  animation: hh-word 1s cubic-bezier(0.22, 1, 0.36, 1) calc(150ms + var(--i) * 70ms) both;
+}
+
+.hh-rise {
+  animation: hh-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) var(--rise, 0ms) both;
+}
+
+/* Wait for the intro to clear before the hero plays its entrance. */
+html:not([data-intro-skip]):has(.intro-loader:not([hidden]):not([data-state="done"])) :is(.hh-rise, .hh-floater, .hh-word > span) {
+  animation-play-state: paused;
+}
+
+@keyframes hh-enter {
+  from {
+    opacity: 0;
+    scale: 0.9;
+  }
+}
+
+@keyframes hh-wander {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  25% {
+    transform: translate3d(calc(var(--wander) * 0.7), calc(var(--wander) * -0.3), 0);
+  }
+  50% {
+    transform: translate3d(calc(var(--wander) * -0.4), calc(var(--wander) * 0.35), 0);
+  }
+  75% {
+    transform: translate3d(calc(var(--wander) * -0.9), calc(var(--wander) * -0.15), 0);
+  }
+}
+
+@keyframes hh-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(0, calc(var(--drift) * -1.25rem), 0) rotate(calc(var(--drift) * 3deg));
+  }
+}
+
+@keyframes hh-word {
+  from {
+    translate: 0 110%;
+  }
+}
+
+@keyframes hh-rise {
+  from {
+    opacity: 0;
+    translate: 0 1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hh-floater,
+  .hh-pack,
+  .hh-rise,
+  .hh-word > span {
+    animation: none;
+  }
+}

@@ -1,0 +1,186 @@
+/*
+ * Layer system (classes prefixed `ls-`; the project's Turbopack rule compiles
+ * every .css file as global CSS, so CSS modules are not used).
+ *
+ * A drawn wall (layer-wall.tsx) beside the steps. LayerWatcher paints each
+ * layer on with the scroll and marks layers, packshot rows and steps as
+ * done / active / next (`data-state`); the finished wall fades in last.
+ */
+
+/* ---- Pinned visual -------------------------------------------------------- */
+
+.ls-visual {
+  position: sticky;
+  top: 4rem;
+  z-index: 2;
+  display: flex;
+  height: 40svh;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(0.75rem, 3svh, 2.5rem);
+  background: var(--color-background);
+}
+
+@media (min-width: 1024px) {
+  .ls-visual {
+    top: calc(4.5rem + 2rem);
+    height: calc(100svh - 9rem);
+    background: transparent;
+  }
+}
+
+
+/* ---- The drawn wall ------------------------------------------------------- */
+
+.ls-wall-frame {
+  flex: none;
+  width: min(100%, 38rem, calc((100svh - 18rem) * 640 / 520));
+  margin-inline: auto;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 2rem 3rem -2rem rgb(13 13 12 / 0.35);
+}
+
+@media (max-width: 1023px) {
+  .ls-wall-frame {
+    /* Leaves room for the packshot row below, inside the pinned 40svh. */
+    width: min(100%, calc((40svh - 9rem) * 640 / 520));
+  }
+}
+
+.ls-wall {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Numbered tags over each strip; the current one in brand red. */
+.ls-tag {
+  opacity: 1;
+  transition: opacity 0.4s ease;
+}
+
+.ls-tag rect {
+  fill: #fff;
+  stroke: rgb(13 13 12 / 0.15);
+  transition: fill 0.3s;
+}
+
+.ls-tag text {
+  fill: var(--color-text);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  transition: fill 0.3s;
+}
+
+.ls-tag[data-state="next"] {
+  opacity: 0;
+}
+
+.ls-tag[data-state="active"] rect {
+  fill: var(--color-brand);
+  stroke: none;
+}
+
+.ls-tag[data-state="active"] text {
+  fill: #fff;
+}
+
+/* The finished wall's window: faded in with the scroll by LayerWatcher. */
+.ls-window {
+  opacity: 0;
+}
+
+/* Colour swatch beside each step, matching its layer on the wall. */
+.ls-swatch {
+  display: inline-block;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 1px solid rgb(13 13 12 / 0.12);
+  border-radius: 9999px;
+  background: var(--swatch);
+}
+
+.ls-swatch--all {
+  background: conic-gradient(#c9535a 0 25%, #a29f98 0 50%, #d8d5ce 0 75%, #e3d0af 0);
+}
+
+/* ---- The current step's products -------------------------------------------- */
+
+.ls-packs {
+  position: relative;
+  height: clamp(4.5rem, 12svh, 9rem);
+  flex: none;
+}
+
+.ls-pack-row {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0.75rem;
+  opacity: 0;
+  translate: 0 1rem;
+  transition:
+    opacity 0.45s ease,
+    translate 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ls-pack-row[data-state="active"] {
+  opacity: 1;
+  translate: 0 0;
+}
+
+.ls-pack {
+  position: relative;
+  width: clamp(4rem, 9vw, 7.5rem);
+  height: 100%;
+  filter: drop-shadow(0 0.75rem 0.75rem rgb(13 13 12 / 0.15));
+}
+
+/* ---- Steps ----------------------------------------------------------------- */
+
+.ls-step {
+  display: flex;
+  min-height: 62svh;
+  flex-direction: column;
+  justify-content: center;
+  padding-block: 2.5rem;
+  border-top: 1px solid var(--color-border);
+  transition: opacity 0.4s ease;
+}
+
+@media (min-width: 1024px) {
+  .ls-step {
+    min-height: 72svh;
+  }
+}
+
+.ls-step:first-child {
+  border-top: 0;
+}
+
+.ls-step[data-state="next"],
+.ls-step[data-state="done"] {
+  opacity: 0.35;
+}
+
+.ls-step-index {
+  color: var(--color-text-tertiary);
+  transition: color 0.3s;
+}
+
+.ls-step[data-state="active"] .ls-step-index {
+  color: var(--color-brand-text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ls-tag,
+  .ls-pack-row,
+  .ls-step {
+    transition: none;
+  }
+}

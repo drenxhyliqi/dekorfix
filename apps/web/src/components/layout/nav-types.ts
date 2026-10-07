@@ -1,3 +1,4 @@
+import type { SocialNetwork } from "@/components/brand/social-icons";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries/en";
 
@@ -36,9 +37,25 @@ export interface NavModel {
   menus: Record<NavMenuKey, NavMenu>;
   contactHref: string;
   requestQuoteHref: string;
-  phone: { display: string; href: string };
+  searchHref: string;
+  loginHref: string;
+  contact: {
+    phone: { display: string; href: string };
+    email: string;
+    /** Street and city on one line. */
+    address: string;
+    mapsHref: string;
+    social: ReadonlyArray<SocialLink>;
+  };
   labels: {
     nav: Dictionary["nav"];
     a11y: Dictionary["a11y"];
+    header: Dictionary["header"];
   };
+}
+
+export interface SocialLink {
+  key: SocialNetwork;
+  label: string;
+  href: string;
 }

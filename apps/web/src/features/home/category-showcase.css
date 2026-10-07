@@ -1,0 +1,184 @@
+/*
+ * Category showcase (classes prefixed `cs-`; the project's Turbopack rule
+ * compiles every .css file as global CSS, so CSS modules are not used).
+ *
+ * Light cards with the copy on one side and a fanned stack of packshots on the
+ * other. On hover the stack spreads and lifts, the arrow turns red and the card
+ * brightens.
+ */
+
+.cs-card {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-muted);
+  transition:
+    background-color 0.35s var(--ease-out),
+    border-color 0.35s var(--ease-out);
+}
+
+.cs-card:hover,
+.cs-card:focus-visible {
+  background: var(--color-background);
+  border-color: var(--color-border-strong);
+}
+
+/* Compact: copy on the left, the stack on the right. */
+.cs-card--compact {
+  min-height: 18rem;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+}
+
+/* Feature: copy on top, a larger stack below. */
+.cs-card--feature {
+  min-height: 30rem;
+  grid-template-rows: auto minmax(16rem, 1fr);
+}
+
+.cs-copy {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .cs-copy {
+    padding: 2rem;
+  }
+}
+
+.cs-card--feature .cs-copy {
+  padding-right: 4.5rem;
+}
+
+.cs-card--feature .cs-copy h3 {
+  margin-top: 2.5rem;
+}
+
+.cs-arrow {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  z-index: 3;
+  display: inline-flex;
+  width: 2.75rem;
+  height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 9999px;
+  background: var(--color-background);
+  color: var(--color-text);
+  transition:
+    background-color 0.25s,
+    border-color 0.25s,
+    color 0.25s,
+    rotate 0.35s var(--ease-out);
+}
+
+.cs-card:hover .cs-arrow,
+.cs-card:focus-visible .cs-arrow {
+  border-color: var(--color-brand);
+  background: var(--color-brand);
+  color: #fff;
+  rotate: 45deg;
+}
+
+/* ---- The packshot fan ------------------------------------------------------ */
+
+.cs-stack {
+  position: relative;
+  min-height: 12rem;
+}
+
+.cs-card--feature .cs-stack {
+  margin-inline: 1.5rem;
+}
+
+/* Compact cards: the stack has half the card; packshots fill more of it. */
+.cs-card--compact .cs-stack {
+  margin-right: 0.75rem;
+}
+
+.cs-card--compact .cs-pack {
+  width: 70%;
+  height: 74%;
+}
+
+.cs-pack {
+  position: absolute;
+  bottom: 0.75rem;
+  left: 50%;
+  width: 62%;
+  height: 80%;
+  translate: -50% 0;
+  transform-origin: 50% 100%;
+  filter: drop-shadow(0 1.25rem 1.25rem rgb(13 13 12 / 0.16));
+  transition:
+    translate 0.6s var(--ease-out),
+    rotate 0.6s var(--ease-out),
+    scale 0.6s var(--ease-out);
+}
+
+.cs-pack[data-side="left"] {
+  translate: -86% 0;
+  rotate: -9deg;
+  scale: 0.84;
+}
+
+.cs-pack[data-side="right"] {
+  translate: -14% 0;
+  rotate: 9deg;
+  scale: 0.84;
+}
+
+.cs-card:hover .cs-pack[data-side="front"],
+.cs-card:focus-visible .cs-pack[data-side="front"] {
+  translate: -50% -5%;
+  scale: 1.05;
+}
+
+.cs-card:hover .cs-pack[data-side="left"],
+.cs-card:focus-visible .cs-pack[data-side="left"] {
+  translate: -104% -2%;
+  rotate: -15deg;
+}
+
+.cs-card:hover .cs-pack[data-side="right"],
+.cs-card:focus-visible .cs-pack[data-side="right"] {
+  translate: 4% -2%;
+  rotate: 15deg;
+}
+
+/* ---- Reveal as the cards scroll in (where scroll-driven animation exists) --- */
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .cs-reveal {
+      animation: cs-reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 60%;
+    }
+  }
+}
+
+@keyframes cs-reveal {
+  from {
+    opacity: 0;
+    translate: 0 2.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cs-card,
+  .cs-arrow,
+  .cs-pack {
+    transition: none;
+  }
+}

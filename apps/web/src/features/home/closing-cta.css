@@ -1,0 +1,136 @@
+/*
+ * Closing call to action (classes prefixed `cc-`; the project's Turbopack rule
+ * compiles every .css file as global CSS, so CSS modules are not used).
+ */
+
+/* ---- Product-name marquee --------------------------------------------------- */
+
+.cc-marquee {
+  overflow: hidden;
+  border-block: 1px solid var(--color-border);
+  padding-block: clamp(1rem, 2vw, 1.75rem);
+  /* Fade the ends so names drift in and out rather than being cut. */
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+.cc-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: cc-marquee 60s linear infinite;
+}
+
+.cc-marquee-run {
+  display: flex;
+  flex: none;
+}
+
+.cc-marquee-item {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(1.25rem, 3vw, 2.75rem);
+  padding-right: clamp(1.25rem, 3vw, 2.75rem);
+  font-size: clamp(2.75rem, 1rem + 6vw, 6.5rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  white-space: nowrap;
+}
+
+/* The brand's slanted red mark, at marquee scale. */
+.cc-marquee-mark {
+  display: inline-block;
+  width: 0.28em;
+  height: 0.36em;
+  background: var(--color-brand);
+  transform: skewX(-20deg);
+}
+
+@keyframes cc-marquee {
+  to {
+    translate: -50% 0;
+  }
+}
+
+/* ---- Headline --------------------------------------------------------------- */
+
+.cc-title {
+  font-size: clamp(3rem, 1rem + 6.5vw, 7.5rem);
+  font-weight: 600;
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+}
+
+/* ---- Rotating seal -------------------------------------------------------- */
+
+.cc-seal {
+  position: relative;
+  display: grid;
+  width: clamp(12rem, 22vw, 17rem);
+  aspect-ratio: 1;
+  place-items: center;
+  border-radius: 9999px;
+}
+
+.cc-seal-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  animation: cc-spin 22s linear infinite;
+}
+
+.cc-seal-text {
+  fill: var(--color-text);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.cc-seal-core {
+  position: relative;
+  display: grid;
+  width: 46%;
+  aspect-ratio: 1;
+  place-items: center;
+  border-radius: 9999px;
+  background: var(--color-brand);
+  color: #fff;
+  box-shadow: 0 1.5rem 3rem -1rem rgb(228 30 37 / 0.45);
+  transition:
+    scale 0.45s var(--ease-out),
+    background-color 0.25s;
+}
+
+.cc-seal-arrow {
+  transition: rotate 0.45s var(--ease-out);
+}
+
+.cc-seal:hover .cc-seal-core,
+.cc-seal:focus-visible .cc-seal-core {
+  scale: 1.1;
+  background: var(--color-brand-hover);
+}
+
+.cc-seal:hover .cc-seal-arrow,
+.cc-seal:focus-visible .cc-seal-arrow {
+  rotate: 45deg;
+}
+
+@keyframes cc-spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cc-marquee-track,
+  .cc-seal-ring {
+    animation: none;
+  }
+
+  .cc-seal-core,
+  .cc-seal-arrow {
+    transition: none;
+  }
+}

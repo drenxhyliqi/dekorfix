@@ -6,10 +6,15 @@ import { cn } from "@/lib/utils";
 
 import type { NavMenu } from "./nav-types";
 
-/** Dark feature teaser (Project Studio, Calculator) in menus and the mobile drawer. */
+/** Feature teaser card (Project Studio, Calculator) in menus and the mobile drawer. */
 export function MenuPromo({ promo, className }: { promo: NavMenu["promo"]; className?: string }) {
   return (
-    <div data-tone="dark" className={cn("group relative flex flex-col rounded-xs p-6 md:p-8", className)}>
+    <div
+      className={cn(
+        "group relative flex flex-col rounded-xs border border-border bg-surface-muted p-6 md:p-8",
+        className,
+      )}
+    >
       <div className="flex items-center justify-between gap-4">
         <p className="flex items-center gap-2.5 text-label uppercase text-text-secondary">
           <span aria-hidden className="brand-mark" />

@@ -15,6 +15,14 @@ const en = {
     closeMenu: "Close menu",
     close: "Close",
     home: "Dekorfix home",
+    newTab: "opens in a new tab",
+  },
+  header: {
+    call: "Call us",
+    email: "Email us",
+    visit: "Visit us",
+    follow: "Follow us",
+    getInTouch: "Get in touch",
   },
   nav: {
     home: "Home",
@@ -28,6 +36,7 @@ const en = {
     contact: "Contact",
     requestQuote: "Request a Quote",
     search: "Search",
+    login: "Sign in",
     menu: "Menu",
   },
   productCategories: {
@@ -95,23 +104,33 @@ const en = {
   },
   home: {
     hero: {
-      eyebrow: "Styrofiber · Fibre-reinforced adhesive for EPS boards",
+      label: "Building materials manufacturer · Suharekë, Kosovo",
       titleStart: ["Quality begins", "with Dekorfix."],
       titleEnd: ["And ends", "in perfection."],
       description:
         "Adhesives, facades, bases, paints and plasters, manufactured in Suharekë to European quality standards.",
       primaryCta: "Explore Products",
       secondaryCta: "Request a Quote",
-      product: "Styrofiber",
+    },
+    range: {
+      eyebrow: "Product range",
+      title: "Five product groups for every stage of construction.",
+      description: "From the first coat on bare concrete to the final finish on the facade.",
+      action: "View all products",
+    },
+    manufacturing: {
+      eyebrow: "Manufacturing",
+      title: "Produced in Shirokë, Suharekë.",
+      text: "Dekorfix is a Kosovo manufacturer dedicated to perfecting the quality of its products, with a range that competes directly with established international brands. We stay focused on our customers and their demand for perfection, improving continuously in quality and efficiency.",
       facts: [
-        { label: "Use", value: "Bonding EPS insulation boards" },
-        { label: "Colour", value: "Grey" },
-        { label: "Pack", value: "25 kg" },
+        { label: "Plant", value: "Industrial Zone, Shirokë" },
+        { label: "Quality", value: "ISO 9001 certified" },
       ],
-      productLink: "View Styrofiber",
-      scroll: "Scroll",
-      sceneLabel:
-        "A 25 kg sack of Dekorfix Styrofiber, fibre-reinforced adhesive for EPS boards, turning slowly in a studio.",
+      photos: {
+        loading: "A truck being loaded with Dekorfix products at the plant in Shirokë",
+        forklift: "Pallets of Dekorfix products loaded by forklift at the plant",
+        dispatch: "A delivery truck being loaded in the plant yard",
+      },
     },
     credentials: [
       { code: "ISO 9001", label: "Certified quality management" },
@@ -119,11 +138,20 @@ const en = {
       { code: "EN", label: "Produced to European quality norms and standards" },
       { code: "MIX", label: "Paints tintable on pigment mixing machines" },
     ],
-    range: {
-      eyebrow: "Product range",
-      title: "Five product groups for every stage of construction.",
-      description: "From the first coat on bare concrete to the final finish on the facade.",
+    featured: {
+      eyebrow: "Selected products",
+      title: "High-quality products for professionals.",
       action: "View all products",
+      view: "View product",
+      previous: "Previous products",
+      next: "Next products",
+    },
+    cta: {
+      title: "Planning a project?",
+      text: "Tell us what you are building and our team will recommend the right products and prepare an offer.",
+      primary: "Request a Quote",
+      secondary: "Contact us",
+      call: "Call us",
     },
     system: {
       eyebrow: "Layer by layer",
@@ -146,43 +174,47 @@ const en = {
         },
       ],
       link: "View products",
-    },
-    featured: {
-      eyebrow: "Selected products",
-      title: "High-quality products for professionals.",
-      action: "View all products",
-    },
-    studio: {
-      eyebrow: "Project Studio",
-      title: "Plan the wall. Know the materials.",
-      text: "Draw your walls and openings, and Project Studio will estimate how much of each Dekorfix product you need.",
-      features: ["Wall dimensions and openings", "Material quantities", "Product recommendations"],
-      primaryCta: "Explore Project Studio",
-      secondaryCta: "Calculate Materials",
-      diagramLabel:
-        "Illustration: a wall elevation with a window and a door, dimension lines and the material layers of the wall.",
-      layers: ["Base", "Adhesive", "Plaster", "Finish"],
-    },
-    manufacturing: {
-      eyebrow: "Manufacturing",
-      title: "Produced in Shirokë, Suharekë.",
-      text: "Dekorfix is a Kosovo manufacturer dedicated to perfecting the quality of its products, with a range that competes directly with established international brands. We stay focused on our customers and their demand for perfection, improving continuously in quality and efficiency.",
-      facts: [
-        { label: "Plant", value: "Industrial Zone, Shirokë" },
-        { label: "Quality", value: "ISO 9001 certified" },
-      ],
-      photos: {
-        loading: "A truck being loaded with Dekorfix products at the plant in Shirokë",
-        forklift: "Pallets of Dekorfix products loaded by forklift at the plant",
-        dispatch: "A delivery truck being loaded in the plant yard",
+      finished: {
+        title: "The finished wall",
+        text: "Primer, adhesive, plaster and finish: each layer prepares the next, up to the surface you see.",
+        note: "Shown in a sand tone. Dekorfix paints can be tinted on pigment mixing machines.",
       },
     },
-    cta: {
-      title: "Planning a project?",
-      text: "Tell us what you are building and our team will recommend the right products and prepare an offer.",
-      primary: "Request a Quote",
-      secondary: "Contact us",
-      call: "Call us",
+    /** PLACEHOLDER milestones: replace with Dekorfix's real history (in order, up to seven). */
+    timeline: {
+      title: "The Dekorfix story",
+      imageAlt: "A truck being loaded with Dekorfix products at the plant in Shirokë",
+      period: "Dates to be confirmed",
+      items: [
+        {
+          heading: "Milestone 01",
+          content: "Placeholder: the date and milestone will be provided by Dekorfix.",
+        },
+        {
+          heading: "Milestone 02",
+          content: "Placeholder: the date and milestone will be provided by Dekorfix.",
+        },
+        {
+          heading: "Milestone 03",
+          content: "Placeholder: the date and milestone will be provided by Dekorfix.",
+        },
+        {
+          heading: "Milestone 04",
+          content: "Placeholder: the date and milestone will be provided by Dekorfix.",
+        },
+        {
+          heading: "Milestone 05",
+          content: "Placeholder: the date and milestone will be provided by Dekorfix.",
+        },
+        {
+          heading: "Milestone 06",
+          content: "Placeholder: the date and milestone will be provided by Dekorfix.",
+        },
+        {
+          heading: "Milestone 07",
+          content: "Placeholder: the date and milestone will be provided by Dekorfix.",
+        },
+      ],
     },
   },
   studio: {
@@ -302,6 +334,7 @@ const en = {
     projectDetail: "Project details will be implemented in the Projects phase.",
     resourceDetail: "Resource details will be implemented in the Resources phase.",
     legal: "The legal text will be provided by Dekorfix.",
+    login: "Accounts and sign-in are coming in an upcoming phase.",
   },
   pages: {
     home: {
@@ -344,6 +377,7 @@ const en = {
       description: "Tell us about your project and we will prepare an offer.",
     },
     search: { title: "Search", description: "Search products, solutions and documents." },
+    login: { title: "Sign in", description: "Sign in to your Dekorfix account." },
     privacy: {
       title: "Privacy policy",
       description: "How Dekorfix collects and uses personal data.",

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { IntroLoader } from "@/components/layout/intro-loader";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { env } from "@/config/env";
@@ -26,8 +27,10 @@ export default async function RootLayout({ children }: LayoutProps<"/[lang]">) {
   const [locale, t] = await Promise.all([getLocale(), getDictionary()]);
 
   return (
-    <html lang={locale} className={geist.variable} data-scroll-behavior="smooth">
+    // The intro's pre-paint script may add data-intro-skip to <html> before hydration.
+    <html lang={locale} className={geist.variable} data-scroll-behavior="smooth" suppressHydrationWarning>
       <body className="flex min-h-dvh flex-col">
+        <IntroLoader />
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-sm focus:bg-inverse focus:px-4 focus:py-3 focus:text-small focus:font-medium focus:text-inverse-text"

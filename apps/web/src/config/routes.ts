@@ -21,6 +21,7 @@ export const routes = {
   contact: "/contact",
   requestQuote: "/request-quote",
   search: "/search",
+  login: "/login",
   privacy: "/privacy",
   terms: "/terms",
   cookies: "/cookies",

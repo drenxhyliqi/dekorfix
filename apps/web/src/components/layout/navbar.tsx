@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown } from "lucide-react";
+import { ArrowRight, ChevronDown, Search, UserRound } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -10,6 +10,7 @@ import {
   useState,
   type FocusEvent,
   type PointerEvent as ReactPointerEvent,
+  type ReactNode,
 } from "react";
 
 import { Logo } from "@/components/brand/logo";
@@ -97,23 +98,23 @@ function Navbar({ model, pathname }: { model: NavModel; pathname: string | null 
   };
 
   const { nav, a11y } = model.labels;
-  const contactActive = pathname !== null && isActivePath(pathname, model.contactHref);
+  const loginActive = pathname !== null && isActivePath(pathname, model.loginHref);
 
   return (
     <header
       data-scrolled={scrolled}
       className={cn(
-        "group/header sticky top-0 z-50 border-b bg-background transition-[border-color,box-shadow] duration-250",
-        scrolled || openMenu ? "border-border" : "border-transparent",
-        scrolled && !openMenu && "shadow-sm",
+        "group/header sticky top-0 z-50 border-b border-border transition-[background-color,box-shadow] duration-250",
+        // Frosted once content scrolls beneath; solid while a mega menu is open.
+        scrolled && !openMenu ? "bg-background/90 backdrop-blur-xl backdrop-saturate-150" : "bg-background",
       )}
     >
-      <div className="container-page flex h-header items-center gap-8 transition-[height] duration-350 ease-out group-data-[scrolled=true]/header:h-header-compact 2xl:gap-10">
+      <div className="container-page flex h-16 items-center gap-6 transition-[height] duration-350 ease-out xl:h-18 xl:group-data-[scrolled=true]/header:h-16">
         <Link href={model.homeHref} aria-label={a11y.home} className="-m-1 shrink-0 rounded-xs p-1">
-          <Logo className="w-28 transition-[width] duration-350 ease-out xl:w-32 xl:group-data-[scrolled=true]/header:w-28" />
+          <Logo className="w-26 sm:w-28" />
         </Link>
 
-        <nav ref={navRef} aria-label={a11y.mainNavigation} className="hidden h-full xl:block">
+        <nav ref={navRef} aria-label={a11y.mainNavigation} className="hidden h-full flex-1 justify-center xl:flex">
           <ul className="flex h-full items-center">
             {model.primary.map((item) => {
               const active = pathname !== null && isActivePath(pathname, item.href, "exact" in item && item.exact);
@@ -141,7 +142,7 @@ function Navbar({ model, pathname }: { model: NavModel; pathname: string | null 
                         strokeWidth={1.75}
                         className={cn("size-3.5 transition-transform duration-250", open && "rotate-180")}
                       />
-                      <ActiveBar visible={active} />
+                      <ActiveDot visible={active} />
                     </button>
                     <MegaMenu id={`menu-${menuKey}`} open={open} menu={model.menus[menuKey]} />
                   </li>
@@ -152,11 +153,11 @@ function Navbar({ model, pathname }: { model: NavModel; pathname: string | null 
                   <Link
                     href={item.href}
                     aria-current={active ? "page" : undefined}
-                    className={cn(navItemClasses(active), item.accent && "gap-2.5 font-medium text-text")}
+                    className={cn(navItemClasses(active), item.accent && "gap-2 font-medium text-text")}
                   >
                     {item.accent && <span aria-hidden className="brand-mark" />}
                     {item.label}
-                    <ActiveBar visible={active} />
+                    <ActiveDot visible={active} />
                   </Link>
                 </li>
               );
@@ -164,25 +165,28 @@ function Navbar({ model, pathname }: { model: NavModel; pathname: string | null 
           </ul>
         </nav>
 
-        <div className="ml-auto flex items-center gap-2">
-          <Link
-            href={model.contactHref}
-            aria-current={contactActive ? "page" : undefined}
-            className={cn(
-              "hidden h-9 items-center rounded-sm px-3 text-[0.9375rem] transition-colors duration-150 xl:inline-flex",
-              contactActive ? "text-text" : "text-text-secondary hover:text-text",
-            )}
-          >
-            {nav.contact}
-          </Link>
+        <div className="ml-auto flex items-center gap-1 xl:ml-0">
           {/* Visibility wrappers: cn() does not resolve conflicting display utilities. */}
-          <div className="hidden sm:block">
-            <ButtonLink href={model.requestQuoteHref} size="sm">
+          <div className="hidden md:block">
+            <IconLink href={model.searchHref} label={nav.search}>
+              <Search aria-hidden className="size-[1.125rem]" strokeWidth={1.5} />
+            </IconLink>
+          </div>
+          <IconLink href={model.loginHref} label={nav.login} current={loginActive}>
+            <UserRound aria-hidden className="size-[1.125rem]" strokeWidth={1.5} />
+          </IconLink>
+          <div className="hidden items-center xl:flex">
+            <span aria-hidden className="mx-3 h-5 w-px bg-border" />
+            <LanguageLinks current={model.locale} label={a11y.language} pathname={pathname} />
+          </div>
+          <div className="ml-3 hidden sm:block">
+            <ButtonLink
+              href={model.requestQuoteHref}
+              size="sm"
+              trailingIcon={<ArrowRight aria-hidden className="size-4" strokeWidth={1.75} />}
+            >
               {nav.requestQuote}
             </ButtonLink>
-          </div>
-          <div className="ml-4 hidden xl:block">
-            <LanguageLinks current={model.locale} label={a11y.language} pathname={pathname} />
           </div>
           <button
             type="button"
@@ -190,12 +194,11 @@ function Navbar({ model, pathname }: { model: NavModel; pathname: string | null 
             aria-haspopup="dialog"
             aria-expanded={mobileOpen}
             aria-label={a11y.openMenu}
-            className="-mr-2 ml-2 inline-flex h-10 items-center gap-3 rounded-sm px-2 text-small font-medium text-text xl:hidden"
+            className="group/menu -mr-2 ml-1 inline-flex size-10 items-center justify-center rounded-full text-text transition-colors duration-150 hover:bg-surface-muted xl:hidden"
           >
-            <span aria-hidden>{nav.menu}</span>
             <span aria-hidden className="flex w-5 flex-col gap-1.5">
               <span className="h-px w-full bg-current" />
-              <span className="h-px w-3/5 self-end bg-current" />
+              <span className="h-px w-3/5 self-end bg-current transition-[width] duration-250 ease-out group-hover/menu:w-full" />
             </span>
           </button>
         </div>
@@ -206,21 +209,49 @@ function Navbar({ model, pathname }: { model: NavModel; pathname: string | null 
   );
 }
 
+/** Round, icon-only link (search, account). */
+function IconLink({
+  href,
+  label,
+  current,
+  children,
+}: {
+  href: string;
+  label: string;
+  current?: boolean;
+  children: ReactNode;
+}) {
+  return (
+    <Link
+      href={href}
+      aria-label={label}
+      title={label}
+      aria-current={current ? "page" : undefined}
+      className={cn(
+        "inline-flex size-10 items-center justify-center rounded-full transition-colors duration-150 hover:bg-surface-muted hover:text-text",
+        current ? "bg-surface-muted text-text" : "text-text-secondary",
+      )}
+    >
+      {children}
+    </Link>
+  );
+}
+
 function navItemClasses(active: boolean) {
   return cn(
-    "relative flex h-full items-center gap-1.5 px-3 text-[0.9375rem] transition-colors duration-150 2xl:px-4",
+    "relative flex h-full items-center gap-1 px-2.5 text-[0.9375rem] tracking-[-0.01em] transition-colors duration-150 2xl:px-3.5",
     active ? "text-text" : "text-text-secondary hover:text-text",
   );
 }
 
-/** 2px brand bar sitting on the header's bottom edge for the active section. */
-function ActiveBar({ visible }: { visible: boolean }) {
+/** Small brand dot under the active section's label. */
+function ActiveDot({ visible }: { visible: boolean }) {
   return (
     <span
       aria-hidden
       className={cn(
-        "absolute inset-x-3 -bottom-px h-0.5 bg-brand transition-opacity duration-250 2xl:inset-x-4",
-        visible ? "opacity-100" : "opacity-0",
+        "absolute bottom-3 left-1/2 size-1 -translate-x-1/2 rounded-full bg-brand transition-transform duration-250 ease-out",
+        visible ? "scale-100" : "scale-0",
       )}
     />
   );

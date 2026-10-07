@@ -34,12 +34,12 @@ export async function SiteFooter() {
   ];
 
   return (
-    <footer data-tone="dark" className="mt-auto">
+    <footer className="mt-auto border-t border-border bg-background">
       <div className="container-page pb-10 pt-section-sm">
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-8">
           <div className="flex flex-col items-start lg:col-span-4">
             <Link href={href(routes.home)} aria-label={t.a11y.home} className="rounded-xs">
-              <Logo tone="inverse" className="w-40" />
+              <Logo className="w-40" />
             </Link>
             <p className="mt-8 max-w-sm text-small text-text-secondary">{t.footer.description}</p>
             <ButtonLink

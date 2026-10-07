@@ -17,6 +17,14 @@ const sq: Dictionary = {
     closeMenu: "Mbyll menynë",
     close: "Mbyll",
     home: "Ballina e Dekorfix",
+    newTab: "hapet në skedë të re",
+  },
+  header: {
+    call: "Na telefononi",
+    email: "Na shkruani",
+    visit: "Na vizitoni",
+    follow: "Na ndiqni",
+    getInTouch: "Na kontaktoni",
   },
   nav: {
     home: "Ballina",
@@ -30,6 +38,7 @@ const sq: Dictionary = {
     contact: "Kontakt",
     requestQuote: "Kërko ofertë",
     search: "Kërko",
+    login: "Hyr",
     menu: "Menyja",
   },
   productCategories: {
@@ -97,23 +106,33 @@ const sq: Dictionary = {
   },
   home: {
     hero: {
-      eyebrow: "Styrofiber · Ngjitës stiropori me fibra",
+      label: "Prodhues i materialeve të ndërtimit · Suharekë, Kosovë",
       titleStart: ["Cilësia fillon", "me Dekorfix."],
       titleEnd: ["Dhe përfundon", "me përsosmëri."],
       description:
         "Ngjitës, fasada, baza, ngjyra dhe llaqe, të prodhuara në Suharekë sipas standardeve evropiane të cilësisë.",
       primaryCta: "Shiko produktet",
       secondaryCta: "Kërko ofertë",
-      product: "Styrofiber",
+    },
+    range: {
+      eyebrow: "Gama e produkteve",
+      title: "Pesë grupe produktesh për çdo fazë të ndërtimit.",
+      description: "Nga shtresa e parë mbi betonin e zhveshur deri te përfundimi i fasadës.",
+      action: "Shiko të gjitha produktet",
+    },
+    manufacturing: {
+      eyebrow: "Prodhimi",
+      title: "Prodhuar në Shirokë, Suharekë.",
+      text: "Dekorfix është prodhues nga Kosova, i përkushtuar ndaj përsosjes së cilësisë së produkteve, me një gamë që konkurron drejtpërdrejt me markat e njohura ndërkombëtare. Mbetemi të fokusuar te klientët dhe kërkesat e tyre për përsosmëri, duke përparuar vazhdimisht në cilësi dhe efikasitet.",
       facts: [
-        { label: "Përdorimi", value: "Ngjitja e pllakave të stiroporit" },
-        { label: "Ngjyra", value: "Hiri" },
-        { label: "Paketimi", value: "25 kg" },
+        { label: "Fabrika", value: "Zona Industriale, Shirokë" },
+        { label: "Cilësia", value: "E certifikuar ISO 9001" },
       ],
-      productLink: "Shiko Styrofiber",
-      scroll: "Lëvizni poshtë",
-      sceneLabel:
-        "Një thes 25 kg Dekorfix Styrofiber, ngjitës stiropori me fibra, që rrotullohet ngadalë në studio.",
+      photos: {
+        loading: "Një kamion duke u ngarkuar me produkte Dekorfix në fabrikën në Shirokë",
+        forklift: "Paleta me produkte Dekorfix duke u ngarkuar me pirun në fabrikë",
+        dispatch: "Një kamion shpërndarjeje duke u ngarkuar në oborrin e fabrikës",
+      },
     },
     credentials: [
       { code: "ISO 9001", label: "Menaxhim i certifikuar i cilësisë" },
@@ -121,11 +140,20 @@ const sq: Dictionary = {
       { code: "EN", label: "Prodhuar sipas normave dhe standardeve evropiane të cilësisë" },
       { code: "MIX", label: "Ngjyra që mund të miksohen në makineri pigmentesh" },
     ],
-    range: {
-      eyebrow: "Gama e produkteve",
-      title: "Pesë grupe produktesh për çdo fazë të ndërtimit.",
-      description: "Nga shtresa e parë mbi betonin e zhveshur deri te përfundimi i fasadës.",
+    featured: {
+      eyebrow: "Produkte të përzgjedhura",
+      title: "Produkte të cilësisë së lartë për profesionistë.",
       action: "Shiko të gjitha produktet",
+      view: "Shiko produktin",
+      previous: "Produktet e mëparshme",
+      next: "Produktet e radhës",
+    },
+    cta: {
+      title: "Po planifikoni një projekt?",
+      text: "Na tregoni çfarë po ndërtoni dhe ekipi ynë do t'ju rekomandojë produktet e duhura dhe do t'ju përgatisë një ofertë.",
+      primary: "Kërko ofertë",
+      secondary: "Na kontaktoni",
+      call: "Na telefononi",
     },
     system: {
       eyebrow: "Shtresë pas shtrese",
@@ -148,43 +176,47 @@ const sq: Dictionary = {
         },
       ],
       link: "Shiko produktet",
-    },
-    featured: {
-      eyebrow: "Produkte të përzgjedhura",
-      title: "Produkte të cilësisë së lartë për profesionistë.",
-      action: "Shiko të gjitha produktet",
-    },
-    studio: {
-      eyebrow: "Project Studio",
-      title: "Planifikoni murin. Njihni materialet.",
-      text: "Vizatoni muret dhe hapjet, dhe Project Studio do të llogarisë sa ju nevojitet nga secili produkt Dekorfix.",
-      features: ["Dimensionet e mureve dhe hapjet", "Sasitë e materialeve", "Rekomandime për produktet"],
-      primaryCta: "Zbuloni Project Studio",
-      secondaryCta: "Llogarit materialet",
-      diagramLabel:
-        "Ilustrim: pamja e një muri me dritare dhe derë, vija dimensionesh dhe shtresat e materialeve të murit.",
-      layers: ["Baza", "Ngjitësi", "Llaçi", "Përfundimi"],
-    },
-    manufacturing: {
-      eyebrow: "Prodhimi",
-      title: "Prodhuar në Shirokë, Suharekë.",
-      text: "Dekorfix është prodhues nga Kosova, i përkushtuar ndaj përsosjes së cilësisë së produkteve, me një gamë që konkurron drejtpërdrejt me markat e njohura ndërkombëtare. Mbetemi të fokusuar te klientët dhe kërkesat e tyre për përsosmëri, duke përparuar vazhdimisht në cilësi dhe efikasitet.",
-      facts: [
-        { label: "Fabrika", value: "Zona Industriale, Shirokë" },
-        { label: "Cilësia", value: "E certifikuar ISO 9001" },
-      ],
-      photos: {
-        loading: "Një kamion duke u ngarkuar me produkte Dekorfix në fabrikën në Shirokë",
-        forklift: "Paleta me produkte Dekorfix duke u ngarkuar me pirun në fabrikë",
-        dispatch: "Një kamion shpërndarjeje duke u ngarkuar në oborrin e fabrikës",
+      finished: {
+        title: "Muri i përfunduar",
+        text: "Bazë, ngjitës, llaç dhe përfundim: çdo shtresë përgatit të radhës, deri te sipërfaqja që shihet.",
+        note: "Paraqitur në ngjyrë rëre. Ngjyrat Dekorfix mund të miksohen në makineri pigmentesh.",
       },
     },
-    cta: {
-      title: "Po planifikoni një projekt?",
-      text: "Na tregoni çfarë po ndërtoni dhe ekipi ynë do t'ju rekomandojë produktet e duhura dhe do t'ju përgatisë një ofertë.",
-      primary: "Kërko ofertë",
-      secondary: "Na kontaktoni",
-      call: "Na telefononi",
+    /** PLACEHOLDER milestones: replace with Dekorfix's real history (in order, up to seven). */
+    timeline: {
+      title: "Historia e Dekorfix",
+      imageAlt: "Një kamion duke u ngarkuar me produkte Dekorfix në fabrikën në Shirokë",
+      period: "Datat do të konfirmohen",
+      items: [
+        {
+          heading: "Momenti 01",
+          content: "Vendmbajtës: data dhe ngjarja do të sigurohen nga Dekorfix.",
+        },
+        {
+          heading: "Momenti 02",
+          content: "Vendmbajtës: data dhe ngjarja do të sigurohen nga Dekorfix.",
+        },
+        {
+          heading: "Momenti 03",
+          content: "Vendmbajtës: data dhe ngjarja do të sigurohen nga Dekorfix.",
+        },
+        {
+          heading: "Momenti 04",
+          content: "Vendmbajtës: data dhe ngjarja do të sigurohen nga Dekorfix.",
+        },
+        {
+          heading: "Momenti 05",
+          content: "Vendmbajtës: data dhe ngjarja do të sigurohen nga Dekorfix.",
+        },
+        {
+          heading: "Momenti 06",
+          content: "Vendmbajtës: data dhe ngjarja do të sigurohen nga Dekorfix.",
+        },
+        {
+          heading: "Momenti 07",
+          content: "Vendmbajtës: data dhe ngjarja do të sigurohen nga Dekorfix.",
+        },
+      ],
     },
   },
   studio: {
@@ -307,6 +339,7 @@ const sq: Dictionary = {
     projectDetail: "Detajet e projektit do të ndërtohen në fazën e projekteve.",
     resourceDetail: "Detajet e dokumentit do të ndërtohen në fazën e burimeve.",
     legal: "Teksti ligjor do të sigurohet nga Dekorfix.",
+    login: "Llogaritë dhe hyrja vijnë në një fazë të ardhshme.",
   },
   pages: {
     home: {
@@ -349,6 +382,7 @@ const sq: Dictionary = {
       description: "Na tregoni për projektin tuaj dhe ne do t'ju përgatisim një ofertë.",
     },
     search: { title: "Kërko", description: "Kërkoni produkte, zgjidhje dhe dokumente." },
+    login: { title: "Hyr", description: "Hyni në llogarinë tuaj Dekorfix." },
     privacy: {
       title: "Politika e privatësisë",
       description: "Si i mbledh dhe i përdor Dekorfix të dhënat personale.",

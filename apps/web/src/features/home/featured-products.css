@@ -1,0 +1,103 @@
+/*
+ * Featured products rail (classes prefixed `fp-`; the project's Turbopack rule
+ * compiles every .css file as global CSS, so CSS modules are not used).
+ *
+ * A horizontal, snapping list that starts in line with the page content and
+ * runs off the right edge of the viewport.
+ */
+
+.fp-rail {
+  /* The page container's left edge: the gutter, plus centring on wide screens. */
+  --fp-inset: max(var(--spacing-gutter), calc((100vw - var(--container-page)) / 2 + var(--spacing-gutter)));
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--fp-inset);
+  padding-inline: var(--fp-inset);
+  padding-bottom: 1rem;
+  scrollbar-width: none;
+}
+
+.fp-rail::-webkit-scrollbar {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .fp-rail {
+    gap: 1.5rem;
+  }
+}
+
+.fp-item {
+  flex: none;
+  width: clamp(15rem, 70vw, 22rem);
+  scroll-snap-align: start;
+}
+
+@media (min-width: 1024px) {
+  .fp-item {
+    width: clamp(17rem, 24vw, 22rem);
+  }
+}
+
+.fp-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.fp-shot {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-muted);
+  transition:
+    background-color 0.35s var(--ease-out),
+    border-color 0.35s var(--ease-out);
+}
+
+.fp-pack {
+  padding: 12%;
+  filter: drop-shadow(0 1.5rem 1.5rem rgb(13 13 12 / 0.16));
+  transition:
+    translate 0.6s var(--ease-out),
+    rotate 0.6s var(--ease-out),
+    scale 0.6s var(--ease-out);
+}
+
+.fp-card:hover .fp-shot,
+.fp-card:focus-visible .fp-shot {
+  background: var(--color-background);
+  border-color: var(--color-border-strong);
+}
+
+.fp-card:hover .fp-pack,
+.fp-card:focus-visible .fp-pack {
+  translate: 0 -4%;
+  rotate: -3deg;
+  scale: 1.05;
+}
+
+/* Arrows only where there is a mouse; touch screens swipe the rail. */
+.fp-controls {
+  display: none;
+  gap: 0.5rem;
+}
+
+@media (pointer: fine) {
+  .fp-controls {
+    display: flex;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fp-shot,
+  .fp-pack {
+    transition: none;
+  }
+}

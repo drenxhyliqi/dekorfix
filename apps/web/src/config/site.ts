@@ -11,8 +11,12 @@ export const company = {
     { display: "+383 49 216 541", href: "tel:+38349216541" },
   ],
   email: "info@dekorfix.net",
+  /** Google Maps search for the registered address. */
+  mapsHref: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+    "Dekorfix, Zona Industriale, Shirokë, 23000 Suharekë, Kosovë",
+  )}`,
   social: [
-    { label: "Facebook", href: "https://www.facebook.com/dekorfixks" },
-    { label: "Instagram", href: "https://www.instagram.com/dekorfix_sh.p.k/" },
+    { key: "facebook", label: "Facebook", href: "https://www.facebook.com/dekorfixks" },
+    { key: "instagram", label: "Instagram", href: "https://www.instagram.com/dekorfix_sh.p.k/" },
   ],
 } as const;

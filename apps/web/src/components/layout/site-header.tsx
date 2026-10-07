@@ -62,8 +62,16 @@ export async function SiteHeader() {
     },
     contactHref: href(routes.contact),
     requestQuoteHref: href(routes.requestQuote),
-    phone: company.phones[0],
-    labels: { nav: t.nav, a11y: t.a11y },
+    searchHref: href(routes.search),
+    loginHref: href(routes.login),
+    contact: {
+      phone: company.phones[0],
+      email: company.email,
+      address: `${t.address.street}, ${t.address.city}`,
+      mapsHref: company.mapsHref,
+      social: company.social,
+    },
+    labels: { nav: t.nav, a11y: t.a11y, header: t.header },
   };
 
   return <SiteNavbar model={model} />;

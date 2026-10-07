@@ -33,7 +33,7 @@ export function EstimatePanel() {
   const lines = sortLines(estimate.lines);
 
   return (
-    <section data-tone="dark" aria-labelledby="estimate-title" className="rounded-sm p-6 md:p-7">
+    <section aria-labelledby="estimate-title" className="rounded-sm border border-border bg-surface-muted p-6 md:p-7">
       <p id="estimate-title" className="flex items-center gap-2.5 text-label uppercase text-text-secondary">
         <span aria-hidden className="brand-mark" />
         {t.estimate.eyebrow}
