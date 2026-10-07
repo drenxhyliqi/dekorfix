@@ -1,0 +1,9 @@
+# Applies to builds using the repository root as context (apps/web).
+.git
+**/node_modules
+**/.next
+**/.env
+**/.env.*
+apps/api
+docker
+*.md

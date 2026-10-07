@@ -1,0 +1,292 @@
+@import "tailwindcss";
+
+/*
+ * Dekorfix design tokens
+ * ----------------------
+ * All colours, type, spacing, radius, shadow and motion values live here.
+ * Components use the semantic tokens (e.g. `bg-surface`, `text-text-secondary`),
+ * never raw hex values. Dark sections re-map the same tokens via
+ * `data-tone="dark"`, so components adapt without extra variants.
+ */
+
+@theme {
+  /* Only Dekorfix tokens are available as colour utilities. */
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  /* Brand: exact red sampled from the official Dekorfix logo. */
+  --color-brand: #e41e25;
+  --color-brand-hover: #c4161d;
+  --color-brand-soft: #fcebec;
+  /* Red for small text on brand-soft (AA in both tones). */
+  --color-brand-text: #c4161d;
+
+  /* Semantic: light tone (default). */
+  --color-background: #ffffff;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f6f5f2;
+  --color-surface-strong: #edebe6;
+  --color-text: #0d0d0c;
+  --color-text-secondary: #5b5953;
+  --color-text-tertiary: #6c6963;
+  --color-border: #e3e1db;
+  --color-border-strong: #8f8c85; /* ≥3:1 for control boundaries (WCAG 1.4.11) */
+  --color-inverse: #0d0d0c;
+  --color-inverse-text: #ffffff;
+  --color-danger: #b4141a;
+  --color-focus: #0d0d0c;
+
+  /* Typography */
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+
+  --text-display: clamp(3rem, 1.75rem + 5.2vw, 5.5rem);
+  --text-display--line-height: 0.98;
+  --text-display--letter-spacing: -0.04em;
+  --text-display--font-weight: 500;
+
+  /* Homepage hero statement only: oversized, set tight. */
+  --text-hero: clamp(3rem, 0.25rem + 7.2vw, 8.5rem);
+  --text-hero--line-height: 0.9;
+  --text-hero--letter-spacing: -0.055em;
+  --text-hero--font-weight: 500;
+
+  --text-h1: clamp(2.5rem, 1.6rem + 3.8vw, 4.5rem);
+  --text-h1--line-height: 1.02;
+  --text-h1--letter-spacing: -0.035em;
+  --text-h1--font-weight: 500;
+
+  --text-h2: clamp(2rem, 1.45rem + 2.4vw, 3.5rem);
+  --text-h2--line-height: 1.06;
+  --text-h2--letter-spacing: -0.03em;
+  --text-h2--font-weight: 500;
+
+  --text-h3: clamp(1.5rem, 1.3rem + 0.9vw, 2.125rem);
+  --text-h3--line-height: 1.15;
+  --text-h3--letter-spacing: -0.022em;
+  --text-h3--font-weight: 500;
+
+  --text-h4: 1.25rem;
+  --text-h4--line-height: 1.3;
+  --text-h4--letter-spacing: -0.012em;
+  --text-h4--font-weight: 500;
+
+  --text-lead: clamp(1.125rem, 1.05rem + 0.3vw, 1.3125rem);
+  --text-lead--line-height: 1.55;
+  --text-lead--letter-spacing: -0.008em;
+
+  --text-body: clamp(1rem, 0.975rem + 0.1vw, 1.0625rem);
+  --text-body--line-height: 1.65;
+
+  --text-small: 0.875rem;
+  --text-small--line-height: 1.5;
+
+  --text-label: 0.75rem;
+  --text-label--line-height: 1.2;
+  --text-label--letter-spacing: 0.09em;
+  --text-label--font-weight: 500;
+
+  --text-caption: 0.75rem;
+  --text-caption--line-height: 1.4;
+
+  /* Spacing: Tailwind's 4px base (p-1 = 4px … p-40 = 160px) plus layout tokens. */
+  --spacing-gutter: clamp(1.25rem, 0.5rem + 3vw, 3.5rem);
+  --spacing-section: clamp(5rem, 3rem + 6vw, 10rem);
+  --spacing-section-sm: clamp(3.5rem, 2.5rem + 3vw, 6rem);
+  --spacing-header: 5rem;
+  --spacing-header-compact: 4rem;
+
+  /* Containers */
+  --container-page: 90rem; /* 1440px */
+  --container-prose: 40rem;
+
+  /* Radius: deliberately restrained. */
+  --radius-*: initial;
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-full: 9999px;
+
+  /* Shadows: subtle, used sparingly (menus, dialogs). */
+  --shadow-*: initial;
+  --shadow-sm: 0 1px 2px rgb(13 13 12 / 0.06);
+  --shadow-md: 0 12px 32px -16px rgb(13 13 12 / 0.18);
+  --shadow-lg: 0 32px 64px -32px rgb(13 13 12 / 0.28);
+
+  /* Motion: 150 / 250 / 350ms with a soft ease-out. */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --default-transition-duration: 250ms;
+  --default-transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Dark tone: footer, manufacturing / Project Studio sections, promo panels. */
+[data-tone="dark"] {
+  --color-background: #0d0d0c;
+  --color-surface: #161615;
+  --color-surface-muted: #1c1c1a;
+  --color-surface-strong: #262523;
+  --color-text: #f6f5f2;
+  --color-text-secondary: #aba8a0;
+  --color-text-tertiary: #8c8981;
+  --color-border: rgb(255 255 255 / 0.12);
+  --color-border-strong: rgb(255 255 255 / 0.36);
+  --color-inverse: #ffffff;
+  --color-inverse-text: #0d0d0c;
+  --color-brand-soft: rgb(228 30 37 / 0.16);
+  --color-brand-text: #ff6b6f;
+  --color-danger: #ff6b6b;
+  --color-focus: #ffffff;
+}
+
+[data-tone] {
+  background-color: var(--color-background);
+  color: var(--color-text);
+}
+
+@layer base {
+  html {
+    background-color: var(--color-background);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    scroll-padding-top: calc(var(--spacing-header) + 1rem);
+  }
+
+  body {
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+  }
+
+  ::selection {
+    background-color: var(--color-brand);
+    color: var(--color-white);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 3px;
+  }
+
+  /* Lock page scroll while a modal dialog (menu, drawer, modal) is open. */
+  html:has(dialog[open]:modal) {
+    overflow: hidden;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@keyframes hero-cue {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(300%);
+  }
+}
+
+@utility container-page {
+  width: 100%;
+  max-width: var(--container-page);
+  margin-inline: auto;
+  padding-inline: var(--spacing-gutter);
+}
+
+/* The slanted red mark echoes the parallelogram of the logo badge. */
+@utility brand-mark {
+  display: inline-block;
+  flex: none;
+  width: 0.5rem;
+  height: 0.625rem;
+  background-color: var(--color-brand);
+  transform: skewX(-20deg);
+}
+
+/* Native <dialog> transitions (enter via @starting-style, exit via allow-discrete). */
+@layer components {
+  .dfx-dialog {
+    transition:
+      opacity 250ms var(--ease-out),
+      translate 350ms var(--ease-out),
+      display 350ms allow-discrete,
+      overlay 350ms allow-discrete;
+    opacity: 0;
+  }
+
+  .dfx-dialog[data-variant][open] {
+    opacity: 1;
+    translate: 0 0;
+  }
+
+  @starting-style {
+    .dfx-dialog[open] {
+      opacity: 0;
+    }
+  }
+
+  .dfx-dialog[data-variant="modal"] {
+    translate: 0 1rem;
+  }
+
+  @starting-style {
+    .dfx-dialog[data-variant="modal"][open] {
+      translate: 0 1rem;
+    }
+  }
+
+  .dfx-dialog[data-variant="drawer"] {
+    translate: 2rem 0;
+  }
+
+  @starting-style {
+    .dfx-dialog[data-variant="drawer"][open] {
+      translate: 2rem 0;
+    }
+  }
+
+  .dfx-dialog[data-side="left"] {
+    translate: -2rem 0;
+  }
+
+  @starting-style {
+    .dfx-dialog[data-side="left"][open] {
+      translate: -2rem 0;
+    }
+  }
+
+  .dfx-dialog::backdrop {
+    background-color: rgb(13 13 12 / 0);
+    transition:
+      background-color 350ms var(--ease-out),
+      display 350ms allow-discrete,
+      overlay 350ms allow-discrete;
+  }
+
+  .dfx-dialog[open]::backdrop {
+    background-color: rgb(13 13 12 / 0.5);
+  }
+
+  @starting-style {
+    .dfx-dialog[open]::backdrop {
+      background-color: rgb(13 13 12 / 0);
+    }
+  }
+}

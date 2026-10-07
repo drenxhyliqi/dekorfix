@@ -1,0 +1,55 @@
+"use client";
+
+import { createContext, useContext, useMemo, type ReactNode } from "react";
+
+import type { Locale } from "@/i18n/config";
+import type { Dictionary } from "@/i18n/dictionaries/en";
+
+import type { SurfaceId } from "../model/types";
+
+interface StudioCopy {
+  t: Dictionary["studio"];
+  locale: Locale;
+  /** "5.00" / "5,00" */
+  num: (value: number, digits?: number) => string;
+  /** "Wall A", "Floor", "Ceiling" */
+  surfaceName: (id: SurfaceId) => string;
+}
+
+const CopyContext = createContext<StudioCopy | null>(null);
+
+export function StudioCopyProvider({
+  t,
+  locale,
+  children,
+}: {
+  t: Dictionary["studio"];
+  locale: Locale;
+  children: ReactNode;
+}) {
+  const value = useMemo<StudioCopy>(() => {
+    const formatters = new Map<number, Intl.NumberFormat>();
+    const num = (value: number, digits = 2) => {
+      let formatter = formatters.get(digits);
+      if (!formatter) {
+        formatter = new Intl.NumberFormat(locale === "sq" ? "sq-AL" : "en-GB", {
+          minimumFractionDigits: digits,
+          maximumFractionDigits: digits,
+        });
+        formatters.set(digits, formatter);
+      }
+      return formatter.format(value);
+    };
+    const surfaceName = (id: SurfaceId) =>
+      id === "floor" ? t.surfaces.floor : id === "ceiling" ? t.surfaces.ceiling : `${t.surfaces.wall} ${id}`;
+    return { t, locale, num, surfaceName };
+  }, [t, locale]);
+
+  return <CopyContext.Provider value={value}>{children}</CopyContext.Provider>;
+}
+
+export function useCopy(): StudioCopy {
+  const context = useContext(CopyContext);
+  if (!context) throw new Error("useCopy must be used inside <StudioCopyProvider>.");
+  return context;
+}
