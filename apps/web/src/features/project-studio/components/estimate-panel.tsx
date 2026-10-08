@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Printer } from "lucide-react";
+import { ArrowRight, Grid3x3, Printer, SquareStack } from "lucide-react";
 import Image from "next/image";
 import { useMemo } from "react";
 
@@ -12,7 +12,7 @@ import { localizePath } from "@/i18n/config";
 
 import { useCopy } from "./studio-copy";
 import { useStudio } from "./studio-store";
-import { estimateProject, type Estimate, type ProductLine } from "../model/calculations";
+import { estimateProject, type AreaLine, type Estimate, type ProductLine } from "../model/calculations";
 import { finishSystems } from "../model/systems";
 
 export function useEstimate(): Estimate {
@@ -21,7 +21,7 @@ export function useEstimate(): Estimate {
 }
 
 /** Order products by how they are applied (first layer first). */
-const LAYER_ORDER = ["beton-kontakt", "baza", "confix", "niveler", "gletex", "fasadex", "cerafix", "megafix", "thermofix"];
+const LAYER_ORDER = ["styrofix", "styrofiber", "baza", "fasader"];
 export function sortLines(lines: ProductLine[]): ProductLine[] {
   return [...lines].sort((a, b) => LAYER_ORDER.indexOf(a.productSlug) - LAYER_ORDER.indexOf(b.productSlug));
 }
@@ -46,15 +46,18 @@ export function EstimatePanel() {
         <span className="pb-1.5 text-body text-text-secondary">m²</span>
       </div>
       <p className="mt-2 text-small text-text-secondary">
-        {t.estimate.area} · {estimate.surfaces.length} {t.estimate.surfaces}
+        {t.estimate.area} · {estimate.facades.length} {t.estimate.facades}
       </p>
 
-      {lines.length === 0 ? (
+      {lines.length === 0 && estimate.areaLines.length === 0 ? (
         <p className="mt-8 border-t border-border pt-6 text-small text-text-secondary">{t.estimate.empty}</p>
       ) : (
         <ul className="mt-8 border-t border-border">
           {lines.map((line) => (
             <EstimateLine key={line.productSlug} line={line} />
+          ))}
+          {estimate.areaLines.map((line) => (
+            <AreaEstimateLine key={line.key} line={line} />
           ))}
         </ul>
       )}
@@ -121,11 +124,45 @@ function EstimateLine({ line }: { line: ProductLine }) {
   );
 }
 
+function AreaEstimateLine({ line }: { line: AreaLine }) {
+  const { t, num } = useCopy();
+  const Icon = line.key === "mesh" ? Grid3x3 : SquareStack;
+  return (
+    <li className="flex items-start gap-3 border-b border-border py-4">
+      <span
+        className={
+          line.key === "mesh"
+            ? "flex size-11 shrink-0 items-center justify-center rounded-xs bg-brand/10 text-brand"
+            : "flex size-11 shrink-0 items-center justify-center rounded-xs bg-surface-strong text-text-secondary"
+        }
+      >
+        <Icon aria-hidden className="size-5" strokeWidth={1.5} />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="flex items-baseline justify-between gap-3">
+          <span className="text-small font-medium text-text">{t.estimate[line.key]}</span>
+          <span className="whitespace-nowrap text-small tabular-nums text-text">{num(line.orderArea, 1)} m²</span>
+        </span>
+        <span className="mt-0.5 block text-caption tabular-nums text-text-tertiary">
+          {num(line.area)} m²
+          {line.cornerPieces ? ` · ${line.cornerPieces} ${t.mesh.corners}` : ""}
+        </span>
+      </span>
+    </li>
+  );
+}
+
+function useMaterialCopy() {
+  const copy = useCopy();
+  const { state } = useStudio();
+  return { ...copy, project: state.project };
+}
+
 export function MaterialList() {
-  const { t, num, surfaceName, locale } = useCopy();
+  const { t, num, facadeName, locale, project } = useMaterialCopy();
   const estimate = useEstimate();
   const lines = sortLines(estimate.lines);
-  if (lines.length === 0) return null;
+  if (lines.length === 0 && estimate.areaLines.length === 0) return null;
 
   return (
     <section aria-labelledby="materials-title" className="rounded-sm border border-border bg-surface">
@@ -147,7 +184,7 @@ export function MaterialList() {
           <thead className="text-caption uppercase tracking-[0.06em] text-text-tertiary">
             <tr className="border-b border-border">
               <th scope="col" className="px-5 py-3 font-medium md:px-6">{t.materials.product}</th>
-              <th scope="col" className="px-3 py-3 font-medium">{t.materials.surfaces}</th>
+              <th scope="col" className="px-3 py-3 font-medium">{t.materials.facades}</th>
               <th scope="col" className="px-3 py-3 text-right font-medium">{t.materials.area}</th>
               <th scope="col" className="px-5 py-3 text-right font-medium md:px-6">{t.materials.quantity}</th>
             </tr>
@@ -161,8 +198,8 @@ export function MaterialList() {
                     {product?.name ?? line.productSlug}
                     <span className="block text-caption font-normal text-text-tertiary">{product?.summary[locale]}</span>
                   </th>
-                  <td className="px-3 py-3 text-text-secondary">{line.surfaces.map(surfaceName).join(", ")}</td>
-                  <td className="px-3 py-3 text-right tabular-nums text-text">{num(line.coatedArea)} m²</td>
+                  <td className="px-3 py-3 text-text-secondary">{line.facades.map(facadeName).join(", ")}</td>
+                  <td className="whitespace-nowrap px-3 py-3 text-right tabular-nums text-text">{num(line.coatedArea)} m²</td>
                   <td className="px-5 py-3 text-right tabular-nums text-text md:px-6">
                     {line.quantity ? (
                       <>
@@ -176,6 +213,28 @@ export function MaterialList() {
                 </tr>
               );
             })}
+            {estimate.areaLines.map((line) => (
+              <tr key={line.key} className="border-b border-border last:border-b-0">
+                <th scope="row" className="px-5 py-3 font-medium text-text md:px-6">
+                  {t.estimate[line.key]}
+                  <span className="block text-caption font-normal text-text-tertiary">
+                    {line.key === "insulation"
+                      ? t.materials.boards.replace("{cm}", String(project.insulationCm))
+                      : t.materials.meshNote}
+                  </span>
+                </th>
+                <td className="px-3 py-3 text-text-secondary">{line.facades.map(facadeName).join(", ")}</td>
+                <td className="whitespace-nowrap px-3 py-3 text-right tabular-nums text-text">{num(line.area)} m²</td>
+                <td className="px-5 py-3 text-right tabular-nums text-text md:px-6">
+                  {num(line.orderArea, 1)} m²
+                  {line.cornerPieces ? (
+                    <span className="block text-caption text-text-tertiary">
+                      + {line.cornerPieces} {t.mesh.corners}
+                    </span>
+                  ) : null}
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

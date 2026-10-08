@@ -85,7 +85,6 @@ function blocks() {
   return out;
 }
 
-/** Decorative: the steps beside it say what each layer is. */
 /** The coat's thickness: a soft shadow just outside its edge, drawn as fading strokes. */
 function EdgeShadow({ points }: { points: Array<[number, number]> }) {
   const d = `M ${points.map(([x, y]) => `${round(x - 2)} ${y}`).join(" L ")}`;
@@ -98,7 +97,16 @@ function EdgeShadow({ points }: { points: Array<[number, number]> }) {
   );
 }
 
-export function LayerWall() {
+/**
+ * Decorative: the text beside it says what each layer is. Without
+ * `paintedThrough` the layers start unpainted and LayerWatcher paints them with
+ * the scroll; with it, the wall is drawn still, painted up to that layer
+ * (0 primer … 3 finish), which is marked as the current one.
+ */
+export function LayerWall({ paintedThrough }: { paintedThrough?: number } = {}) {
+  const still = paintedThrough !== undefined;
+  const stateOf = (layer: number) =>
+    !still ? undefined : layer < paintedThrough ? "done" : layer === paintedThrough ? "active" : "next";
   const edges = STARTS.map((x, i) => edgePoints(x, 20 + i * 7));
   const clipPath = (points: Array<[number, number]>) =>
     `M ${W} 0 ${points.map(([x, y]) => `L ${x} ${y}`).join(" ")} L ${W} ${H} Z`;
@@ -162,7 +170,7 @@ export function LayerWall() {
                   data-paint={i}
                   x={start - PAINT_OVERHANG - 8}
                   y={round(k * band - 6)}
-                  width="0"
+                  width={still && i < STARTS.length && i <= paintedThrough ? round(W + PAINT_OVERHANG * 2 + 8 - start) : 0}
                   height={round(band + 12)}
                   rx={round(band / 2)}
                   fill="#fff"
@@ -196,7 +204,7 @@ export function LayerWall() {
       </g>
 
       {/* 01 Primer: translucent, joints still faintly visible, with quartz grains. */}
-      <g data-layer={0} className="ls-coat" mask="url(#ls-paint-0)">
+      <g data-layer={0} data-state={stateOf(0)} className="ls-coat" mask="url(#ls-paint-0)">
         <EdgeShadow points={edges[0] ?? []} />
         <g clipPath="url(#ls-edge-0)">
           <rect width={W} height={H} fill={LAYER_COLORS[0]} opacity="0.62" />
@@ -208,7 +216,7 @@ export function LayerWall() {
       </g>
 
       {/* 02 Adhesive: cement grey, combed with a notched trowel. */}
-      <g data-layer={1} className="ls-coat" mask="url(#ls-paint-1)">
+      <g data-layer={1} data-state={stateOf(1)} className="ls-coat" mask="url(#ls-paint-1)">
         <EdgeShadow points={edges[1] ?? []} />
         <g clipPath="url(#ls-edge-1)">
           <rect width={W} height={H} fill={LAYER_COLORS[1]} />
@@ -219,7 +227,7 @@ export function LayerWall() {
       </g>
 
       {/* 03 Plaster and skim coat: smooth, with soft trowel clouding. */}
-      <g data-layer={2} className="ls-coat" mask="url(#ls-paint-2)">
+      <g data-layer={2} data-state={stateOf(2)} className="ls-coat" mask="url(#ls-paint-2)">
         <EdgeShadow points={edges[2] ?? []} />
         <g clipPath="url(#ls-edge-2)">
           <rect width={W} height={H} fill={LAYER_COLORS[2]} />
@@ -230,7 +238,7 @@ export function LayerWall() {
       </g>
 
       {/* 04 Finish: grained render in a sand tone. */}
-      <g data-layer={3} className="ls-coat" mask="url(#ls-paint-3)">
+      <g data-layer={3} data-state={stateOf(3)} className="ls-coat" mask="url(#ls-paint-3)">
         <EdgeShadow points={edges[3] ?? []} />
         <g clipPath="url(#ls-edge-3)">
           <use href="#ls-finish-surface" />
@@ -240,8 +248,14 @@ export function LayerWall() {
 
       {/* Step tags over each strip. */}
       {STARTS.map((_, i) => (
-        <g key={i} data-layer={i} className="ls-tag" transform={`translate(${stripCentre(i)} 30)`}>
-          <rect x="-19" y="-12" width="38" height="24" rx="12" />
+        <g
+          key={i}
+          data-layer={i}
+          data-state={stateOf(i)}
+          className="ls-tag"
+          transform={`translate(${stripCentre(i)} 30)`}
+        >
+          <rect x="-19" y="-12" width="38" height="24" rx="3" />
           <text y="4.5" textAnchor="middle">
             {String(i + 1).padStart(2, "0")}
           </text>

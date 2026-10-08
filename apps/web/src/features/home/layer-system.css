@@ -7,25 +7,51 @@
  * done / active / next (`data-state`); the finished wall fades in last.
  */
 
-/* ---- Pinned visual -------------------------------------------------------- */
+/* ---- Layout ----------------------------------------------------------------- */
 
 .ls-visual {
-  position: sticky;
-  top: 4rem;
-  z-index: 2;
   display: flex;
-  height: 40svh;
   flex-direction: column;
   justify-content: center;
-  gap: clamp(0.75rem, 3svh, 2.5rem);
-  background: var(--color-background);
+  gap: clamp(0.75rem, 2.5svh, 2.5rem);
 }
 
+/* Desktop: the wall is pinned while the steps scroll beside it. */
 @media (min-width: 1024px) {
   .ls-visual {
+    position: sticky;
     top: calc(4.5rem + 2rem);
     height: calc(100svh - 9rem);
-    background: transparent;
+  }
+}
+
+/*
+ * Narrow screens: the whole block is pinned under the header as one screen,
+ * wall on top, the current step's text below. The steps are stacked in place
+ * and swap as the page scrolls; the body's height gives each its stretch.
+ */
+@media (max-width: 1023px) {
+  .ls-body {
+    height: calc(var(--ls-steps) * 70svh + 100svh);
+  }
+
+  .ls-pin {
+    position: sticky;
+    top: 4rem;
+    display: flex;
+    height: calc(100svh - 4rem);
+    flex-direction: column;
+    padding-top: 1rem;
+  }
+
+  .ls-visual {
+    flex: none;
+  }
+
+  .ls-steps {
+    position: relative;
+    flex: 1;
+    min-height: 0;
   }
 }
 
@@ -44,8 +70,8 @@
 
 @media (max-width: 1023px) {
   .ls-wall-frame {
-    /* Leaves room for the packshot row below, inside the pinned 40svh. */
-    width: min(100%, calc((40svh - 9rem) * 640 / 520));
+    /* About a third of the screen high, so the products and text fit below. */
+    width: min(100%, calc(32svh * 640 / 520));
   }
 }
 
@@ -163,9 +189,39 @@
   border-top: 0;
 }
 
-.ls-step[data-state="next"],
-.ls-step[data-state="done"] {
-  opacity: 0.35;
+/* Narrow screens: every step in the same place; only the current one shows. */
+@media (max-width: 1023px) {
+  .ls-step {
+    position: absolute;
+    inset: 0;
+    min-height: 0;
+    justify-content: flex-start;
+    padding-block: 1.25rem 0;
+    border-top: 0;
+    opacity: 0;
+    translate: 0 0.75rem;
+    pointer-events: none;
+    transition:
+      opacity 0.35s ease,
+      translate 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .ls-step[data-state="active"] {
+    opacity: 1;
+    translate: 0 0;
+    pointer-events: auto;
+  }
+
+  .ls-step h3 {
+    font-size: var(--text-h3);
+  }
+}
+
+@media (min-width: 1024px) {
+  .ls-step[data-state="next"],
+  .ls-step[data-state="done"] {
+    opacity: 0.35;
+  }
 }
 
 .ls-step-index {

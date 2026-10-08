@@ -1,0 +1,111 @@
+/*
+ * Contact page (classes prefixed `ct-`; the project's Turbopack rule compiles
+ * every .css file as global CSS, so CSS modules are not used).
+ */
+
+.ct-title {
+  font-size: clamp(3rem, 1rem + 6.5vw, 7.5rem);
+  font-weight: 600;
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+}
+
+/* ---- Direct lines ---------------------------------------------------------- */
+
+/* Phones: label, value and the copy button stacked, so the value has the full width. */
+.ct-line {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: start;
+  align-items: center;
+  gap: 0.75rem 1.5rem;
+  padding-block: 1.75rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+@media (min-width: 768px) {
+  .ct-line {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .ct-line-label {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (min-width: 1024px) {
+  .ct-line {
+    grid-template-columns: 12rem minmax(0, 1fr) auto;
+    padding-block: 2.25rem;
+  }
+
+  .ct-line-label {
+    grid-column: auto;
+  }
+}
+
+.ct-line-value {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  color: var(--color-text);
+  font-size: clamp(1.625rem, 0.9rem + 3.4vw, 4.5rem);
+  white-space: nowrap;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+  transition: color 0.2s;
+}
+
+.ct-line-arrow {
+  color: var(--color-text-tertiary);
+  transition:
+    color 0.2s,
+    translate 0.3s var(--ease-out);
+}
+
+.ct-line-value:hover,
+.ct-line-value:focus-visible {
+  color: var(--color-brand);
+}
+
+.ct-line-value:hover .ct-line-arrow,
+.ct-line-value:focus-visible .ct-line-arrow {
+  color: var(--color-brand);
+  translate: 0.1em -0.1em;
+}
+
+/* ---- Visit the plant ------------------------------------------------------- */
+
+.ct-visit {
+  position: relative;
+  display: flex;
+  min-height: 26rem;
+  align-items: flex-end;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-muted);
+}
+
+.ct-visit-card {
+  position: relative;
+  max-width: 22rem;
+  margin: 1rem;
+  padding: 1.5rem;
+  border-radius: var(--radius-sm);
+  background: rgb(255 255 255 / 0.94);
+  box-shadow: 0 1.5rem 3rem -1.5rem rgb(13 13 12 / 0.4);
+  backdrop-filter: blur(8px);
+}
+
+@media (min-width: 768px) {
+  .ct-visit {
+    min-height: 32rem;
+  }
+
+  .ct-visit-card {
+    margin: 1.5rem;
+    padding: 2rem;
+  }
+}

@@ -137,7 +137,7 @@ function ContactTile({
         {...(newTabLabel ? { target: "_blank", rel: "noopener noreferrer" } : {})}
         className="group/tile flex items-center gap-5 py-7"
       >
-        <span className="inline-flex size-12 shrink-0 items-center justify-center rounded-full bg-surface-muted text-brand transition-colors duration-250 group-hover/tile:bg-brand group-hover/tile:text-white">
+        <span className="inline-flex size-12 shrink-0 items-center justify-center rounded-sm bg-surface-muted text-brand transition-colors duration-250 group-hover/tile:bg-brand group-hover/tile:text-white">
           <Icon aria-hidden className="size-5" strokeWidth={1.75} />
         </span>
         <span className="min-w-0">

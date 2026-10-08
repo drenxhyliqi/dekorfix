@@ -1,0 +1,94 @@
+/*
+ * Product detail page (classes prefixed `pd-`; the project's Turbopack rule
+ * compiles every .css file as global CSS, so CSS modules are not used). The
+ * small wall reuses the homepage's layer-wall styles (layer-system.css).
+ */
+
+/* ---- Packshot stage ------------------------------------------------------- */
+
+.pd-stage {
+  position: relative;
+  aspect-ratio: 1;
+  container-type: inline-size;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  /* A soft glow in the colour of the product's layer. */
+  background:
+    radial-gradient(ellipse 55% 45% at 50% 58%, color-mix(in srgb, var(--glow) 32%, transparent), transparent 72%),
+    radial-gradient(ellipse 70% 60% at 50% 40%, #ffffff, var(--color-surface-muted) 80%);
+}
+
+@media (min-width: 1024px) {
+  .pd-stage {
+    aspect-ratio: 4 / 5;
+    max-height: calc(100svh - 9rem);
+    width: 100%;
+  }
+}
+
+/* The product name, set huge and faint behind the packshot. */
+.pd-watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -55%;
+  color: rgb(13 13 12 / 0.05);
+  /* Sized to the stage and the name, so the whole name always fits across it. */
+  font-size: min(15rem, calc(165cqw / var(--chars, 8)));
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.06em;
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* The packshot floats gently above its shadow. */
+.pd-pack {
+  position: absolute;
+  inset: 12% 12% 18%;
+  filter: drop-shadow(0 2rem 2rem rgb(13 13 12 / 0.2));
+  animation: pd-float 7s ease-in-out infinite;
+}
+
+.pd-floor {
+  position: absolute;
+  bottom: 13%;
+  left: 50%;
+  width: 48%;
+  height: 4.5%;
+  translate: -50% 0;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(13 13 12 / 0.24), transparent);
+  animation: pd-floor 7s ease-in-out infinite;
+}
+
+@keyframes pd-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-2.5%) rotate(-1deg);
+  }
+}
+
+/* The shadow tightens as the packshot rises. */
+@keyframes pd-floor {
+  0%,
+  100% {
+    scale: 1;
+    opacity: 1;
+  }
+  50% {
+    scale: 0.88;
+    opacity: 0.75;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pd-pack,
+  .pd-floor {
+    animation: none;
+  }
+}

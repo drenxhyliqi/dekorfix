@@ -33,19 +33,18 @@ export const productCategories: ReadonlyArray<{ key: ProductCategoryKey; path: s
   ["adhesives", "facades", "bases", "paints", "plasters"] as const
 ).map((key) => ({ key, path: routes.productCategory(key) }));
 
-export type SolutionAreaKey = keyof Dictionary["solutionAreas"];
+export type SolutionKey = keyof Dictionary["solutionAreas"];
 
-/**
- * PLACEHOLDER solution areas (from the Phase 2 brief), not final Dekorfix
- * solutions. Replace once the solutions content architecture is agreed.
- */
-export const solutionAreas: ReadonlyArray<{ key: SolutionAreaKey; path: string }> = (
+/** Solutions by task (see content/solutions.ts), in the order a building goes up. */
+export const solutionAreas: ReadonlyArray<{ key: SolutionKey; path: string }> = (
   [
-    ["interior", "interior"],
-    ["exterior", "exterior"],
-    ["facadeSystems", "facade-systems"],
-    ["insulation", "insulation"],
-    ["finishing", "finishing"],
+    ["preparation", "concrete-preparation"],
+    ["masonry", "aerated-concrete-blocks"],
+    ["insulation", "insulation-boards"],
+    ["tiling", "laying-tiles"],
+    ["smoothing", "plaster-and-levelling"],
+    ["painting", "interior-painting"],
+    ["facade", "facade-finish"],
   ] as const
 ).map(([key, slug]) => ({ key, path: routes.solution(slug) }));
 

@@ -6,12 +6,12 @@ import { useId } from "react";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries/en";
 
+import { BuildingPanel } from "./building-panel";
 import { EstimatePanel, MaterialList } from "./estimate-panel";
-import { RoomPanel } from "./room-panel";
+import { FacadePanel } from "./facade-panel";
 import { useCopy, StudioCopyProvider } from "./studio-copy";
 import { StudioProvider, useStudio } from "./studio-store";
 import { StudioViewport } from "./studio-viewport";
-import { SurfacePanel } from "./surface-panel";
 
 /** Project Studio application (client only; loaded without SSR). */
 export default function StudioApp({ t, locale }: { t: Dictionary["studio"]; locale: Locale }) {
@@ -21,8 +21,8 @@ export default function StudioApp({ t, locale }: { t: Dictionary["studio"]; loca
         <ProjectBar />
         <div className="mt-4 grid grid-cols-[minmax(0,1fr)] items-start gap-4 lg:grid-cols-[22rem_minmax(0,1fr)] xl:grid-cols-[22rem_minmax(0,1fr)_22rem]">
           <div className="order-2 min-w-0 rounded-sm border border-border bg-surface lg:order-1 lg:row-span-2 xl:row-span-1">
-            <RoomPanel />
-            <SurfacePanel />
+            <BuildingPanel />
+            <FacadePanel />
           </div>
           <div className="order-1 flex min-w-0 flex-col gap-4 lg:order-2">
             <StudioViewport />

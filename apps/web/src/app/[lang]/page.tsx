@@ -36,8 +36,8 @@ export default async function HomePage() {
         duration={1.4}
       />
       <CategoryShowcase t={t} locale={locale} />
-      <Manufacturing t={t} />
       <FeaturedProducts t={t} locale={locale} />
+      <Manufacturing t={t} />
       <LayerSystem t={t} locale={locale} />
       <ClosingCta t={t} locale={locale} />
     </>

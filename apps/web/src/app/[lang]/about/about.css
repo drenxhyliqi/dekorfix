@@ -1,0 +1,165 @@
+/*
+ * About page (classes prefixed `ab-`; the project's Turbopack rule compiles
+ * every .css file as global CSS, so CSS modules are not used). The scroll
+ * effects use CSS scroll-driven animations; where those are not supported,
+ * the photo is simply full width and the statement simply black.
+ */
+
+.ab-title {
+  font-size: clamp(3rem, 1rem + 6vw, 7rem);
+  font-weight: 600;
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+}
+
+/* ---- Photo that opens to the full width ------------------------------------- */
+
+.ab-hero-photo {
+  view-timeline-name: --ab-photo;
+}
+
+.ab-hero-frame {
+  position: relative;
+  height: clamp(22rem, 78svh, 52rem);
+  margin: 0;
+  overflow: hidden;
+  background: var(--color-surface-muted);
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .ab-hero-frame {
+      animation: ab-open linear both;
+      animation-timeline: --ab-photo;
+      animation-range: entry 0% cover 50%;
+    }
+  }
+}
+
+@keyframes ab-open {
+  from {
+    clip-path: inset(6% max(var(--spacing-gutter), calc((100vw - var(--container-page)) / 2 + var(--spacing-gutter))) round 6px);
+  }
+  to {
+    clip-path: inset(0 0 round 0);
+  }
+}
+
+/* ---- Statement: words darken one after another --------------------------- */
+
+.ab-statement {
+  view-timeline-name: --ab-statement;
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .ab-word {
+      animation: ab-word linear both;
+      animation-timeline: --ab-statement;
+      /* Word i lights within its slice of the paragraph's pass through the screen. */
+      animation-range:
+        cover calc(15% + var(--i) / var(--words) * 45%)
+        cover calc(19% + var(--i) / var(--words) * 45%);
+    }
+  }
+}
+
+@keyframes ab-word {
+  from {
+    color: var(--color-border-strong);
+  }
+}
+
+/* ---- Certifications ------------------------------------------------------ */
+
+.ab-credential {
+  padding-block: 2.5rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+@media (min-width: 768px) {
+  .ab-credential[data-side="left"] {
+    padding-right: 2.5rem;
+  }
+
+  .ab-credential[data-side="right"] {
+    padding-left: 2.5rem;
+    border-left: 1px solid var(--color-border);
+  }
+}
+
+/* ---- Product groups ------------------------------------------------------ */
+
+.ab-row {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding-block: 1.5rem;
+  border-bottom: 1px solid var(--color-border);
+  transition: background-color 0.25s;
+}
+
+@media (min-width: 768px) {
+  .ab-row {
+    gap: 2rem;
+    padding-inline: 1rem;
+  }
+}
+
+.ab-row:hover,
+.ab-row:focus-visible {
+  background: var(--color-surface-muted);
+}
+
+.ab-row-packs {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .ab-row-packs {
+    display: flex;
+    align-items: flex-end;
+  }
+}
+
+.ab-row-pack {
+  position: relative;
+  width: 4.5rem;
+  height: 5rem;
+  margin-left: -1.25rem;
+  filter: drop-shadow(0 0.5rem 0.5rem rgb(13 13 12 / 0.15));
+  transition: translate 0.4s var(--ease-out);
+}
+
+.ab-row:hover .ab-row-pack {
+  translate: 0 -0.35rem;
+}
+
+.ab-row:hover .ab-row-pack:nth-child(2) {
+  transition-delay: 0.05s;
+}
+
+.ab-row:hover .ab-row-pack:nth-child(3) {
+  transition-delay: 0.1s;
+}
+
+/* ---- Find us --------------------------------------------------------------- */
+
+.ab-find {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.75rem;
+  background: var(--color-background);
+}
+
+.ab-find > svg {
+  margin-bottom: 0.75rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ab-row,
+  .ab-row-pack {
+    transition: none;
+  }
+}

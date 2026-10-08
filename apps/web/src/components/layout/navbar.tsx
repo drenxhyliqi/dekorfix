@@ -194,7 +194,7 @@ function Navbar({ model, pathname }: { model: NavModel; pathname: string | null 
             aria-haspopup="dialog"
             aria-expanded={mobileOpen}
             aria-label={a11y.openMenu}
-            className="group/menu -mr-2 ml-1 inline-flex size-10 items-center justify-center rounded-full text-text transition-colors duration-150 hover:bg-surface-muted xl:hidden"
+            className="group/menu -mr-2 ml-1 inline-flex size-10 items-center justify-center rounded-sm text-text transition-colors duration-150 hover:bg-surface-muted xl:hidden"
           >
             <span aria-hidden className="flex w-5 flex-col gap-1.5">
               <span className="h-px w-full bg-current" />
@@ -228,7 +228,7 @@ function IconLink({
       title={label}
       aria-current={current ? "page" : undefined}
       className={cn(
-        "inline-flex size-10 items-center justify-center rounded-full transition-colors duration-150 hover:bg-surface-muted hover:text-text",
+        "inline-flex size-10 items-center justify-center rounded-sm transition-colors duration-150 hover:bg-surface-muted hover:text-text",
         current ? "bg-surface-muted text-text" : "text-text-secondary",
       )}
     >
