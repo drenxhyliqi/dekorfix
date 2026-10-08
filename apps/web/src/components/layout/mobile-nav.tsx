@@ -80,7 +80,7 @@ export function MobileNav({
                       <span
                         aria-hidden
                         className={cn(
-                          "inline-flex size-9 items-center justify-center rounded-full border transition-colors duration-250",
+                          "inline-flex size-9 items-center justify-center rounded-sm border transition-colors duration-250",
                           isOpen ? "border-brand bg-brand text-white" : "border-border text-text",
                         )}
                       >
@@ -195,7 +195,7 @@ function ContactRow({
         {...(newTabLabel ? { target: "_blank", rel: "noopener noreferrer" } : {})}
         className="group/row flex items-center gap-4 py-4"
       >
-        <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-full bg-surface-strong text-brand transition-colors duration-250 group-hover/row:bg-brand group-hover/row:text-white">
+        <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-sm bg-surface-strong text-brand transition-colors duration-250 group-hover/row:bg-brand group-hover/row:text-white">
           <Icon aria-hidden className="size-[1.125rem]" strokeWidth={1.75} />
         </span>
         <span className="min-w-0 flex-1">

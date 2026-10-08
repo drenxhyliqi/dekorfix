@@ -1,0 +1,303 @@
+/*
+ * Legal pages (classes prefixed `lp-`; the project's Turbopack rule compiles
+ * every .css file as global CSS, so CSS modules are not used).
+ */
+
+/* ---- Privacy / Terms / Cookies switcher ---------------------------------------- */
+
+.lp-switch {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.lp-switch-link {
+  flex: none;
+  padding: 0.625rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  transition:
+    border-color 0.2s,
+    color 0.2s,
+    background-color 0.2s;
+}
+
+.lp-switch-link:hover {
+  border-color: var(--color-border-strong);
+  color: var(--color-text);
+}
+
+.lp-switch-link--current {
+  border-color: var(--color-text);
+  background: var(--color-text);
+  color: var(--color-background);
+}
+
+.lp-switch-link--current:hover {
+  color: var(--color-background);
+}
+
+/* ---- Contents ---------------------------------------------------------------------- */
+
+@media (min-width: 1024px) {
+  .lp-aside {
+    position: sticky;
+    top: 7rem;
+  }
+}
+
+.lp-toc {
+  display: grid;
+  border-top: 1px solid var(--color-border);
+}
+
+.lp-toc-link {
+  display: flex;
+  gap: 0.875rem;
+  padding-block: 0.625rem;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  font-size: 0.9375rem;
+  transition: color 0.2s;
+}
+
+.lp-toc-link:hover {
+  color: var(--color-text);
+}
+
+.lp-toc-num {
+  color: var(--color-text-tertiary);
+  font-variant-numeric: tabular-nums;
+  transition: color 0.2s;
+}
+
+.lp-toc-link:hover .lp-toc-num {
+  color: var(--color-brand);
+}
+
+/* Phones and tablets: two columns of contents, so the text starts sooner. */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .lp-toc {
+    grid-template-columns: 1fr 1fr;
+    column-gap: 2rem;
+  }
+}
+
+.lp-draft {
+  padding: 1rem 1.125rem;
+  border: 1px solid var(--color-border);
+  border-left: 0.25rem solid var(--color-brand);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-muted);
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+
+.lp-draft-label {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: var(--color-brand-text);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ---- Sections ---------------------------------------------------------------------- */
+
+.lp-section {
+  display: grid;
+  grid-template-columns: 2.75rem 1fr;
+  gap: 0.5rem;
+  padding-block: 2rem;
+  border-bottom: 1px solid var(--color-border);
+  scroll-margin-top: 6rem;
+}
+
+.lp-section:first-child {
+  padding-top: 0;
+}
+
+@media (min-width: 768px) {
+  .lp-section {
+    grid-template-columns: 4.5rem 1fr;
+    padding-block: 2.5rem;
+  }
+}
+
+.lp-num {
+  padding-top: 0.3em;
+  color: var(--color-brand);
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Arriving from the contents: a brief marker on the section. */
+.lp-section:target .lp-num {
+  animation: lp-flash 1.2s ease-out;
+}
+
+@keyframes lp-flash {
+  from {
+    color: var(--color-text);
+    transform: translateX(-0.375rem);
+  }
+}
+
+.lp-prose {
+  color: var(--color-text-secondary);
+  font-size: 1.0625rem;
+  line-height: 1.7;
+}
+
+.lp-prose > p,
+.lp-prose > ul {
+  max-width: 42rem;
+}
+
+.lp-prose > * + * {
+  margin-top: 1rem;
+}
+
+.lp-list {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.lp-list li {
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.lp-list li::before {
+  content: "";
+  position: absolute;
+  top: 0.8em;
+  left: 0.25rem;
+  width: 0.5rem;
+  height: 1px;
+  background: var(--color-brand);
+}
+
+/* ---- Storage table ------------------------------------------------------------------ */
+
+.lp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+}
+
+.lp-table th {
+  padding: 0.75rem 1rem 0.75rem 0;
+  border-bottom: 1px solid var(--color-text);
+  color: var(--color-text-tertiary);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.lp-table td {
+  padding: 1rem 1rem 1rem 0;
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: top;
+}
+
+.lp-table code {
+  padding: 0.125rem 0.375rem;
+  border-radius: var(--radius-xs);
+  background: var(--color-surface-muted);
+  color: var(--color-text);
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.8125rem;
+  white-space: nowrap;
+}
+
+/* Phones: each row as a card with labelled fields. */
+@media (max-width: 767px) {
+  .lp-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .lp-table,
+  .lp-table tbody,
+  .lp-table tr,
+  .lp-table td {
+    display: block;
+  }
+
+  .lp-table tr {
+    padding: 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+  }
+
+  .lp-table tr + tr {
+    margin-top: 0.75rem;
+  }
+
+  .lp-table td {
+    padding: 0.375rem 0;
+    border: 0;
+  }
+
+  .lp-table code {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .lp-table td::before {
+    content: attr(data-label);
+    display: block;
+    color: var(--color-text-tertiary);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+}
+
+/* ---- Questions ------------------------------------------------------------------------ */
+
+.lp-contact {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem 2rem;
+  margin-top: 2.5rem;
+  padding: 1.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-muted);
+}
+
+.lp-contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-background);
+  color: var(--color-text);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: border-color 0.2s;
+}
+
+.lp-contact-link:hover {
+  border-color: var(--color-text);
+}

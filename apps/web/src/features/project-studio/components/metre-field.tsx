@@ -5,7 +5,7 @@ import { useId, useState } from "react";
 import { cn } from "@/lib/utils";
 
 /**
- * Numeric input in metres. Keeps the raw text while typing (so "2," or "2."
+ * Numeric input, in metres unless another unit is given. Keeps the raw text while typing (so "2," or "2."
  * are allowed) and commits a number on every valid change; accepts both
  * decimal separators.
  */
@@ -17,6 +17,9 @@ export function MetreField({
   min = 0,
   className,
   compact,
+  unit = "m",
+  digits = 2,
+  hideLabel,
 }: {
   label: string;
   value: number;
@@ -25,16 +28,20 @@ export function MetreField({
   min?: number;
   className?: string;
   compact?: boolean;
+  unit?: string;
+  digits?: number;
+  /** Keep the label for screen readers only (the row already names the field). */
+  hideLabel?: boolean;
 }) {
   const id = useId();
   const [draft, setDraft] = useState<string | null>(null);
-  const shown = draft ?? value.toFixed(2);
+  const shown = draft ?? value.toFixed(digits);
 
   const parse = (text: string) => Number.parseFloat(text.replace(",", "."));
 
   return (
     <div className={cn("flex flex-col gap-1.5", className)}>
-      <label htmlFor={id} className={cn("text-text-secondary", compact ? "text-caption" : "text-small")}>
+      <label htmlFor={id} className={cn("text-text-secondary", compact ? "text-caption" : "text-small", hideLabel && "sr-only")}>
         {label}
       </label>
       <div className="relative">
@@ -68,7 +75,7 @@ export function MetreField({
             compact ? "text-caption" : "text-small",
           )}
         >
-          m
+          {unit}
         </span>
       </div>
     </div>

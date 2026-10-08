@@ -46,7 +46,7 @@ export function RailControls({
   };
 
   const button =
-    "inline-flex size-11 items-center justify-center rounded-full border border-border-strong text-text transition-colors duration-150 hover:border-brand hover:bg-brand hover:text-white disabled:pointer-events-none disabled:opacity-30";
+    "inline-flex size-11 items-center justify-center rounded-sm border border-border-strong text-text transition-colors duration-150 hover:border-brand hover:bg-brand hover:text-white disabled:pointer-events-none disabled:opacity-30";
 
   return (
     <div className="fp-controls">

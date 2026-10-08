@@ -1,91 +1,90 @@
-import type { FinishSystem, StudioProject } from "./types";
+import type { FinishSystem, StudioProject, SystemStep } from "./types";
 
 /**
- * Dekorfix finish systems for an interior room, built from what each
- * product's page says it is for (dekorfix.net):
- *  - Fasadex: interior dispersion paint
- *  - Gletex: final skim coat, 1 mm in two coats, interior walls and ceilings
- *  - Niveler: levelling of plastered interior walls and ceilings, min. 1 mm
- *  - Confix: ready-mixed plaster for walls and ceilings, 2.5 cm
- *  - Beton Kontakt: bonding layer on concrete before plaster and other layers
- *  - Cerafix: ceramic tiles on interior surfaces
- *  - Megafix: ceramic tiles, marble and granite, interior and exterior
- *  - Thermofix: porcelain and large-format tiles, walls and floors, underfloor heating
+ * Dekorfix facade systems, built from what each product's page says it is
+ * for (dekorfix.net):
+ *  - Styrofix: adhesive for EPS insulation boards
+ *  - Styrofiber: fibre-reinforced adhesive for EPS boards (base coat that embeds the mesh)
+ *  - Baza: primer before the decorative render
+ *  - Fasader: decorative facade render
  * Recommended build-ups for planning; Dekorfix's technical team should confirm.
  */
+const meshCoat: SystemStep = { productSlug: "styrofiber", coats: 1, role: "basecoat" };
+
 export const finishSystems: Record<string, FinishSystem> = {
-  paint: {
-    id: "paint",
-    surfaces: ["wall", "ceiling"],
-    appearance: "paint",
-    steps: [{ productSlug: "fasadex", coats: 2 }],
-  },
-  "skim-paint": {
-    id: "skim-paint",
-    surfaces: ["wall", "ceiling"],
-    appearance: "paint",
+  thermal: {
+    id: "thermal",
+    insulation: true,
+    mesh: "included",
     steps: [
-      { productSlug: "gletex", coats: 2 },
-      { productSlug: "fasadex", coats: 2 },
+      { productSlug: "styrofix", coats: 1, role: "bond" },
+      meshCoat,
+      { productSlug: "baza", coats: 1, role: "primer" },
+      { productSlug: "fasader", coats: 1, role: "finish" },
     ],
   },
-  "level-paint": {
-    id: "level-paint",
-    surfaces: ["wall", "ceiling"],
-    appearance: "paint",
+  render: {
+    id: "render",
+    insulation: false,
+    mesh: "optional",
+    meshCoat,
     steps: [
-      { productSlug: "niveler", coats: 1 },
-      { productSlug: "fasadex", coats: 2 },
+      { productSlug: "baza", coats: 1, role: "primer" },
+      { productSlug: "fasader", coats: 1, role: "finish" },
     ],
-  },
-  "plaster-system": {
-    id: "plaster-system",
-    surfaces: ["wall", "ceiling"],
-    appearance: "paint",
-    steps: [
-      { productSlug: "beton-kontakt", coats: 1 },
-      { productSlug: "confix", coats: 1 },
-      { productSlug: "gletex", coats: 2 },
-      { productSlug: "fasadex", coats: 2 },
-    ],
-  },
-  "ceramic-tiles": {
-    id: "ceramic-tiles",
-    surfaces: ["wall"],
-    appearance: "tiles",
-    steps: [{ productSlug: "cerafix", coats: 1 }],
-  },
-  "floor-tiles": {
-    id: "floor-tiles",
-    surfaces: ["floor"],
-    appearance: "tiles",
-    steps: [{ productSlug: "megafix", coats: 1 }],
-  },
-  "large-tiles": {
-    id: "large-tiles",
-    surfaces: ["wall", "floor"],
-    appearance: "largeTiles",
-    steps: [{ productSlug: "thermofix", coats: 1 }],
   },
 };
 
-/** Preview colours for painted surfaces (illustrative; Fasadex is tintable). */
-export const paintColors = ["#f4f1ea", "#e7e1d6", "#d8d4cc", "#c9cfc9", "#cdd5dc", "#e9dccb", "#b9b2a6", "#8f948f"];
+/** Preview colours for the render (illustrative; not Dekorfix's colour card). */
+export const renderColors = ["#f3efe6", "#e9e1d2", "#ddd6c8", "#d9cfc0", "#cfd3cc", "#d7dadc", "#c9b9a3", "#a9a59c"];
 
 export function createDefaultProject(name: string): StudioProject {
+  const window = (id: string, floor: number, offset: number, width = 1.2) => ({
+    id,
+    kind: "window" as const,
+    floor,
+    offset,
+    width,
+    height: 1.4,
+    sill: 0.9,
+  });
   return {
-    version: 1,
+    version: 2,
     name,
-    room: { length: 5, width: 4, height: 2.7 },
-    walls: {
-      A: { systemId: "skim-paint", openings: [{ id: "w1", kind: "window", offset: 1.9, width: 1.2, height: 1.4, sill: 0.9 }] },
-      B: { systemId: "skim-paint", openings: [] },
-      C: { systemId: "skim-paint", openings: [{ id: "d1", kind: "door", offset: 0.6, width: 0.9, height: 2.1, sill: 0 }] },
-      D: { systemId: "skim-paint", openings: [] },
+    building: {
+      length: 10,
+      width: 8,
+      floors: [3, 2.9],
+      roof: { type: "gable", pitch: 30, parapet: 0.6 },
     },
-    floor: { systemId: "floor-tiles" },
-    ceiling: { systemId: "paint" },
-    paintColor: paintColors[0] ?? "#f4f1ea",
+    facades: {
+      A: {
+        systemId: "thermal",
+        mesh: true,
+        openings: [
+          window("a1", 0, 1.4),
+          { id: "a2", kind: "door", floor: 0, offset: 4.5, width: 1, height: 2.2, sill: 0 },
+          window("a3", 0, 7.4),
+          window("a4", 1, 1.4),
+          { id: "a5", kind: "door", floor: 1, offset: 4.5, width: 1, height: 2.2, sill: 0 },
+          window("a6", 1, 7.4),
+        ],
+        balconies: [
+          { id: "k1", floor: 1, offset: 3.5, width: 3, depth: 1.2, slab: 0.2, railing: "solid", railingHeight: 1 },
+        ],
+      },
+      B: { systemId: "thermal", mesh: true, openings: [window("b1", 0, 3.4), window("b2", 1, 3.4)], balconies: [] },
+      C: {
+        systemId: "thermal",
+        mesh: true,
+        openings: [window("c1", 0, 2), window("c2", 0, 6.8), window("c3", 1, 2), window("c4", 1, 6.8)],
+        balconies: [],
+      },
+      D: { systemId: "thermal", mesh: true, openings: [window("d1", 0, 3.4, 0.8), window("d2", 1, 3.4, 0.8)], balconies: [] },
+    },
+    insulationCm: 10,
+    revealDepth: 0.15,
+    renderColor: renderColors[1] ?? "#e9e1d2",
     reservePercent: 10,
   };
 }

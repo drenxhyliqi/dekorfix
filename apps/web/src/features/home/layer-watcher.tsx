@@ -6,67 +6,84 @@ import { PAINT_OVERHANG, PAINT_STROKES, WALL_WIDTH } from "./layer-wall";
 
 /** How far each stroke starts after the one before it, as a share of the layer's progress. */
 const STROKE_STAGGER = 0.14;
+const NARROW = "(max-width: 1023px)";
 
 /**
  * Drives the "layer by layer" section from the scroll. Renders nothing.
  *
- * - Paints each layer on as its step scrolls through the screen: the layer's
- *   strokes grow left to right from its own edge, one after another, and
- *   recede when scrolling back. With the last step the finish is rolled over
- *   the whole wall, then the window appears.
+ * - Paints each layer on as its step progresses: the layer's strokes grow left
+ *   to right from its own edge, one after another, and recede when scrolling
+ *   back. With the last step the finish is rolled over the whole wall, then
+ *   the window appears.
  * - Marks layers, packshot rows and steps as done / active / next
  *   (`data-state`) for the step text, tags and products.
+ *
+ * Desktop: each step's progress comes from its own position as it scrolls
+ * past. Narrow screens: the block is pinned, so progress comes from how far
+ * the page has scrolled through the section, one equal stretch per step.
  */
 export function LayerWatcher({ sectionId }: { sectionId: string }) {
   useEffect(() => {
     const section = document.getElementById(sectionId);
     if (!section) return;
+    const body = section.querySelector<HTMLElement>(".ls-body");
+    const pin = section.querySelector<HTMLElement>(".ls-pin");
     const steps = Array.from(section.querySelectorAll<HTMLElement>("[data-step]"));
     const stateful = Array.from(section.querySelectorAll<HTMLElement | SVGElement>("[data-layer]"));
     const strokes = Array.from(section.querySelectorAll<SVGRectElement>("[data-paint]"));
     const windowPane = section.querySelector<SVGGElement>(".ls-window");
-    const narrow = window.matchMedia("(max-width: 1023px)").matches;
+    const narrow = window.matchMedia(NARROW);
+    const clamp = (value: number) => Math.min(1, Math.max(0, value));
 
-    // ---- States: the step crossing a thin band of the viewport is active. ----
+    let current = -1;
     const show = (active: number) => {
+      if (active === current) return;
+      current = active;
       const state = (index: number) => (index < active ? "done" : index === active ? "active" : "next");
       for (const el of stateful) el.dataset.state = state(Number(el.dataset.layer));
       for (const el of steps) el.dataset.state = state(Number(el.dataset.step));
     };
-    show(0);
-    // On narrow screens the wall is pinned over the top, so the band sits lower.
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) show(Number((entry.target as HTMLElement).dataset.step));
-        }
-      },
-      { rootMargin: narrow ? "-62% 0px -33% 0px" : "-45% 0px -45% 0px" },
-    );
-    steps.forEach((step) => observer.observe(step));
 
-    // ---- Painting: progress of each step through the screen, 0 → 1. ----
-    const progress = (step: HTMLElement) => {
-      const rect = step.getBoundingClientRect();
-      const start = window.innerHeight * (narrow ? 0.98 : 0.85);
-      return Math.min(1, Math.max(0, (start - rect.top) / (rect.height * 0.75)));
+    /** Progress of each step (0 → 1) and which step is current. */
+    const measure = (): { progress: number[]; active: number } => {
+      const count = steps.length;
+      if (narrow.matches && body && pin) {
+        const travel = body.offsetHeight - pin.offsetHeight;
+        const top = parseFloat(getComputedStyle(pin).top) || 0;
+        const through = clamp((top - body.getBoundingClientRect().top) / Math.max(1, travel)) * count;
+        return {
+          // Each layer is fully painted by 80% of its stretch, then holds.
+          progress: steps.map((_, i) => clamp((through - i) / 0.8)),
+          active: Math.min(count - 1, Math.floor(through)),
+        };
+      }
+      const view = window.innerHeight;
+      let active = 0;
+      const progress = steps.map((step, i) => {
+        const rect = step.getBoundingClientRect();
+        if (rect.top <= view * 0.5) active = i;
+        return clamp((view * 0.85 - rect.top) / (rect.height * 0.75));
+      });
+      return { progress, active };
     };
 
     let frame = 0;
-    const paint = () => {
+    const update = () => {
       frame = 0;
-      steps.forEach((step, layer) => {
-        let p = progress(step);
+      const { progress, active } = measure();
+      show(active);
+      progress.forEach((value, layer) => {
+        let p = value;
         // The finished wall: the finish is rolled over the first 60%, then the window appears.
         if (layer === steps.length - 1) {
-          if (windowPane) windowPane.style.opacity = String(Math.min(1, Math.max(0, (p - 0.6) / 0.3)));
-          p = Math.min(1, p / 0.6);
+          if (windowPane) windowPane.style.opacity = String(clamp((p - 0.6) / 0.3));
+          p = clamp(p / 0.6);
         }
         const span = 1 + (PAINT_STROKES - 1) * STROKE_STAGGER;
         for (const stroke of strokes) {
           if (Number(stroke.dataset.paint) !== layer) continue;
           const index = Array.prototype.indexOf.call(stroke.parentNode?.children ?? [], stroke);
-          const share = Math.min(1, Math.max(0, p * span - index * STROKE_STAGGER));
+          const share = clamp(p * span - index * STROKE_STAGGER);
           // From the layer's own edge to past the right side of the wall.
           const full = WALL_WIDTH + PAINT_OVERHANG - Number(stroke.getAttribute("x"));
           stroke.setAttribute("width", (share * full).toFixed(1));
@@ -74,17 +91,18 @@ export function LayerWatcher({ sectionId }: { sectionId: string }) {
       });
     };
     const schedule = () => {
-      if (!frame) frame = requestAnimationFrame(paint);
+      if (!frame) frame = requestAnimationFrame(update);
     };
-    paint();
+
+    update();
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", schedule);
-
+    narrow.addEventListener("change", schedule);
     return () => {
       cancelAnimationFrame(frame);
-      observer.disconnect();
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", schedule);
+      narrow.removeEventListener("change", schedule);
     };
   }, [sectionId]);
 

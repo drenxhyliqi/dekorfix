@@ -5,18 +5,17 @@ import { useEffect, useRef } from "react";
 import "./intro-loader.css";
 
 const WORD = "DEKORFIX";
-/** Letters from this index on ("FIX") fill in brand red, like the logo badge. */
-const FIX_FROM = 5;
 const WEIGHT = 800;
 const SEEN_KEY = "dfx-intro-seen";
 /** One pass of the pen across the whole word. */
 const DRAW_MS = 2400;
-/** Keep in step with the transitions in intro-loader.css. */
-const FILL_MS = 500;
+/** How long the finished outline holds before the screen fades. */
+const HOLD_MS = 350;
+/** Keep in step with the fade in intro-loader.css. */
 const EXIT_MS = 700;
 const FONT_TIMEOUT_MS = 1500;
-/** Pen width on screen, in pixels. */
-const PEN_PX = 1.6;
+/** Pen width on screen, in pixels; a touch heavier on small screens. */
+const penPx = () => (window.innerWidth < 640 ? 2 : 1.6);
 
 /*
  * Runs before first paint: a visitor who has already seen the intro this
@@ -25,9 +24,9 @@ const PEN_PX = 1.6;
 const SKIP_SCRIPT = `try{if(sessionStorage.getItem("${SEEN_KEY}")||matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.setAttribute("data-intro-skip","")}catch(e){}`;
 
 /**
- * Site intro, once per session: a red pen writes DEKORFIX on a white screen,
- * letter after letter; the letters fill in, and the screen fades away once
- * the page has loaded. Decorative, so hidden from assistive technology.
+ * Site intro, once per session: a red pen writes DEKORFIX in outline on a white
+ * screen, letter after letter, and the screen fades away once the page has
+ * loaded. Decorative, so hidden from assistive technology.
  */
 export function IntroLoader() {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -43,7 +42,6 @@ export function IntroLoader() {
 
     const svg = root.querySelector("svg")!;
     const strokes = Array.from(root.querySelectorAll<SVGTextElement>("[data-intro-stroke]"));
-    const fills = Array.from(root.querySelectorAll<SVGTextElement>("[data-intro-fill]"));
     const maskText = root.querySelector<SVGTextElement>("[data-intro-mask]")!;
     const ink = root.querySelector<SVGLinearGradientElement>("linearGradient")!;
     const timers: number[] = [];
@@ -103,10 +101,10 @@ export function IntroLoader() {
       // Doubled: the mask keeps only the half of the stroke outside the ink.
       const unitsPerPx = (box.width + pad * 2) / Math.max(1, svg.getBoundingClientRect().width);
       letters.forEach((letter, i) => {
-        for (const el of [strokes[i], fills[i]]) el?.setAttribute("x", String(letter.advance));
         const stroke = strokes[i];
         if (!stroke) return;
-        stroke.setAttribute("stroke-width", String(PEN_PX * 2 * unitsPerPx));
+        stroke.setAttribute("x", String(letter.advance));
+        stroke.setAttribute("stroke-width", String(penPx() * 2 * unitsPerPx));
         stroke.style.strokeDasharray = `${letter.length} 100000`;
         stroke.style.strokeDashoffset = String(letter.length);
       });
@@ -128,8 +126,8 @@ export function IntroLoader() {
           raf = requestAnimationFrame(draw);
           return;
         }
-        root.dataset.state = "filled";
-        const settled = new Promise((resolve) => timers.push(window.setTimeout(resolve, FILL_MS + 250)));
+        // The last letter is written: hold the outline a moment, then leave once the page is ready.
+        const settled = new Promise((resolve) => timers.push(window.setTimeout(resolve, HOLD_MS)));
         void Promise.all([settled, pageLoaded]).then(() => !cancelled && finish());
       };
       raf = requestAnimationFrame(draw);
@@ -170,21 +168,6 @@ export function IntroLoader() {
               </text>
             </mask>
           </defs>
-          <g className="intro-loader-fill">
-            {glyphs.map((char, i) => (
-              <text
-                key={i}
-                data-intro-fill
-                x="0"
-                y="0"
-                fill={i >= FIX_FROM ? "#e41e25" : "#0d0d0c"}
-                className="intro-loader-text"
-                style={font}
-              >
-                {char}
-              </text>
-            ))}
-          </g>
           <g mask="url(#intro-outside)">
             {glyphs.map((char, i) => (
               <text

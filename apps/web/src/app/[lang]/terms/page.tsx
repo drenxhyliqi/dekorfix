@@ -1,7 +1,6 @@
-import { routes } from "@/config/routes";
-import { staticShell } from "@/features/page-shells/static-shell";
+import { legalPage } from "@/features/legal/legal-page";
 
-const shell = staticShell("terms", routes.terms, "legal");
+const page = legalPage("terms");
 
-export const generateMetadata = shell.generateMetadata;
-export default shell.Page;
+export const generateMetadata = page.generateMetadata;
+export default page.Page;

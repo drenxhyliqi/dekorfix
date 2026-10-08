@@ -32,7 +32,7 @@ export function SocialLinks({
             rel="noopener noreferrer"
             aria-label={`${link.label} (${newTabLabel})`}
             className={cn(
-              "inline-flex items-center justify-center rounded-full transition-colors duration-150",
+              "inline-flex items-center justify-center rounded-sm transition-colors duration-150",
               variants[variant],
             )}
           >

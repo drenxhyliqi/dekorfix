@@ -1,0 +1,38 @@
+/*
+ * "Where it goes in the wall" (classes prefixed `wf-`; the project's Turbopack
+ * rule compiles every .css file as global CSS, so CSS modules are not used).
+ */
+
+.wf-wall .ls-wall-frame {
+  width: 100%;
+}
+
+.wf-swatch {
+  display: inline-block;
+  width: 0.875rem;
+  height: 0.875rem;
+  flex: none;
+  border: 1px solid rgb(13 13 12 / 0.12);
+  border-radius: 9999px;
+  background: var(--swatch);
+}
+
+.wf-step {
+  display: flex;
+  align-items: baseline;
+  gap: 0.875rem;
+  padding-block: 0.875rem;
+  border-bottom: 1px solid var(--color-border);
+  opacity: 0.5;
+}
+
+.wf-step > .wf-swatch {
+  align-self: center;
+}
+
+/* The current layer: full strength, with a brand-red rule on the left. */
+.wf-step[aria-current="step"] {
+  opacity: 1;
+  box-shadow: inset 2px 0 0 var(--color-brand);
+  padding-left: 0.875rem;
+}

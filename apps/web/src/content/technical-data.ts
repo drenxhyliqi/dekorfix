@@ -23,4 +23,8 @@ export const technicalData: Record<string, ProductTechnicalData> = {
   cerafix: { slug: "cerafix", packSizesKg: [25], coverage: null },
   megafix: { slug: "megafix", packSizesKg: [25], coverage: null },
   thermofix: { slug: "thermofix", packSizesKg: [25], coverage: null },
+  // Facade products: no coverage or pack sizes published yet.
+  styrofix: { slug: "styrofix", packSizesKg: [], coverage: null },
+  styrofiber: { slug: "styrofiber", packSizesKg: [], coverage: null },
+  fasader: { slug: "fasader", packSizesKg: [], coverage: null },
 };

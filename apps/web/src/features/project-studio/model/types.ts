@@ -1,66 +1,107 @@
 /**
- * Project Studio domain model. A project is one rectangular room with four
- * walls (A–D, clockwise from the top of the plan), a floor and a ceiling.
+ * Project Studio domain model: the outside of a house. A rectangular
+ * footprint, one or more floors, a roof and four facades (A front, B right,
+ * C back, D left), each with its own finish system and openings per floor.
  * All measurements are in metres.
  */
 
-export type WallId = "A" | "B" | "C" | "D";
-export type SurfaceId = WallId | "floor" | "ceiling";
-export type SurfaceKind = "wall" | "floor" | "ceiling";
+export type FacadeId = "A" | "B" | "C" | "D";
+export type RoofType = "flat" | "gable" | "hip";
 
 export interface Opening {
   id: string;
   kind: "door" | "window";
-  /** Distance from the wall's left end (seen from inside the room) to the opening. */
+  /** Floor index, 0 = ground floor. */
+  floor: number;
+  /** Distance from the facade's left end (seen from outside) to the opening. */
   offset: number;
   width: number;
   height: number;
-  /** Height of the bottom edge above the floor (0 for doors). */
+  /** Height of the bottom edge above that floor's level (0 for doors). */
   sill: number;
 }
 
-export interface SurfaceFinish {
+/**
+ * Balcony on an upper floor: a slab projecting from the facade at that
+ * floor's level, with a metal (or glass) railing or a masonry one.
+ */
+export interface Balcony {
+  id: string;
+  /** Floor index it serves (1 or higher); the slab top is at that floor's level. */
+  floor: number;
+  /** Distance from the facade's left end (seen from outside) to the balcony. */
+  offset: number;
+  width: number;
+  /** How far the slab projects from the facade. */
+  depth: number;
+  /** Thickness of the slab edge. */
+  slab: number;
+  railing: "metal" | "solid";
+  railingHeight: number;
+}
+
+export interface Facade {
   /** Finish system id (see systems.ts), or null when no work is planned. */
   systemId: string | null;
-}
-
-export interface WallSurface extends SurfaceFinish {
+  /** Reinforcing mesh (rrjetë) embedded in a base coat. Always on for systems that include it. */
+  mesh: boolean;
   openings: Opening[];
+  balconies: Balcony[];
 }
 
-export interface Room {
-  /** Along walls A and C. */
+export interface Roof {
+  type: RoofType;
+  /** Roof pitch in degrees (gable and hip roofs). */
+  pitch: number;
+  /** Parapet height above the top floor (flat roofs); finished like the facade. */
+  parapet: number;
+}
+
+export interface Building {
+  /** Along facades A and C (outside dimension). */
   length: number;
-  /** Along walls B and D. */
+  /** Along facades B and D (outside dimension). */
   width: number;
-  height: number;
+  /** Floor-to-floor height of each floor, ground floor first. */
+  floors: number[];
+  roof: Roof;
 }
 
 export interface StudioProject {
-  version: 1;
+  version: 2;
   name: string;
-  room: Room;
-  walls: Record<WallId, WallSurface>;
-  floor: SurfaceFinish;
-  ceiling: SurfaceFinish;
-  /** Wall colour used for painted surfaces in the previews (illustrative only). */
-  paintColor: string;
+  building: Building;
+  facades: Record<FacadeId, Facade>;
+  /** Insulation board thickness in centimetres (systems with insulation). */
+  insulationCm: number;
+  /** Depth of the window and door reveals that are finished too; 0 leaves them out. */
+  revealDepth: number;
+  /** Render colour used in the previews (illustrative only). */
+  renderColor: string;
   /** Extra material ordered on top of the calculated quantity, in percent. */
   reservePercent: number;
 }
+
+/** What a layer does in the build-up; drives the drawings and the 3D cutaway. */
+export type LayerRole = "bond" | "basecoat" | "primer" | "finish";
 
 /** One layer of a finish system: a product and how many coats or passes. */
 export interface SystemStep {
   productSlug: string;
   coats: number;
+  role: LayerRole;
 }
 
 export interface FinishSystem {
   id: string;
-  surfaces: SurfaceKind[];
+  /** Layers in the order they are applied. */
   steps: SystemStep[];
-  /** How the system looks in the previews. */
-  appearance: "paint" | "skim" | "plaster" | "tiles" | "largeTiles";
+  /** Insulation boards are bonded between the `bond` and `basecoat` layers. */
+  insulation: boolean;
+  /** "included": the system always has a meshed base coat; "optional": `meshCoat` is added when chosen. */
+  mesh: "included" | "optional";
+  /** Base coat that embeds the mesh when an optional mesh is chosen. */
+  meshCoat?: SystemStep;
 }
 
 /** Published coverage: square metres covered by one kilogram, per coat. */

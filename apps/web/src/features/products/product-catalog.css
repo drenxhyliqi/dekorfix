@@ -1,0 +1,175 @@
+/*
+ * Product catalog (classes prefixed `pc-`; the project's Turbopack rule
+ * compiles every .css file as global CSS, so CSS modules are not used).
+ */
+
+/* ---- Category chips, pinned under the site header ----------------------------- */
+
+.pc-filter {
+  position: sticky;
+  top: 4rem;
+  z-index: 20;
+  border-bottom: 1px solid var(--color-border);
+  background: rgb(255 255 255 / 0.92);
+  backdrop-filter: blur(16px);
+}
+
+.pc-chips {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-block: 0.875rem;
+  scrollbar-width: none;
+}
+
+.pc-chips::-webkit-scrollbar {
+  display: none;
+}
+
+.pc-chip {
+  display: inline-flex;
+  height: 2.5rem;
+  flex: none;
+  align-items: center;
+  gap: 0.625rem;
+  padding-inline: 1rem 0.5rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  font-size: 0.9375rem;
+  white-space: nowrap;
+  transition:
+    background-color 0.2s,
+    border-color 0.2s,
+    color 0.2s;
+}
+
+.pc-chip:hover {
+  border-color: var(--color-text);
+}
+
+.pc-chip-count {
+  display: inline-grid;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  place-items: center;
+  padding-inline: 0.375rem;
+  border-radius: var(--radius-xs);
+  background: var(--color-surface-muted);
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+}
+
+.pc-chip--current {
+  border-color: var(--color-inverse);
+  background: var(--color-inverse);
+  color: var(--color-inverse-text);
+}
+
+.pc-chip--current .pc-chip-count {
+  background: var(--color-brand);
+  color: #fff;
+}
+
+/* ---- Product grid -------------------------------------------------------- */
+
+.pc-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2.5rem 1rem;
+}
+
+@media (min-width: 768px) {
+  .pc-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 3rem 1.5rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .pc-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* Cards rise in one after another whenever the filter changes. */
+.pc-item {
+  animation: pc-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--i) * 45ms) both;
+}
+
+@keyframes pc-in {
+  from {
+    opacity: 0;
+    translate: 0 1.25rem;
+  }
+}
+
+.pc-card {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.pc-shot {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-muted);
+  transition:
+    background-color 0.35s var(--ease-out),
+    border-color 0.35s var(--ease-out);
+}
+
+.pc-pack {
+  padding: 12%;
+  filter: drop-shadow(0 1.25rem 1.25rem rgb(13 13 12 / 0.16));
+  transition:
+    translate 0.6s var(--ease-out),
+    rotate 0.6s var(--ease-out),
+    scale 0.6s var(--ease-out);
+}
+
+/* Published pack sizes, as a tag on the packshot panel. */
+.pc-packs {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  padding: 0.25rem 0.625rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xs);
+  background: var(--color-background);
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.pc-card:hover .pc-shot,
+.pc-card:focus-visible .pc-shot {
+  background: var(--color-background);
+  border-color: var(--color-border-strong);
+}
+
+.pc-card:hover .pc-pack,
+.pc-card:focus-visible .pc-pack {
+  translate: 0 -4%;
+  rotate: -3deg;
+  scale: 1.05;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pc-item {
+    animation: none;
+  }
+
+  .pc-shot,
+  .pc-pack {
+    transition: none;
+  }
+}

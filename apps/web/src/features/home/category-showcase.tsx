@@ -42,7 +42,7 @@ export function CategoryShowcase({ t, locale }: { t: Dictionary; locale: Locale 
             className="group/all inline-flex shrink-0 items-center gap-3 text-[0.9375rem] font-medium text-text"
           >
             {copy.action}
-            <span className="inline-flex size-10 items-center justify-center rounded-full border border-border-strong transition-colors duration-250 group-hover/all:border-brand group-hover/all:bg-brand group-hover/all:text-white">
+            <span className="inline-flex size-10 items-center justify-center rounded-sm border border-border-strong transition-colors duration-250 group-hover/all:border-brand group-hover/all:bg-brand group-hover/all:text-white">
               <ArrowRight aria-hidden className="size-4" strokeWidth={1.75} />
             </span>
           </Link>

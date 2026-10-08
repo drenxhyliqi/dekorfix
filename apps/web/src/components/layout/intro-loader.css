@@ -1,8 +1,7 @@
 /*
  * Site intro overlay (see intro-loader.tsx). States, set by the component:
  *   (none)    dark screen, waiting for the font to measure the word
- *   drawing   the pen writes DEKORFIX
- *   filled    the letters fill in
+ *   drawing   the pen writes DEKORFIX in outline
  *   done      the screen fades away
  */
 
@@ -27,7 +26,7 @@
 }
 
 .intro-loader-word {
-  width: min(78vw, 56rem);
+  width: min(86vw, 56rem);
   height: auto;
   overflow: visible;
   visibility: hidden;
@@ -41,16 +40,6 @@
   font-kerning: none;
   font-variant-ligatures: none;
   letter-spacing: 0;
-}
-
-.intro-loader-fill {
-  opacity: 0;
-  transition: opacity 0.5s ease;
-}
-
-.intro-loader[data-state="filled"] .intro-loader-fill,
-.intro-loader[data-state="done"] .intro-loader-fill {
-  opacity: 1;
 }
 
 /* Seen this session, or reduced motion: no intro at all. */
