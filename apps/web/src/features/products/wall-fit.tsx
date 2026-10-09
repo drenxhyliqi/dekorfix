@@ -7,7 +7,7 @@ import "./wall-fit.css";
 
 /**
  * "Where it goes in the wall": the homepage's wall drawn still, painted up to
- * `layer` (0 prepare … 3 finish), with the four steps listed and that one marked.
+ * `layer` (0 prepare … 4 finish), with the five steps listed and that one marked.
  */
 export function WallFit({
   layer,

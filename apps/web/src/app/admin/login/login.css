@@ -1,0 +1,191 @@
+/*
+ * Admin sign-in (classes prefixed `lg-`; every .css file is compiled as
+ * global CSS, so CSS modules are not used).
+ */
+
+.lg-page {
+  position: relative;
+  display: flex;
+  min-height: 100dvh;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--color-background);
+}
+
+/* A thin brand line along the top edge. */
+.lg-page::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: var(--color-brand);
+}
+
+/* A faint grid that fades out towards the edges. */
+.lg-page::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image:
+    linear-gradient(rgb(13 13 12 / 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(13 13 12 / 0.04) 1px, transparent 1px);
+  background-size: 56px 56px;
+  background-position: center;
+  mask-image: radial-gradient(ellipse 60% 55% at 50% 45%, #000 0%, transparent 100%);
+  pointer-events: none;
+}
+
+.lg-top,
+.lg-main,
+.lg-foot {
+  position: relative;
+  z-index: 1;
+}
+
+.lg-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.5rem clamp(1.25rem, 4vw, 2.5rem);
+}
+
+.lg-main {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.25rem 4rem;
+}
+
+.lg-panel {
+  width: 100%;
+  max-width: 22.5rem;
+  animation: lg-rise 0.5s var(--ease-out) both;
+}
+
+.lg-foot {
+  padding: 1.5rem;
+  color: var(--color-text-tertiary);
+  font-size: 0.8125rem;
+  text-align: center;
+}
+
+.lg-input {
+  width: 100%;
+  height: 3rem;
+  padding: 0 1rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 1rem;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+
+.lg-input::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.lg-input:focus-visible {
+  border-color: var(--color-text);
+  box-shadow: 0 0 0 3px rgb(13 13 12 / 0.08);
+  outline: none;
+}
+
+.lg-input[aria-invalid="true"] {
+  border-color: var(--color-danger);
+}
+
+.lg-caps {
+  color: #9a5b00;
+}
+
+.lg-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.75rem 0.875rem;
+  border: 1px solid rgb(180 20 26 / 0.3);
+  border-radius: var(--radius-sm);
+  background: rgb(228 30 37 / 0.06);
+  color: var(--color-danger);
+  font-size: 0.875rem;
+  animation: lg-shake 0.4s ease-in-out;
+}
+
+@keyframes lg-shake {
+  20%,
+  60% {
+    translate: -4px 0;
+  }
+  40%,
+  80% {
+    translate: 4px 0;
+  }
+}
+
+.lg-submit {
+  display: inline-flex;
+  height: 3rem;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-inverse);
+  color: var(--color-inverse-text);
+  font-size: 1rem;
+  font-weight: 600;
+  transition:
+    background-color 0.15s,
+    scale 0.2s var(--ease-out);
+}
+
+.lg-submit:hover {
+  background: #262624;
+}
+
+.lg-submit:active:not(:disabled) {
+  scale: 0.98;
+}
+
+.lg-submit:disabled {
+  opacity: 0.75;
+  cursor: progress;
+}
+
+.lg-submit:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 3px;
+}
+
+.lg-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.lg-back:hover {
+  color: var(--color-text);
+}
+
+@keyframes lg-rise {
+  from {
+    opacity: 0;
+    translate: 0 0.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lg-panel,
+  .lg-alert {
+    animation: none;
+  }
+}

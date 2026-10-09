@@ -55,7 +55,7 @@ export default async function SearchPage() {
         ["products", routes.products],
         ["finder", routes.finder],
         ["projects", routes.projects],
-        ["whereToBuy", routes.whereToBuy],
+        ["export", routes.export],
         ["projectStudio", routes.projectStudio],
         ["about", routes.about],
         ["contact", routes.contact],

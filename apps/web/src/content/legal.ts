@@ -87,9 +87,6 @@ export const legalDocs: Record<Locale, Record<LegalKey, LegalDoc>> = {
             {
               p: "Three features keep a small amount of data in your own browser: one remembers that the opening animation has been shown, Project Studio saves the house you plan, and the shop keeps your cart. The cart reaches us only when you send an order. The cookie policy describes all three.",
             },
-            {
-              p: "The “Find the nearest” button on the points-of-sale page asks your browser for your location, and only when you press it. The location is used in your browser to pick the nearest store; it is not sent to Dekorfix or stored.",
-            },
           ],
         },
         {
@@ -97,7 +94,10 @@ export const legalDocs: Record<Locale, Record<LegalKey, LegalDoc>> = {
           title: "When you contact us",
           blocks: [
             {
-              p: "If you call or email us, we use your name, contact details and message to answer you and, where relevant, to prepare an offer. We keep this correspondence only as long as needed for that purpose and for our legal obligations.",
+              p: "If you call, email or write to us through the website, we use your name, contact details and message to answer you and, where relevant, to prepare an offer. We keep this correspondence only as long as needed for that purpose and for our legal obligations.",
+            },
+            {
+              p: "The contact page's form sends us your name, phone number and/or email, optionally your company and city, the topic you choose and your message. It is stored on our server with a message number and used only to reply to you.",
             },
           ],
         },
@@ -366,9 +366,6 @@ export const legalDocs: Record<Locale, Record<LegalKey, LegalDoc>> = {
             {
               p: "Tri funksione ruajnë një sasi të vogël të dhënash në shfletuesin tuaj: njëri mban mend që animacioni hyrës është shfaqur, Project Studio ruan shtëpinë që planifikoni dhe shitorja ruan shportën tuaj. Shporta na arrin vetëm kur dërgoni një porosi. Politika e cookies i përshkruan të treja.",
             },
-            {
-              p: "Butoni “Gjej më të afërtën” në faqen e pikave të shitjes i kërkon shfletuesit vendndodhjen tuaj, dhe vetëm kur e shtypni. Vendndodhja përdoret në shfletuesin tuaj për të gjetur pikën më të afërt; nuk i dërgohet Dekorfix dhe nuk ruhet.",
-            },
           ],
         },
         {
@@ -376,7 +373,10 @@ export const legalDocs: Record<Locale, Record<LegalKey, LegalDoc>> = {
           title: "Kur na kontaktoni",
           blocks: [
             {
-              p: "Nëse na telefononi ose na shkruani, përdorim emrin, të dhënat e kontaktit dhe mesazhin tuaj për t'ju përgjigjur dhe, kur është e nevojshme, për t'ju përgatitur një ofertë. Këtë korrespondencë e ruajmë vetëm për aq kohë sa nevojitet për këtë qëllim dhe për detyrimet tona ligjore.",
+              p: "Nëse na telefononi, na shkruani ose na dërgoni mesazh nga faqja, përdorim emrin, të dhënat e kontaktit dhe mesazhin tuaj për t'ju përgjigjur dhe, kur është e nevojshme, për t'ju përgatitur një ofertë. Këtë korrespondencë e ruajmë vetëm për aq kohë sa nevojitet për këtë qëllim dhe për detyrimet tona ligjore.",
+            },
+            {
+              p: "Formulari në faqen e kontaktit na dërgon emrin, numrin e telefonit dhe/ose emailin, sipas dëshirës kompaninë dhe qytetin, temën që zgjidhni dhe mesazhin tuaj. Ruhet në serverin tonë me një numër mesazhi dhe përdoret vetëm për t'ju përgjigjur.",
             },
           ],
         },

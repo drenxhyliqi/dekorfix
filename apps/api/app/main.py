@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from app.api.v1.router import api_router
 from app.core.config import Settings, get_settings
@@ -27,6 +28,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         )
 
     app.include_router(api_router, prefix=settings.api_v1_prefix)
+    # Uploaded product images; the website proxies /media to here.
+    settings.media_root.mkdir(parents=True, exist_ok=True)
+    app.mount("/media", StaticFiles(directory=settings.media_root), name="media")
     return app
 
 

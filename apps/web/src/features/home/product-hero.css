@@ -53,39 +53,7 @@
   animation-play-state: paused;
 }
 
-/* ---- Badge, headline, copy ------------------------------------------------- */
-
-.hh-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.625rem;
-  padding: 0.5rem 0.875rem 0.5rem 0.75rem;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  background: rgb(255 255 255 / 0.85);
-  color: var(--color-text);
-  font-size: 0.8125rem;
-  font-weight: 500;
-  letter-spacing: 0.01em;
-  box-shadow: 0 0.5rem 1.5rem -1rem rgb(13 13 12 / 0.3);
-}
-
-.hh-badge-dot {
-  position: relative;
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 1px;
-  background: var(--color-brand);
-}
-
-.hh-badge-dot::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: var(--color-brand);
-  animation: hh-ping 2.4s var(--ease-out) 2s infinite;
-}
+/* ---- Headline, copy ------------------------------------------------- */
 
 .hh-title {
   font-size: clamp(2.75rem, 0.5rem + 9.5vw, 8rem);
@@ -354,14 +322,6 @@ html:not([data-intro-skip]):has(.intro-loader:not([hidden]):not([data-state="don
   }
 }
 
-@keyframes hh-ping {
-  70%,
-  100% {
-    opacity: 0;
-    scale: 2.6;
-  }
-}
-
 @keyframes hh-track {
   0% {
     translate: 0 -100%;
@@ -384,7 +344,6 @@ html:not([data-intro-skip]):has(.intro-loader:not([hidden]):not([data-state="don
   .hh-rise,
   .hh-word > span,
   .hh-mark::after,
-  .hh-badge-dot::after,
   .hh-track-fill,
   .hh-scroll {
     animation: none;

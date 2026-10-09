@@ -1,6 +1,7 @@
 "use client";
 
-import { ArrowRight, ArrowUpRight, Mail, MapPin, Phone, Plus, type LucideIcon } from "lucide-react";
+import { ArrowRight, ChevronDown, Mail, MapPin, Phone, Search, type LucideIcon } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useState, type CSSProperties, type ReactNode } from "react";
 
@@ -15,13 +16,17 @@ import { isActivePath } from "./nav-utils";
 import { SocialLinks } from "./social-links";
 
 /*
- * Links rise in one after another each time the drawer opens (@starting-style
+ * Rows rise in one after another each time the drawer opens (@starting-style
  * applies whenever the <dialog> becomes visible). Reduced motion drops the stagger.
  */
 const reveal =
-  "transition-[opacity,translate] duration-500 ease-out delay-(--stagger) motion-reduce:delay-0 starting:translate-y-3 starting:opacity-0";
+  "transition-[opacity,translate] duration-500 ease-out delay-(--stagger) motion-reduce:delay-0 starting:translate-y-2 starting:opacity-0";
 
-const stagger = (index: number) => ({ "--stagger": `${80 + index * 40}ms` }) as CSSProperties;
+const stagger = (index: number) => ({ "--stagger": `${60 + index * 35}ms` }) as CSSProperties;
+
+/** A main row: large label on a soft highlight when pressed, hovered or current. */
+const row =
+  "group/row -mx-3 flex w-[calc(100%+1.5rem)] items-center gap-3 rounded-sm px-3 py-3 text-left text-[1.5rem] font-medium leading-tight tracking-[-0.025em] transition-colors duration-200 active:bg-surface-strong sm:text-[1.75rem]";
 
 /** Full-height navigation sheet for mobile, tablet and small laptops. */
 export function MobileNav({
@@ -40,85 +45,79 @@ export function MobileNav({
   const { contact } = model;
   const close = () => onOpenChange(false);
 
-  const links = [
-    ...model.primary,
-    { key: "contact", label: nav.contact, href: model.contactHref },
-  ];
+  const links = [...model.primary, { key: "contact", label: nav.contact, href: model.contactHref }];
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange} label={nav.menu} width="lg" className="xl:hidden">
-      <div className="flex min-h-full flex-col">
+      {/* Focus lands on the sheet itself, so no control shows a focus ring on open;
+          Tab then moves through it as usual. */}
+      <div autoFocus tabIndex={-1} className="flex min-h-full flex-col outline-none">
         <div className="sticky top-0 z-10 flex h-16 shrink-0 items-center justify-between border-b border-border bg-background/90 px-gutter backdrop-blur-xl">
           <Link href={model.homeHref} aria-label={a11y.home} onClick={close} className="-m-1 rounded-xs p-1">
             <Logo className="w-26 sm:w-28" />
           </Link>
-          <DialogCloseButton autoFocus label={a11y.closeMenu} onClick={close} />
+          <DialogCloseButton label={a11y.closeMenu} onClick={close} />
         </div>
 
-        <nav aria-label={a11y.mainNavigation} className="px-gutter pb-12 pt-2">
-          <ul>
+        <div className={cn("px-gutter pt-5", reveal)} style={stagger(0)}>
+          <Link
+            href={model.searchHref}
+            onClick={close}
+            className="flex h-12 items-center gap-3 rounded-sm border border-border bg-surface-muted px-4 text-[0.9375rem] text-text-tertiary transition-colors duration-200 hover:border-border-strong active:bg-surface-strong"
+          >
+            <Search aria-hidden className="size-[1.125rem] shrink-0 text-text-secondary" strokeWidth={1.75} />
+            <span className="truncate">{header.searchPlaceholder}</span>
+            <span className="sr-only">{nav.search}</span>
+          </Link>
+        </div>
+
+        <nav aria-label={a11y.mainNavigation} className="px-gutter pb-8 pt-4">
+          <ul className="space-y-0.5">
             {links.map((item, index) => {
-              const number = (
-                <span className="w-9 shrink-0 self-start pt-2 text-caption tabular-nums text-text-tertiary">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-              );
               const menuKey = "menu" in item ? item.menu : undefined;
+              const active = pathname !== null && isActivePath(pathname, item.href, "exact" in item && item.exact);
               if (menuKey) {
                 const isOpen = expanded === menuKey;
                 return (
-                  <li key={item.key} className={cn("border-b border-border", reveal)} style={stagger(index)}>
+                  <li key={item.key} className={reveal} style={stagger(index + 1)}>
                     <button
                       type="button"
                       aria-expanded={isOpen}
                       aria-controls={`mobile-${menuKey}`}
                       onClick={() => setExpanded(isOpen ? null : menuKey)}
-                      className="flex w-full items-center py-4 text-left text-h3 text-text"
+                      className={cn(row, "text-text", isOpen && "bg-surface-muted")}
                     >
-                      {number}
                       <span className="flex-1">{item.label}</span>
-                      <span
+                      {active && <ActiveDot />}
+                      <ChevronDown
                         aria-hidden
+                        strokeWidth={1.75}
                         className={cn(
-                          "inline-flex size-9 items-center justify-center rounded-sm border transition-colors duration-250",
-                          isOpen ? "border-brand bg-brand text-white" : "border-border text-text",
+                          "size-5 shrink-0 text-text-tertiary transition-transform duration-300 ease-out",
+                          isOpen && "rotate-180 text-text",
                         )}
-                      >
-                        <Plus
-                          strokeWidth={1.75}
-                          className={cn("size-4 transition-transform duration-250", isOpen && "rotate-45")}
-                        />
-                      </span>
+                      />
                     </button>
                     <Collapsible id={`mobile-${menuKey}`} open={isOpen}>
-                      <SubMenu menu={model.menus[menuKey]} />
+                      <SubMenu menu={model.menus[menuKey]} onNavigate={close} />
                     </Collapsible>
                   </li>
                 );
               }
-              const active = pathname !== null && isActivePath(pathname, item.href, "exact" in item && item.exact);
               const accent = "accent" in item && item.accent;
               return (
-                <li key={item.key} className={cn("border-b border-border", reveal)} style={stagger(index)}>
+                <li key={item.key} className={reveal} style={stagger(index + 1)}>
                   <Link
                     href={item.href}
                     aria-current={active ? "page" : undefined}
-                    className={cn("group/link flex items-center py-4 text-h3", active ? "text-brand-text" : "text-text")}
+                    onClick={close}
+                    className={cn(row, active ? "bg-surface-muted text-text" : "text-text hover:bg-surface-muted")}
                   >
-                    {number}
-                    <span className="flex flex-1 items-center gap-3">
+                    <span className="flex flex-1 items-center gap-2.5">
                       {item.label}
                       {accent && <span aria-hidden className="brand-mark" />}
                     </span>
-                    {active ? (
-                      <span aria-hidden className="h-6 w-0.5 bg-brand" />
-                    ) : (
-                      <ArrowRight
-                        aria-hidden
-                        strokeWidth={1.5}
-                        className="size-5 text-text-tertiary transition-[color,translate] duration-250 group-hover/link:translate-x-1 group-hover/link:text-text"
-                      />
-                    )}
+                    {active && <ActiveDot />}
                   </Link>
                 </li>
               );
@@ -127,44 +126,29 @@ export function MobileNav({
         </nav>
 
         <div
-          className={cn(
-            "mt-auto border-t border-border px-gutter pt-8 pb-[max(1.5rem,env(safe-area-inset-bottom))]",
-            reveal,
-          )}
-          style={stagger(links.length)}
+          className={cn("mt-auto px-gutter pb-[max(1.25rem,env(safe-area-inset-bottom))]", reveal)}
+          style={stagger(links.length + 1)}
         >
-          <p className="flex items-center gap-2.5 text-label uppercase text-text-tertiary">
-            <span aria-hidden className="brand-mark" />
-            {header.getInTouch}
-          </p>
-          <ul className="mt-4 divide-y divide-border border-y border-border">
-            <ContactRow icon={Phone} label={header.call} href={contact.phone.href} valueClassName="tabular-nums">
-              {contact.phone.display}
-            </ContactRow>
-            <ContactRow icon={Mail} label={header.email} href={`mailto:${contact.email}`}>
-              {contact.email}
-            </ContactRow>
-            <ContactRow icon={MapPin} label={header.visit} href={contact.mapsHref} newTabLabel={a11y.newTab}>
-              {contact.address}
-            </ContactRow>
-          </ul>
+          <p className="text-label uppercase text-text-tertiary">{header.getInTouch}</p>
+          <div className="mt-3 grid grid-cols-3 gap-2">
+            <QuickAction icon={Phone} label={header.call} href={contact.phone.href} />
+            <QuickAction icon={Mail} label={header.email} href={`mailto:${contact.email}`} />
+            <QuickAction icon={MapPin} label={header.visit} href={contact.mapsHref} newTabLabel={a11y.newTab} />
+          </div>
 
-          <div className="mt-6 flex flex-wrap items-center justify-between gap-x-6 gap-y-4">
-            <div className="flex items-center gap-4">
-              <span className="text-small text-text-secondary">{header.follow}</span>
-              <SocialLinks links={contact.social} newTabLabel={a11y.newTab} variant="outline" />
-            </div>
+          <div className="mt-5 flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
+            <SocialLinks links={contact.social} newTabLabel={a11y.newTab} variant="outline" />
             <LanguageLinks current={model.locale} label={a11y.language} pathname={pathname} />
           </div>
 
           <ButtonLink
-            href={model.requestQuoteHref}
+            href={model.talkHref}
             variant="accent"
             size="lg"
-            className="mt-8 w-full"
+            className="mt-5 w-full"
             trailingIcon={<ArrowRight aria-hidden className="size-4" strokeWidth={1.75} />}
           >
-            {nav.requestQuote}
+            {nav.talk}
           </ButtonLink>
         </div>
       </div>
@@ -172,44 +156,35 @@ export function MobileNav({
   );
 }
 
-function ContactRow({
+function ActiveDot() {
+  return <span aria-hidden className="size-1.5 shrink-0 rounded-[1px] bg-brand" />;
+}
+
+/** Call, email or map: an icon over a short label. */
+function QuickAction({
   icon: Icon,
   label,
   href,
   newTabLabel,
-  valueClassName,
-  children,
 }: {
   icon: LucideIcon;
   label: string;
   href: string;
   /** Set for links that open in a new tab. */
   newTabLabel?: string;
-  valueClassName?: string;
-  children: ReactNode;
 }) {
   return (
-    <li>
-      <a
-        href={href}
-        {...(newTabLabel ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-        className="group/row flex items-center gap-4 py-4"
-      >
-        <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-sm bg-surface-strong text-brand transition-colors duration-250 group-hover/row:bg-brand group-hover/row:text-white">
-          <Icon aria-hidden className="size-[1.125rem]" strokeWidth={1.75} />
-        </span>
-        <span className="min-w-0 flex-1">
-          <span className="block text-caption text-text-tertiary">{label}</span>
-          <span className={cn("block text-body text-text [overflow-wrap:anywhere]", valueClassName)}>{children}</span>
-        </span>
-        <ArrowUpRight
-          aria-hidden
-          strokeWidth={1.5}
-          className="size-4 shrink-0 text-text-tertiary transition-[color,translate] duration-250 group-hover/row:-translate-y-0.5 group-hover/row:translate-x-0.5 group-hover/row:text-text"
-        />
-        {newTabLabel && <span className="sr-only"> ({newTabLabel})</span>}
-      </a>
-    </li>
+    <a
+      href={href}
+      {...(newTabLabel ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+      className="group/quick flex flex-col items-center gap-2 rounded-sm border border-border px-2 py-3.5 text-center text-caption font-medium text-text transition-colors duration-200 hover:border-border-strong active:bg-surface-muted"
+    >
+      <span className="inline-flex size-9 items-center justify-center rounded-sm bg-brand/10 text-brand transition-colors duration-200 group-hover/quick:bg-brand group-hover/quick:text-white">
+        <Icon aria-hidden className="size-4" strokeWidth={1.75} />
+      </span>
+      <span className="leading-tight">{label}</span>
+      {newTabLabel && <span className="sr-only"> ({newTabLabel})</span>}
+    </a>
   );
 }
 
@@ -229,25 +204,40 @@ function Collapsible({ id, open, children }: { id: string; open: boolean; childr
   );
 }
 
-function SubMenu({ menu }: { menu: NavMenu }) {
+/** A menu's links as picture tiles, two per row, then a link to all of them. */
+function SubMenu({ menu, onNavigate }: { menu: NavMenu; onNavigate: () => void }) {
   return (
-    <ul className="mb-5 ml-9 border-l border-border pl-5">
-      {menu.items.map((item) => (
-        <li key={item.key}>
-          <Link
-            href={item.href}
-            className="block py-2 text-lead text-text-secondary transition-colors hover:text-text"
-          >
-            {item.label}
-          </Link>
-        </li>
-      ))}
-      <li className="pt-2">
-        <Link href={menu.all.href} className="inline-flex items-center gap-2 text-small font-medium text-brand-text">
-          {menu.all.label}
-          <ArrowRight aria-hidden className="size-4" strokeWidth={1.75} />
-        </Link>
-      </li>
-    </ul>
+    <div className="pb-4 pt-2">
+      <ul className="grid grid-cols-2 gap-2">
+        {menu.items.map((item) => (
+          <li key={item.key}>
+            <Link
+              href={item.href}
+              onClick={onNavigate}
+              className="group/tile flex h-full items-center gap-2.5 rounded-sm border border-border bg-background p-2 pr-3 transition-colors duration-200 hover:border-border-strong active:bg-surface-muted"
+            >
+              {item.image && (
+                <span className="relative size-11 shrink-0 overflow-hidden rounded-xs bg-surface-muted">
+                  <Image src={item.image} alt="" fill sizes="44px" className="object-contain p-1" />
+                </span>
+              )}
+              <span className="min-w-0 text-small font-medium leading-snug text-text">{item.label}</span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+      <Link
+        href={menu.all.href}
+        onClick={onNavigate}
+        className="group/all mt-3 inline-flex items-center gap-2 px-1 text-small font-medium text-brand-text"
+      >
+        {menu.all.label}
+        <ArrowRight
+          aria-hidden
+          className="size-4 transition-transform duration-200 group-hover/all:translate-x-0.5"
+          strokeWidth={1.75}
+        />
+      </Link>
+    </div>
   );
 }

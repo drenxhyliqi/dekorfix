@@ -1,6 +1,6 @@
 /*
  * The wall drawn for the "layer by layer" section: a front view of an
- * aerated-concrete block wall with the four Dekorfix layers applied over it,
+ * aerated-concrete block wall with the five Dekorfix layers applied over it,
  * each cut back in steps so every layer stays visible, and a finished wall
  * (full finish, a window, daylight) shown last.
  *
@@ -13,11 +13,14 @@
 
 const W = 640;
 const H = 520;
-/** Where each layer's cut edge starts, left to right: primer, adhesive, plaster, finish. */
-const STARTS = [92, 196, 300, 404] as const;
+/** Where each layer's cut edge starts, left to right: primer, adhesive, mesh, plaster, finish. */
+const STARTS = [72, 164, 256, 348, 440] as const;
 
-/** Layer colours, taken from the products: Beton Kontakt's red primer, grey cement adhesive, light plaster, a sand-tone finish. */
-export const LAYER_COLORS = ["#c9535a", "#a29f98", "#d8d5ce", "#e3d0af"] as const;
+/**
+ * Layer colours, taken from the products: Beton Kontakt's red primer, grey
+ * cement adhesive, the red fiberglass mesh, light plaster, a sand-tone finish.
+ */
+export const LAYER_COLORS = ["#c9535a", "#a29f98", "#e0392f", "#d8d5ce", "#e3d0af"] as const;
 
 /** Horizontal strokes each layer is painted with (see LayerWatcher). */
 export const PAINT_STROKES = 6;
@@ -101,7 +104,7 @@ function EdgeShadow({ points }: { points: Array<[number, number]> }) {
  * Decorative: the text beside it says what each layer is. Without
  * `paintedThrough` the layers start unpainted and LayerWatcher paints them with
  * the scroll; with it, the wall is drawn still, painted up to that layer
- * (0 primer … 3 finish), which is marked as the current one.
+ * (0 primer … 4 finish), which is marked as the current one.
  */
 export function LayerWall({ paintedThrough }: { paintedThrough?: number } = {}) {
   const still = paintedThrough !== undefined;
@@ -128,6 +131,13 @@ export function LayerWall({ paintedThrough }: { paintedThrough?: number } = {}) 
         <pattern id="ls-comb" width="12" height="52" patternUnits="userSpaceOnUse">
           <path d="M 3 0 C 5 13, 1 26, 3 39 S 5 52, 3 52 L 8 52 C 10 39, 6 26, 8 13 S 10 0, 8 0 Z" fill="#000" opacity="0.18" />
           <path d="M 8 0 C 10 13, 6 26, 8 39 S 10 52, 8 52" stroke="#fff" strokeWidth="1" opacity="0.25" fill="none" />
+        </pattern>
+
+        {/* Fiberglass mesh: a square weave of coated strands, each with a lit edge. */}
+        <pattern id="ls-mesh" width="15" height="15" patternUnits="userSpaceOnUse">
+          <path d="M 0 7.5 H 15 M 7.5 0 V 15" stroke={LAYER_COLORS[2]} strokeWidth="2.2" fill="none" />
+          <path d="M 0 6.7 H 15 M 6.7 0 V 15" stroke="#ff9a8f" strokeWidth="0.6" opacity="0.7" fill="none" />
+          <rect x="6.4" y="6.4" width="2.2" height="2.2" fill="#a8231c" opacity="0.5" />
         </pattern>
 
         <linearGradient id="ls-sky" x1="0" y1="0" x2="0.4" y2="1">
@@ -182,7 +192,7 @@ export function LayerWall({ paintedThrough }: { paintedThrough?: number } = {}) 
 
         {/* The finish render, used for its strip and for the finished wall. */}
         <g id="ls-finish-surface">
-          <rect width={W} height={H} fill={LAYER_COLORS[3]} />
+          <rect width={W} height={H} fill={LAYER_COLORS[4]} />
           <image href={NOISE_CLOUD} width={W} height={H} opacity="0.12" style={{ mixBlendMode: "multiply" }} />
           {specks(260, 0, 41, 0.5, 1.4).map((s, k) => (
             <circle key={k} cx={s.cx} cy={s.cy} r={s.r} fill={s.light ? "#f4e9d6" : "#c7b18c"} />
@@ -226,24 +236,36 @@ export function LayerWall({ paintedThrough }: { paintedThrough?: number } = {}) 
         <path d={edgeLine(edges[1] ?? [])} stroke="#6f6c66" strokeWidth="1.2" fill="none" opacity="0.6" />
       </g>
 
-      {/* 03 Plaster and skim coat: smooth, with soft trowel clouding. */}
+      {/* 03 Mesh: fiberglass pressed into a thin base coat, the weave showing through. */}
       <g data-layer={2} data-state={stateOf(2)} className="ls-coat" mask="url(#ls-paint-2)">
         <EdgeShadow points={edges[2] ?? []} />
         <g clipPath="url(#ls-edge-2)">
-          <rect width={W} height={H} fill={LAYER_COLORS[2]} />
-          <image href={NOISE_CLOUD} width={W} height={H} opacity="0.22" style={{ mixBlendMode: "multiply" }} />
-          <rect width={W} height={H} fill="url(#ls-grain)" opacity="0.14" style={{ mixBlendMode: "multiply" }} />
+          <rect width={W} height={H} fill="#b8b5ae" />
+          <rect width={W} height={H} fill="url(#ls-grain)" opacity="0.3" style={{ mixBlendMode: "multiply" }} />
+          <rect width={W} height={H} fill="url(#ls-mesh)" />
+          <rect width={W} height={H} fill="#cfccc5" opacity="0.22" />
         </g>
-        <path d={edgeLine(edges[2] ?? [])} stroke="#a9a59d" strokeWidth="1" fill="none" opacity="0.7" />
+        <path d={edgeLine(edges[2] ?? [])} stroke="#8f2a24" strokeWidth="1" fill="none" opacity="0.5" />
       </g>
 
-      {/* 04 Finish: grained render in a sand tone. */}
+      {/* 04 Plaster and skim coat: smooth, with soft trowel clouding. */}
       <g data-layer={3} data-state={stateOf(3)} className="ls-coat" mask="url(#ls-paint-3)">
         <EdgeShadow points={edges[3] ?? []} />
         <g clipPath="url(#ls-edge-3)">
+          <rect width={W} height={H} fill={LAYER_COLORS[3]} />
+          <image href={NOISE_CLOUD} width={W} height={H} opacity="0.22" style={{ mixBlendMode: "multiply" }} />
+          <rect width={W} height={H} fill="url(#ls-grain)" opacity="0.14" style={{ mixBlendMode: "multiply" }} />
+        </g>
+        <path d={edgeLine(edges[3] ?? [])} stroke="#a9a59d" strokeWidth="1" fill="none" opacity="0.7" />
+      </g>
+
+      {/* 05 Finish: grained render in a sand tone. */}
+      <g data-layer={4} data-state={stateOf(4)} className="ls-coat" mask="url(#ls-paint-4)">
+        <EdgeShadow points={edges[4] ?? []} />
+        <g clipPath="url(#ls-edge-4)">
           <use href="#ls-finish-surface" />
         </g>
-        <path d={edgeLine(edges[3] ?? [])} stroke="#b59f79" strokeWidth="1" fill="none" opacity="0.7" />
+        <path d={edgeLine(edges[4] ?? [])} stroke="#b59f79" strokeWidth="1" fill="none" opacity="0.7" />
       </g>
 
       {/* Step tags over each strip. */}
@@ -263,9 +285,9 @@ export function LayerWall({ paintedThrough }: { paintedThrough?: number } = {}) 
       ))}
 
       {/* The finished wall: full finish, a window in its reveal, a sill and its shadow. */}
-      <g data-layer={4} className="ls-finished">
+      <g data-layer={STARTS.length} className="ls-finished">
         {/* The finish rolled over the whole wall, then the window. */}
-        <g mask="url(#ls-paint-4)">
+        <g mask={`url(#ls-paint-${STARTS.length})`}>
           <use href="#ls-finish-surface" />
         </g>
         <g className="ls-window">

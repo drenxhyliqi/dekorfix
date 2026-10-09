@@ -9,12 +9,21 @@ const nextConfig: NextConfig = {
   // Trace from the monorepo root so workspace packages are included in the bundle.
   outputFileTracingRoot: path.join(__dirname, "../../"),
   cacheComponents: true,
-  // The Solutions pages were replaced by the product finder.
+  // Pages that were replaced: Solutions by the product finder, points of sale by export,
+  // the quote request by the contact form; sign-in is the admin's.
   async redirects() {
     return [
       { source: "/:lang(sq|en)/solutions", destination: "/:lang/product-finder", permanent: true },
       { source: "/:lang(sq|en)/solutions/:slug", destination: "/:lang/product-finder", permanent: true },
+      { source: "/:lang(sq|en)/where-to-buy", destination: "/:lang/export", permanent: true },
+      { source: "/:lang(sq|en)/request-quote", destination: "/:lang/contact", permanent: true },
+      { source: "/:lang(sq|en)/login", destination: "/admin/login", permanent: false },
     ];
+  },
+  // Uploaded product images live in the API (/media); serve them from the site's own origin.
+  async rewrites() {
+    const api = process.env.API_INTERNAL_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+    return [{ source: "/media/:path*", destination: `${api}/media/:path*` }];
   },
   partialPrefetching: true,
   experimental: {

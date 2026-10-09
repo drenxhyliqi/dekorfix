@@ -1,27 +1,28 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-import { defaultLocale, hasLocale, type Locale } from "@/i18n/config";
-
-/** Picks `en` only when the browser prefers English over Albanian. */
-function preferredLocale(request: NextRequest): Locale {
-  const header = request.headers.get("accept-language") ?? "";
-  for (const part of header.split(",")) {
-    const code = part.split(";")[0]?.trim().slice(0, 2).toLowerCase();
-    if (code && hasLocale(code)) return code;
-  }
-  return defaultLocale;
-}
+import { ADMIN_COOKIE, userForToken } from "@/features/admin-auth/session";
+import { defaultLocale, hasLocale } from "@/i18n/config";
 
 /**
- * Admin has no authentication yet, so it is only reachable in development,
- * or in a production build explicitly started with ADMIN_PREVIEW=true.
- * Replace with a session check when admin login is implemented.
+ * Admin pages need a valid session: checked with the API on every request,
+ * so signing out or an expired session takes effect at once. The sign-in
+ * page itself is open; a signed-in admin is sent on to the dashboard.
  */
-function adminAllowed(): boolean {
-  return process.env.NODE_ENV !== "production" || process.env.ADMIN_PREVIEW === "true";
+async function guardAdmin(request: NextRequest): Promise<NextResponse> {
+  const { pathname, search } = request.nextUrl;
+  const user = await userForToken(request.cookies.get(ADMIN_COOKIE)?.value);
+  const onLogin = pathname === "/admin/login";
+  if (user) return onLogin ? NextResponse.redirect(new URL("/admin", request.url)) : NextResponse.next();
+  if (onLogin) return NextResponse.next();
+
+  const login = new URL("/admin/login", request.url);
+  if (pathname !== "/admin") login.searchParams.set("next", pathname + search);
+  const response = NextResponse.redirect(login);
+  response.cookies.delete(ADMIN_COOKIE);
+  return response;
 }
 
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const first = pathname.split("/")[1] ?? "";
 
@@ -29,14 +30,13 @@ export function proxy(request: NextRequest) {
   // pages; answer directly instead of rendering the localized 404.
   if (first === ".well-known") return new NextResponse(null, { status: 404 });
 
-  if (first === "admin") {
-    return adminAllowed() ? NextResponse.next() : new NextResponse("Not found", { status: 404 });
-  }
+  if (first === "admin") return guardAdmin(request);
   if (hasLocale(first)) return;
 
-  // Locale-less public path, e.g. `/products` → `/sq/products`.
+  // Locale-less public path, e.g. `/products` → `/sq/products`. Always Albanian,
+  // whatever the browser's language: English only when the visitor switches to it.
   const url = request.nextUrl.clone();
-  url.pathname = `/${preferredLocale(request)}${pathname === "/" ? "" : pathname}`;
+  url.pathname = `/${defaultLocale}${pathname === "/" ? "" : pathname}`;
   return NextResponse.redirect(url);
 }
 

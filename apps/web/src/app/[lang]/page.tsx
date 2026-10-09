@@ -26,7 +26,7 @@ export default async function HomePage() {
       <ProductHero
         copy={t.home.hero}
         productsHref={localizePath(locale, routes.products)}
-        quoteHref={localizePath(locale, routes.requestQuote)}
+        quoteHref={localizePath(locale, routes.contactForm())}
       />
       <Timeline
         title={timeline.title}

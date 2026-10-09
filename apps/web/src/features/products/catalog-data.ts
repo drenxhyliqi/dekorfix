@@ -39,14 +39,13 @@ export const categoryOrder: ProductCategoryKey[] = productCategories.map((catego
 
 /**
  * Where each category sits in the layer system (home "layer by layer"):
- * 0 prepare, 1 bond, 2 level & plaster, 3 finish.
+ * 0 prepare, 1 bond, 2 reinforce, 3 level & plaster, 4 finish.
  */
 export const LAYER_OF_CATEGORY: Record<ProductCategoryKey, number> = {
   bases: 0,
   adhesives: 1,
-  plasters: 2,
-  // Embedded in the base coat or plaster.
   mesh: 2,
-  facades: 3,
-  paints: 3,
+  plasters: 3,
+  facades: 4,
+  paints: 4,
 };

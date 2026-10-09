@@ -42,15 +42,15 @@ export function AdminPanel({
   );
 }
 
-/** Placeholder for a module that is built in the Admin Dashboard phase. */
+/** Placeholder for a module that is still being built. */
 export function AdminModulePlaceholder({ module }: { module: string }) {
   return (
     <AdminPanel>
       <div className="flex flex-col items-start gap-4 py-10 md:items-center md:text-center">
         <Construction aria-hidden className="size-6 text-text-tertiary" strokeWidth={1.25} />
-        <Badge variant="outline">In development</Badge>
+        <Badge variant="outline">Në zhvillim</Badge>
         <p className="max-w-md text-body text-text-secondary">
-          {module} management will be implemented in the Admin Dashboard phase.
+          Menaxhimi i seksionit «{module}» do të shtohet së shpejti.
         </p>
       </div>
     </AdminPanel>

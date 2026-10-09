@@ -44,6 +44,8 @@ services:
       - "${API_PORT:-8000}:8000"
     volumes:
       - ./apps/api:/app
+      # Uploaded product images, kept across rebuilds (served by the API at /media).
+      - media:/app/media
     depends_on:
       postgres:
         condition: service_healthy
@@ -86,3 +88,4 @@ services:
 
 volumes:
   postgres_data:
+  media:

@@ -22,7 +22,7 @@ function ButtonMatrix() {
           Explore Products
         </Button>
         <Button variant="accent" trailingIcon={arrow}>
-          Request a Quote
+          Contact us
         </Button>
         <Button variant="secondary">View Projects</Button>
         <Button variant="ghost">Learn More</Button>

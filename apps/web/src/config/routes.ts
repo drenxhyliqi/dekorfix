@@ -16,14 +16,14 @@ export const routes = {
   project: (slug: string) => `/projects/${slug}`,
   projectStudio: "/project-studio",
   calculator: "/calculator",
-  whereToBuy: "/where-to-buy",
+  export: "/export",
   about: "/about",
   contact: "/contact",
-  requestQuote: "/request-quote",
+  /** The contact page's message form, optionally with a topic chosen. */
+  contactForm: (topic?: string) => (topic ? `/contact?topic=${topic}#message` : "/contact#message"),
   search: "/search",
   cart: "/cart",
   checkout: "/checkout",
-  login: "/login",
   privacy: "/privacy",
   terms: "/terms",
   cookies: "/cookies",
@@ -31,6 +31,7 @@ export const routes = {
 
 export const adminRoutes = {
   dashboard: "/admin",
+  login: "/admin/login",
   products: "/admin/products",
   product: (id: string) => `/admin/products/${id}`,
   categories: "/admin/categories",

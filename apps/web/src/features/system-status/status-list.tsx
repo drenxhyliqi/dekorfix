@@ -26,7 +26,7 @@ export function StatusList({ checks }: { checks: ServiceChecks | null }) {
                 result === undefined ? "bg-border-strong" : result.ok ? "bg-text" : "bg-danger",
               )}
             />
-            {result === undefined ? "checking…" : result.ok ? "ok" : `error (${result.error})`}
+            {result === undefined ? "duke kontrolluar…" : result.ok ? "në rregull" : `gabim (${result.error})`}
           </span>
         </li>
       ))}

@@ -1,71 +1,39 @@
-import { ArrowRight } from "lucide-react";
 import type { Metadata } from "next";
-import Link from "next/link";
+import { cookies } from "next/headers";
 import { Suspense } from "react";
 
-import { AdminPageHeader, AdminPanel } from "@/components/admin/admin-page";
-import { adminNavigation } from "@/config/admin-navigation";
-import { ClientStatus, ServerStatus, StatusList } from "@/features/system-status";
+import { AdminPanel } from "@/components/admin/admin-page";
+import { ADMIN_COOKIE, userForToken } from "@/features/admin-auth/session";
+import { Dashboard, DashboardSkeleton } from "@/features/admin-dashboard/dashboard";
+import { getDashboard, toPeriod } from "@/features/admin-dashboard/data";
 
-export const metadata: Metadata = { title: { absolute: "Dashboard · Dekorfix Admin" } };
+import "@/features/admin-dashboard/dashboard.css";
 
-export default function AdminDashboardPage() {
-  const modules = adminNavigation.flatMap((group) => group.sections).filter((s) => s.key !== "dashboard");
+export const metadata: Metadata = { title: { absolute: "Paneli · Dekorfix Admin" } };
 
+/** The admin dashboard, for the period in `?days=` (7, 30 or 90; 30 by default). */
+export default function AdminDashboardPage({ searchParams }: PageProps<"/admin">) {
   return (
-    <>
-      <AdminPageHeader
-        title="Dashboard"
-        description="Content and request management are built in the Admin Dashboard phase."
-      />
-
-      <div className="grid gap-6 lg:grid-cols-3">
-        <AdminPanel title="Modules" className="lg:col-span-2">
-          <ul className="grid gap-px overflow-hidden rounded-xs border border-border bg-border sm:grid-cols-2">
-            {modules.map((module) => {
-              const Icon = module.icon;
-              return (
-                <li key={module.key} className="bg-background">
-                  <Link
-                    href={module.href}
-                    className="group flex h-full items-start gap-4 p-5 transition-colors hover:bg-surface-muted"
-                  >
-                    <Icon aria-hidden className="mt-0.5 size-5 shrink-0 text-text" strokeWidth={1.5} />
-                    <span className="flex-1">
-                      <span className="flex items-center justify-between text-[0.9375rem] font-medium text-text">
-                        {module.label}
-                        <ArrowRight
-                          aria-hidden
-                          className="size-4 text-text-tertiary transition-transform group-hover:translate-x-0.5"
-                          strokeWidth={1.5}
-                        />
-                      </span>
-                      <span className="mt-1 block text-small text-text-secondary">{module.description}</span>
-                    </span>
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </AdminPanel>
-
-        <div className="space-y-6">
-          <AdminPanel title="System status · server">
-            <Suspense fallback={<StatusList checks={null} />}>
-              <ServerStatus />
-            </Suspense>
-          </AdminPanel>
-          <AdminPanel title="System status · browser">
-            <ClientStatus />
-          </AdminPanel>
-          <AdminPanel title="Developer">
-            <Link href="/en/design-system" className="group inline-flex items-center gap-2 text-small font-medium text-text">
-              Design system reference
-              <ArrowRight aria-hidden className="size-4 transition-transform group-hover:translate-x-0.5" strokeWidth={1.5} />
-            </Link>
-          </AdminPanel>
-        </div>
-      </div>
-    </>
+    <Suspense fallback={<DashboardSkeleton />}>
+      <DashboardData searchParams={searchParams} />
+    </Suspense>
   );
+}
+
+async function DashboardData({ searchParams }: { searchParams: PageProps<"/admin">["searchParams"] }) {
+  const days = toPeriod((await searchParams).days);
+  const [stats, user] = await Promise.all([
+    getDashboard(days),
+    userForToken((await cookies()).get(ADMIN_COOKIE)?.value),
+  ]);
+  if (!stats) {
+    return (
+      <AdminPanel>
+        <p className="py-8 text-center text-body text-text-secondary">
+          Të dhënat nuk u ngarkuan. Kontrolloni që API-ja të jetë në punë dhe rifreskoni faqen.
+        </p>
+      </AdminPanel>
+    );
+  }
+  return <Dashboard stats={stats} name={user?.name ?? null} />;
 }

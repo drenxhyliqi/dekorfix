@@ -1,0 +1,425 @@
+/*
+ * Export section of the points-of-sale page (classes prefixed `ex-`): the map
+ * of Europe and the departures board. Map sizes are written in screen pixels
+ * and converted with --u (map units per pixel), set by ExportExplorer.
+ */
+
+/* ---- Map ------------------------------------------------------------------------ */
+
+.ex-frame {
+  --u: 1.6;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background-color: #f6f8f9;
+  background-image:
+    radial-gradient(circle at 1px 1px, rgb(13 13 12 / 0.07) 1px, transparent 0),
+    radial-gradient(ellipse at 80% 70%, rgb(228 30 37 / 0.07), transparent 55%);
+  background-size:
+    22px 22px,
+    100% 100%;
+}
+
+.ex-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+}
+
+.ex-scale {
+  transform: scale(var(--u));
+}
+
+.ex-land {
+  fill: #ffffff;
+  stroke: #e3e1db;
+  stroke-width: calc(0.8px * var(--u));
+  stroke-linejoin: round;
+}
+
+.ex-country {
+  fill: #ffffff;
+  stroke: #e3e1db;
+  stroke-width: calc(0.8px * var(--u));
+  stroke-linejoin: round;
+  cursor: pointer;
+  transition:
+    fill 0.5s var(--ease-out),
+    stroke 0.5s var(--ease-out);
+}
+
+.ex[data-inview] .ex-country {
+  fill: #fbe6e4;
+  stroke: rgb(228 30 37 / 0.45);
+  transition-delay: calc(0.5s + var(--i) * 0.14s), calc(0.5s + var(--i) * 0.14s);
+}
+
+.ex[data-inview] .ex-country[data-on] {
+  fill: #f6c3be;
+  stroke: #e41e25;
+  stroke-width: calc(1.4px * var(--u));
+  transition-delay: 0s;
+}
+
+.ex-kosovo {
+  fill: #e41e25;
+}
+
+/* Routes: drawn in one after another, then a red dash flows along each. */
+.ex-route {
+  pointer-events: none;
+  transition: opacity 0.35s var(--ease-out);
+}
+
+.ex-arc,
+.ex-flow {
+  fill: none;
+  stroke-linecap: round;
+}
+
+.ex-arc {
+  stroke: #0d0d0c;
+  stroke-opacity: 0.4;
+  stroke-width: calc(1.25px * var(--u));
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition:
+    stroke-dashoffset 1.4s cubic-bezier(0.65, 0, 0.2, 1),
+    stroke 0.35s,
+    stroke-opacity 0.35s,
+    stroke-width 0.35s;
+}
+
+.ex[data-inview] .ex-arc {
+  stroke-dashoffset: 0;
+  transition-delay: calc(0.3s + var(--i) * 0.14s), 0s, 0s, 0s;
+}
+
+.ex-flow {
+  stroke: #e41e25;
+  stroke-width: calc(2px * var(--u));
+  stroke-dasharray: 0.012 0.05;
+  opacity: 0;
+  transition: opacity 0.6s;
+}
+
+.ex[data-inview] .ex-flow {
+  opacity: 0.85;
+  transition-delay: calc(1.6s + var(--i) * 0.14s);
+  animation: ex-flow 3.4s linear infinite;
+}
+
+.ex-packet {
+  r: calc(4.5px * var(--u));
+  fill: #e41e25;
+  stroke: #ffffff;
+  stroke-width: calc(2px * var(--u));
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.ex[data-inview] .ex-packet {
+  opacity: 1;
+  transition-delay: 1.8s;
+}
+
+/* A chosen country: its route in red, the others step back. */
+.ex[data-focus] .ex-route:not([data-on]),
+.ex[data-focus] .ex-dest:not([data-on]) {
+  opacity: 0.25;
+}
+
+.ex-route[data-on] .ex-arc {
+  stroke: #e41e25;
+  stroke-opacity: 1;
+  stroke-width: calc(2.25px * var(--u));
+}
+
+/* Destinations and the factory. */
+.ex-dest {
+  opacity: 0;
+  transition: opacity 0.35s var(--ease-out);
+}
+
+.ex[data-inview] .ex-dest {
+  opacity: 1;
+  transition-delay: calc(1.2s + var(--i) * 0.14s);
+}
+
+.ex[data-inview][data-focus] .ex-dest {
+  transition-delay: 0s;
+}
+
+.ex-dest-dot {
+  fill: #0d0d0c;
+  stroke: #ffffff;
+  stroke-width: 2;
+  transition: fill 0.3s;
+}
+
+.ex-dest[data-on] .ex-dest-dot {
+  fill: #e41e25;
+}
+
+.ex-dest-pulse,
+.ex-origin-pulse {
+  fill: #e41e25;
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+}
+
+.ex[data-inview] .ex-dest-pulse {
+  animation: ex-pulse 2.6s var(--ease-out) calc(1.8s + var(--i) * 0.35s) infinite;
+}
+
+.ex[data-inview] .ex-origin-pulse {
+  animation: ex-pulse 2.2s var(--ease-out) 0.4s infinite;
+}
+
+.ex-origin-mark {
+  fill: #0d0d0c;
+  stroke: #ffffff;
+  stroke-width: 2;
+}
+
+.ex-label {
+  fill: var(--color-text);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  paint-order: stroke;
+  stroke: #ffffff;
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+
+.ex-label--origin {
+  font-size: 11.5px;
+  font-weight: 500;
+  fill: var(--color-text-secondary);
+}
+
+/* ---- Departures board ------------------------------------------------------------ */
+
+.ex-board {
+  align-self: start;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  box-shadow: 0 1.5rem 3rem -2rem rgb(13 13 12 / 0.25);
+}
+
+.ex-board-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.ex-board-light {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 1px;
+  background: #e41e25;
+  animation: ex-blink 1.6s steps(1) infinite;
+}
+
+.ex-board-from {
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface-muted);
+  color: var(--color-text-secondary);
+  font-size: var(--text-small);
+}
+
+.ex-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  padding: 0.875rem 1.25rem;
+  text-align: left;
+}
+
+@media (min-width: 640px) {
+  .ex-row {
+    grid-template-columns: minmax(0, 1fr) 5.5rem 8.5rem;
+  }
+}
+
+.ex-row--head {
+  padding-block: 0.625rem;
+  color: var(--color-text-tertiary);
+  font-size: var(--text-caption);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.ex-item + .ex-item,
+.ex-row--head + ul .ex-item:first-child {
+  border-top: 1px solid var(--color-border);
+}
+
+button.ex-row {
+  position: relative;
+  cursor: pointer;
+  transition:
+    background-color 0.25s,
+    opacity 0.25s;
+}
+
+button.ex-row::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: #e41e25;
+  scale: 1 0;
+  transition: scale 0.3s var(--ease-out);
+}
+
+button.ex-row:hover,
+.ex-row--on {
+  background: var(--color-surface-muted);
+}
+
+.ex-row--on::before,
+button.ex-row[aria-pressed="true"]::before {
+  scale: 1 1;
+}
+
+.ex-row--dim {
+  opacity: 0.55;
+}
+
+button.ex-row:focus-visible {
+  outline: 2px solid var(--color-text);
+  outline-offset: -2px;
+}
+
+/* Split-flap tiles for the country code. */
+.ex-tiles {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.ex-tile {
+  position: relative;
+  display: inline-flex;
+  width: 1.75rem;
+  height: 2.25rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 3px;
+  background: linear-gradient(#ffffff 50%, #f3f2ee 50%);
+  color: var(--color-text);
+  font-size: 1.125rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* The hinge across the middle of each flap. */
+.ex-tile::after {
+  content: "";
+  position: absolute;
+  inset: 50% 0 auto;
+  height: 1px;
+  background: rgb(13 13 12 / 0.14);
+}
+
+.ex-row--on .ex-tile {
+  border-color: #e41e25;
+  color: #e41e25;
+}
+
+.ex-status-dot {
+  width: 0.4375rem;
+  height: 0.4375rem;
+  border-radius: 9999px;
+  background: #1f9d55;
+  box-shadow: 0 0 0 3px rgb(31 157 85 / 0.15);
+}
+
+/* Rows arrive one after another. */
+.ex-item {
+  opacity: 0;
+  translate: 0 0.75rem;
+  transition:
+    opacity 0.6s var(--ease-out),
+    translate 0.6s var(--ease-out);
+}
+
+.ex[data-inview] .ex-item {
+  opacity: 1;
+  translate: 0 0;
+  transition-delay: calc(0.15s + var(--i) * 0.09s);
+}
+
+@keyframes ex-flow {
+  to {
+    stroke-dashoffset: -0.62;
+  }
+}
+
+@keyframes ex-pulse {
+  0% {
+    opacity: 0.45;
+    scale: 0.6;
+  }
+  100% {
+    opacity: 0;
+    scale: 2.4;
+  }
+}
+
+@keyframes ex-blink {
+  50% {
+    opacity: 0.25;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ex-country,
+  .ex-arc,
+  .ex-route,
+  .ex-dest,
+  .ex-item {
+    transition: none;
+  }
+
+  .ex[data-inview] .ex-flow,
+  .ex[data-inview] .ex-dest-pulse,
+  .ex[data-inview] .ex-origin-pulse,
+  .ex-board-light {
+    animation: none;
+  }
+
+  /* SMIL motion cannot be paused from CSS: hide the travelling packets. */
+  .ex-packet {
+    display: none;
+  }
+}
+
+/* Without JavaScript nothing marks the section as in view: show it as drawn. */
+@media (scripting: none) {
+  .ex-item,
+  .ex-dest {
+    opacity: 1;
+    translate: 0 0;
+  }
+
+  .ex-arc {
+    stroke-dashoffset: 0;
+  }
+
+  .ex-country {
+    fill: #fbe6e4;
+  }
+}

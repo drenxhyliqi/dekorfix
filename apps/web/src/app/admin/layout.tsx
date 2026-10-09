@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 
-import { AdminShell } from "@/components/admin/admin-shell";
 import { geist } from "@/lib/fonts";
 
 import "../globals.css";
@@ -12,15 +11,14 @@ export const metadata: Metadata = {
 
 /**
  * Separate root layout for the admin area (not localized, no public chrome).
- * Access control arrives with authentication; until then src/proxy.ts keeps
- * /admin out of production builds unless ADMIN_PREVIEW=true.
+ * The panel's chrome lives in (panel)/layout.tsx; the sign-in page has none.
+ * src/proxy.ts lets only signed-in admins past /admin/login.
  */
 export default function AdminLayout({ children }: LayoutProps<"/admin">) {
   return (
-    <html lang="en" className={geist.variable} data-scroll-behavior="smooth">
-      <body>
-        <AdminShell>{children}</AdminShell>
-      </body>
+    // Browser extensions may add attributes to <html> before hydration.
+    <html lang="sq" className={geist.variable} data-scroll-behavior="smooth" suppressHydrationWarning>
+      <body>{children}</body>
     </html>
   );
 }

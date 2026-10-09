@@ -23,7 +23,7 @@ export const primaryNav: ReadonlyArray<{
   { key: "finder", path: routes.finder, menu: "finder" },
   { key: "projects", path: routes.projects },
   { key: "projectStudio", path: routes.projectStudio },
-  { key: "whereToBuy", path: routes.whereToBuy },
+  { key: "export", path: routes.export },
   { key: "about", path: routes.about },
 ];
 

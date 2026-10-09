@@ -1,6 +1,7 @@
 import { finderJobs, productCategories, primaryNav } from "@/config/navigation";
-import { routes } from "@/config/routes";
+import { adminRoutes, routes } from "@/config/routes";
 import { company } from "@/config/site";
+import { getProduct, products } from "@/content/products";
 import { localizePath } from "@/i18n/config";
 import { getDictionary, getLocale } from "@/i18n/get-dictionary";
 
@@ -26,45 +27,34 @@ export async function SiteHeader() {
     menus: {
       products: {
         heading: m.categories,
+        intro: m.productsIntro,
         items: productCategories.map((category) => ({
           key: category.key,
           label: t.productCategories[category.key].name,
           description: t.productCategories[category.key].description,
           href: href(category.path),
+          image: products.find((product) => product.category === category.key)?.image,
         })),
         all: { key: "all", label: m.allProducts, href: href(routes.products) },
-        promo: {
-          eyebrow: m.studioEyebrow,
-          title: m.studioTitle,
-          text: m.studioText,
-          cta: m.studioCta,
-          href: href(routes.projectStudio),
-          badge: m.comingSoon,
-        },
       },
       finder: {
         heading: m.finderHeading,
+        intro: m.finderIntro,
         items: finderJobs.map((job) => ({
           key: job.key,
           label: t.finder.jobs[job.key].title,
           description: t.finder.jobs[job.key].text,
           href: href(job.path),
+          image: getProduct(t.finder.jobs[job.key].image)?.image,
         })),
         all: { key: "all", label: m.finderAll, href: href(routes.finder) },
-        promo: {
-          eyebrow: m.calculatorEyebrow,
-          title: m.calculatorTitle,
-          text: m.calculatorText,
-          cta: m.calculatorCta,
-          href: href(routes.calculator),
-          badge: m.comingSoon,
-        },
       },
     },
     contactHref: href(routes.contact),
-    requestQuoteHref: href(routes.requestQuote),
+    talkHref: href(routes.contactForm()),
     searchHref: href(routes.search),
-    loginHref: href(routes.login),
+    // The account icon opens the admin sign-in (not localized).
+    loginHref: adminRoutes.login,
     contact: {
       phone: company.phones[0],
       email: company.email,

@@ -43,3 +43,6 @@ docker/volumes/
 # OS
 .DS_Store
 Thumbs.db
+
+# Uploaded media (product images) from local runs
+apps/api/media/

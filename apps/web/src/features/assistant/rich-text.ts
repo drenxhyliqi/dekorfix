@@ -11,7 +11,7 @@ export type Block = { kind: "paragraph"; content: Inline[] } | { kind: "list"; i
 
 /** Paths the site actually has, in either language. */
 const PAGE =
-  /^\/(sq|en)(\/(products(\/[a-z0-9-]+)?|cart|checkout|product-finder|where-to-buy|projects|project-studio|calculator|about|contact|search|privacy|terms|cookies))?\/?(\?[a-z0-9=&,-]*)?$/;
+  /^\/(sq|en)(\/(products(\/[a-z0-9-]+)?|cart|checkout|product-finder|export|projects|project-studio|calculator|about|contact|search|privacy|terms|cookies))?\/?(\?[a-z0-9=&,-]*)?$/;
 
 /** A link the chat may open: a real page of this site, tel: or mailto:. Absolute links to this site become paths. */
 export function safeHref(raw: string, ownHosts: string[] = []): string | null {

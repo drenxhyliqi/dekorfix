@@ -19,7 +19,7 @@ export function HelpBand({ t, locale }: { t: Dictionary; locale: Locale }) {
         </div>
         <div className="flex flex-wrap gap-3">
           <ButtonLink
-            href={localizePath(locale, routes.requestQuote)}
+            href={localizePath(locale, routes.contactForm())}
             variant="accent"
             size="lg"
             trailingIcon={<ArrowRight aria-hidden className="size-4" strokeWidth={1.75} />}

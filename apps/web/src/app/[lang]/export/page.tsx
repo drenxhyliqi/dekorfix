@@ -5,39 +5,49 @@ import type { CSSProperties } from "react";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { ButtonLink } from "@/components/ui/button";
 import { routes } from "@/config/routes";
+import { distanceKm, exportCities, exportCountries, factory } from "@/content/export";
 import { MAP_CREDIT } from "@/content/kosovo-map";
-import { directionsUrl, distanceKm, factory, stores } from "@/content/stores";
-import { StoreLocator, type LocatorStore } from "@/features/stores/store-locator";
+import { CityLocator, type LocatorCity } from "@/features/stores/city-locator";
+import { ExportExplorer } from "@/features/stores/export-explorer";
+import { ExportMap } from "@/features/stores/export-map";
 import { localizePath } from "@/i18n/config";
 import { getDictionary, getLocale } from "@/i18n/get-dictionary";
 import { pageMetadata } from "@/lib/metadata";
 
+import "@/features/stores/export.css";
+
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getDictionary();
-  return pageMetadata({ title: t.pages.whereToBuy.title, description: t.pages.whereToBuy.description, path: routes.whereToBuy });
+  return pageMetadata({ title: t.pages.export.title, description: t.pages.export.description, path: routes.export });
 }
 
-/** Points of sale: an animated map of Kosovo beside the list of stores. Store details are placeholders for now. */
-export default async function WhereToBuyPage() {
+/**
+ * Export: an animated map of Kosovo beside the ten cities Dekorfix supplies,
+ * then the six countries in Europe it exports to.
+ */
+export default async function ExportPage() {
   const [locale, t] = await Promise.all([getLocale(), getDictionary()]);
   const href = (path: string) => localizePath(locale, path);
-  const copy = t.storesPage;
+  const copy = t.exportPage;
+  const europe = copy.europe;
 
-  const items: LocatorStore[] = stores.map((store) => ({
-    id: store.id,
-    city: store.city,
-    municipality: store.municipality,
-    lat: store.lat,
-    lng: store.lng,
-    label: store.label,
-    confirmed: store.confirmed,
-    ...store.details[locale],
-    fromFactoryKm: Math.round(distanceKm(factory, store)),
-    mapsUrl: directionsUrl(store),
+  const cities: LocatorCity[] = exportCities.map((city) => ({
+    ...city,
+    fromFactoryKm: Math.round(distanceKm(factory, city)),
   }));
+  // Nearest first, like a departures board.
+  const destinations = exportCountries
+    .map((country) => ({
+      id: country.id,
+      code: country.code,
+      name: country.name[locale],
+      capital: country.capital.name[locale],
+      km: Math.round(distanceKm(factory, country.capital)),
+    }))
+    .sort((a, b) => a.km - b.km);
   const stats = [
-    { value: stores.length, label: copy.stats.stores },
-    { value: new Set(stores.map((store) => store.city)).size, label: copy.stats.cities },
+    { value: exportCities.length, label: copy.stats.cities },
+    { value: exportCountries.length, label: copy.stats.countries },
     { value: 1, label: copy.stats.factory },
   ];
 
@@ -45,7 +55,7 @@ export default async function WhereToBuyPage() {
     <>
       <div className="container-page pt-10 md:pt-14">
         <Breadcrumbs
-          items={[{ label: t.nav.home, href: href(routes.home) }, { label: t.nav.whereToBuy }]}
+          items={[{ label: t.nav.home, href: href(routes.home) }, { label: t.nav.export }]}
           label={t.a11y.breadcrumbs}
           className="mb-10 md:mb-14"
         />
@@ -75,18 +85,66 @@ export default async function WhereToBuyPage() {
             ))}
           </dl>
         </header>
-
-        <aside className="mt-10 flex gap-3 rounded-sm border border-dashed border-border-strong bg-surface-muted px-5 py-4 md:mt-14">
-          <span aria-hidden className="brand-mark mt-1.5 shrink-0" />
-          <div>
-            <p className="text-small font-medium text-text">{copy.placeholderTitle}</p>
-            <p className="mt-1 text-small text-text-secondary">{copy.placeholderText}</p>
-          </div>
-        </aside>
       </div>
 
-      <section aria-label={copy.mapLabel} className="container-page pb-section pt-10 md:pt-14">
-        <StoreLocator stores={items} factory={factory} copy={copy} credit={MAP_CREDIT} />
+      <section aria-labelledby="kosovo-title" className="container-page pb-section pt-section-sm">
+        <div className="mb-10 max-w-2xl md:mb-14">
+          <h2 id="kosovo-title" className="text-h2 text-text">
+            {copy.kosovo.title}
+          </h2>
+          <p className="mt-4 text-lead text-text-secondary">{copy.kosovo.text}</p>
+        </div>
+        <CityLocator cities={cities} factory={factory} copy={copy} credit={MAP_CREDIT} />
+      </section>
+
+      <section aria-labelledby="europe-title" className="border-t border-border bg-surface-muted">
+        <div className="container-page py-section">
+          <header className="grid gap-6 lg:grid-cols-12 lg:items-end">
+            <div className="lg:col-span-8">
+              <p className="flex items-center gap-2.5 text-label uppercase text-brand-text">
+                <span aria-hidden className="brand-mark" />
+                {europe.eyebrow}
+              </p>
+              <h2 id="europe-title" className="mt-6 text-balance text-h1 text-text">
+                {europe.title}
+              </h2>
+            </div>
+            <p className="max-w-xl text-lead text-text-secondary lg:col-span-4">{europe.intro}</p>
+          </header>
+
+          <div className="mt-10 md:mt-14">
+            <ExportExplorer
+              countries={destinations}
+              copy={europe}
+              map={
+                <ExportMap
+                  countries={exportCountries.map((country) => ({ ...country, name: country.name[locale] }))}
+                  factory={factory}
+                  label={europe.mapLabel}
+                  factoryLabel={europe.origin}
+                />
+              }
+            />
+          </div>
+
+          <div className="mt-8 flex flex-col gap-6 border-t border-border pt-8 lg:flex-row lg:items-center lg:justify-between">
+            <p className="max-w-md text-small text-text-tertiary">{europe.distanceNote}</p>
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
+              <div>
+                <p className="text-body font-medium text-text">{europe.ctaTitle}</p>
+                <p className="mt-1 max-w-sm text-small text-text-secondary">{europe.ctaText}</p>
+              </div>
+              <ButtonLink
+                href={href(routes.contact)}
+                variant="secondary"
+                className="shrink-0"
+                trailingIcon={<ArrowRight aria-hidden className="size-4" strokeWidth={1.75} />}
+              >
+                {europe.ctaAction}
+              </ButtonLink>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section className="border-t border-border">

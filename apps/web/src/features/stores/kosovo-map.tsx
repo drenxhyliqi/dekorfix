@@ -5,45 +5,42 @@ import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent } f
 import { KOSOVO_BORDER, MAP_HEIGHT as H, MAP_WIDTH as W, MUNICIPALITIES, project } from "@/content/kosovo-map";
 import { cn } from "@/lib/utils";
 
-export interface MapStore {
+export interface MapCity {
   id: string;
-  city: string;
+  name: string;
   municipality: string;
   lat: number;
   lng: number;
   label: "left" | "right" | "above";
 }
 
-/** Closest the camera zooms in, and how much of the frame the factory-to-store span may fill. */
+/** Closest the camera zooms in, and how much of the frame the factory-to-city span may fill. */
 const MAX_ZOOM = 2.4;
 const FILL = 0.55;
 /** Below this rendered width pins and their city names are drawn smaller. */
 const COMPACT_PX = 520;
 
 /**
- * Kosovo with its 38 municipalities and the store pins. The border draws
+ * Kosovo with its 38 municipalities and the city pins. The border draws
  * itself, municipalities settle in and pins drop once the map scrolls into
- * view. Choosing a store moves the camera to frame the factory and that
- * store, and a route runs from the factory to it. Pins and lines are sized in
+ * view. Choosing a city moves the camera to frame the factory and that
+ * city, and a route runs from the factory to it. Pins and lines are sized in
  * screen pixels (via --u, map units per pixel, and --z, the zoom), so they
  * stay crisp at every map size and zoom.
  */
 export function KosovoMap({
-  stores,
+  cities,
   factory,
   selected,
   hovered,
-  matches,
   onSelect,
   onHover,
   labels,
 }: {
-  stores: MapStore[];
+  cities: MapCity[];
   factory: { lat: number; lng: number; municipality: string };
   selected: string | null;
   hovered: string | null;
-  /** Ids that pass the search; the others are dimmed. */
-  matches: Set<string>;
   onSelect: (id: string | null) => void;
   onHover: (id: string | null) => void;
   labels: { map: string; factory: string; factoryPlace: string };
@@ -80,10 +77,10 @@ export function KosovoMap({
   }, []);
 
   const origin = project(factory.lat, factory.lng);
-  const active = stores.find((store) => store.id === selected) ?? null;
+  const active = cities.find((city) => city.id === selected) ?? null;
   const target = active ? project(active.lat, active.lng) : null;
 
-  // Camera: frame the factory and the chosen store together, or the whole country.
+  // Camera: frame the factory and the chosen city together, or the whole country.
   let zoom = 1;
   let center = { x: W / 2, y: H / 2 };
   if (target) {
@@ -93,7 +90,7 @@ export function KosovoMap({
   }
   const camera = `translate(${W / 2 - center.x * zoom}px, ${H / 2 - center.y * zoom}px) scale(${zoom})`;
   const compact = W / unitsPerPx < COMPACT_PX;
-  const focusMunicipality = stores.find((store) => store.id === (hovered ?? selected))?.municipality;
+  const focusMunicipality = cities.find((city) => city.id === (hovered ?? selected))?.municipality;
 
   const pinKeys = (id: string) => (event: KeyboardEvent) => {
     if (event.key === "Enter" || event.key === " ") {
@@ -151,7 +148,7 @@ export function KosovoMap({
 
         <g transform={`translate(${origin.x} ${origin.y})`} className={cn("sl-factory", active && "sl-factory--origin")}>
           <g className="sl-counter">
-            <g className="sl-drop" style={{ "--i": stores.length } as CSSProperties}>
+            <g className="sl-drop" style={{ "--i": cities.length } as CSSProperties}>
               <rect x="-9" y="-9" width="18" height="18" rx="2" className="sl-factory-mark" />
               <path d="M-4 3 L-1 -4 H4 L1 3 Z" fill="#e41e25" />
               <text x="0" y="28" textAnchor="middle" className="sl-label sl-factory-label">
@@ -162,29 +159,28 @@ export function KosovoMap({
           </g>
         </g>
 
-        {stores.map((store, index) => {
-          const point = project(store.lat, store.lng);
-          const isActive = store.id === selected;
-          const isHovered = store.id === hovered;
+        {cities.map((city, index) => {
+          const point = project(city.lat, city.lng);
+          const isActive = city.id === selected;
+          const isHovered = city.id === hovered;
           return (
             <g
-              key={store.id}
+              key={city.id}
               transform={`translate(${point.x} ${point.y})`}
               role="button"
               tabIndex={0}
-              aria-label={store.city}
+              aria-label={city.name}
               aria-pressed={isActive}
-              onClick={() => onSelect(isActive ? null : store.id)}
-              onKeyDown={pinKeys(store.id)}
-              onPointerEnter={() => onHover(store.id)}
+              onClick={() => onSelect(isActive ? null : city.id)}
+              onKeyDown={pinKeys(city.id)}
+              onPointerEnter={() => onHover(city.id)}
               onPointerLeave={() => onHover(null)}
-              onFocus={() => onHover(store.id)}
+              onFocus={() => onHover(city.id)}
               onBlur={() => onHover(null)}
               className={cn(
                 "sl-pin",
                 isActive && "sl-pin--active",
                 isHovered && "sl-pin--hover",
-                !matches.has(store.id) && "sl-pin--muted",
                 active && !isActive && "sl-pin--dim",
               )}
             >
@@ -195,12 +191,12 @@ export function KosovoMap({
                   <circle r="11" className="sl-ring" />
                   <circle r="6.5" className="sl-dot" />
                   <text
-                    x={store.label === "above" ? 0 : store.label === "left" ? -16 : 16}
-                    y={store.label === "above" ? -16 : 4.5}
-                    textAnchor={store.label === "above" ? "middle" : store.label === "left" ? "end" : "start"}
+                    x={city.label === "above" ? 0 : city.label === "left" ? -16 : 16}
+                    y={city.label === "above" ? -16 : 4.5}
+                    textAnchor={city.label === "above" ? "middle" : city.label === "left" ? "end" : "start"}
                     className="sl-label"
                   >
-                    {store.city}
+                    {city.name}
                   </text>
                 </g>
               </g>
@@ -212,7 +208,7 @@ export function KosovoMap({
   );
 }
 
-/** The factory-to-store route: a curve that draws itself, with a dot travelling along it. */
+/** The factory-to-city route: a curve that draws itself, with a dot travelling along it. */
 function Route({
   from,
   to,

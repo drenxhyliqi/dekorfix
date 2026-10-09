@@ -6,10 +6,10 @@ import { adminRoutes } from "@/config/routes";
 export default function AdminNotFound() {
   return (
     <>
-      <AdminPageHeader title="Page not found" description="This admin page does not exist." />
+      <AdminPageHeader title="Faqja nuk u gjet" description="Kjo faqe e administrimit nuk ekziston." />
       <AdminPanel>
         <Link href={adminRoutes.dashboard} className="text-small font-medium text-text underline underline-offset-4">
-          Back to dashboard
+          Kthehu te paneli
         </Link>
       </AdminPanel>
     </>

@@ -57,12 +57,13 @@ export default async function RootLayout({ children }: LayoutProps<"/[lang]">) {
             {children}
           </main>
           <SiteFooter />
+          {/* Shown only when the server has an OpenAI key (see app/api/assistant).
+              Inside the cart, so products in its replies can be added. */}
+          {Boolean(process.env.OPEN_AI_KEY ?? process.env.OPENAI_API_KEY) && (
+            <Assistant locale={locale} copy={t.assistant} contact={{ phone: company.phones[0].display, email: company.email }} />
+          )}
         </CartProvider>
         <SocialRail labels={t.header} />
-        {/* Shown only when the server has an OpenAI key (see app/api/assistant). */}
-        {Boolean(process.env.OPEN_AI_KEY ?? process.env.OPENAI_API_KEY) && (
-          <Assistant locale={locale} copy={t.assistant} contact={{ phone: company.phones[0].display, email: company.email }} />
-        )}
       </body>
     </html>
   );

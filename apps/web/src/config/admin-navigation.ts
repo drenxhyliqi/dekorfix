@@ -36,122 +36,122 @@ export interface AdminSection {
   href: string;
   icon: LucideIcon;
   description: string;
-  /** Singular noun for detail pages, e.g. "product". */
+  /** The noun on a detail page's title, e.g. "produktin" (Ndrysho produktin). */
   item?: string;
 }
 
-/** Admin sidebar, grouped. The admin UI is English-only for now. */
+/** Admin sidebar, grouped. The admin UI is in Albanian. */
 export const adminNavigation: ReadonlyArray<{ group: string; sections: AdminSection[] }> = [
   {
-    group: "Overview",
+    group: "Përmbledhje",
     sections: [
       {
         key: "dashboard",
-        label: "Dashboard",
+        label: "Paneli",
         href: adminRoutes.dashboard,
         icon: LayoutDashboard,
-        description: "Overview of content, requests and system status.",
+        description: "Përmbledhje e përmbajtjes, kërkesave dhe gjendjes së sistemit.",
       },
     ],
   },
   {
-    group: "Catalogue & content",
+    group: "Katalogu dhe përmbajtja",
     sections: [
       {
         key: "products",
-        label: "Products",
+        label: "Produktet",
         href: adminRoutes.products,
         icon: Package,
-        description: "Products, technical data, packaging and documents.",
-        item: "product",
+        description: "Produktet, të dhënat teknike, paketimi dhe dokumentet.",
+        item: "produktin",
       },
       {
         key: "categories",
-        label: "Categories",
+        label: "Kategoritë",
         href: adminRoutes.categories,
         icon: Tags,
-        description: "Product categories and their order.",
+        description: "Kategoritë e produkteve dhe renditja e tyre.",
       },
       {
         key: "solutions",
-        label: "Solutions",
+        label: "Zgjidhjet",
         href: adminRoutes.solutions,
         icon: Layers,
-        description: "Construction systems and the products they use.",
-        item: "solution",
+        description: "Sistemet e ndërtimit dhe produktet që përdorin.",
+        item: "zgjidhjen",
       },
       {
         key: "projects",
-        label: "Projects",
+        label: "Projektet",
         href: adminRoutes.projects,
         icon: Building2,
-        description: "Reference projects and their photography.",
-        item: "project",
+        description: "Projektet referuese dhe fotografitë e tyre.",
+        item: "projektin",
       },
       {
         key: "resources",
-        label: "Resources",
+        label: "Dokumentet",
         href: adminRoutes.resources,
         icon: FileText,
-        description: "Data sheets, catalogues, certificates and guides.",
-        item: "resource",
+        description: "Fletët teknike, katalogët, certifikatat dhe udhëzuesit.",
+        item: "dokumentin",
       },
     ],
   },
   {
-    group: "Tools",
+    group: "Mjetet",
     sections: [
       {
         key: "calculator",
-        label: "Calculator",
+        label: "Kalkulatori",
         href: adminRoutes.calculator,
         icon: Calculator,
-        description: "Consumption rules and coverage values used by the calculator.",
+        description: "Rregullat e shpenzimit dhe vlerat e mbulimit që përdor kalkulatori.",
       },
     ],
   },
   {
-    group: "Requests",
+    group: "Kërkesat",
     sections: [
       {
         key: "orders",
-        label: "Orders",
+        label: "Porositë",
         href: adminRoutes.orders,
         icon: ShoppingBag,
-        description: "Orders sent from the website shop, to confirm with each customer.",
+        description: "Porositë nga shitorja e faqes, për t'u konfirmuar me secilin klient.",
       },
       {
         key: "quotes",
-        label: "Quotes",
+        label: "Ofertat",
         href: adminRoutes.quotes,
         icon: Inbox,
-        description: "Quote requests submitted from the website.",
+        description: "Kërkesat për ofertë të dërguara nga faqja.",
       },
       {
         key: "contacts",
-        label: "Contacts",
+        label: "Mesazhet",
         href: adminRoutes.contacts,
         icon: Mail,
-        description: "Messages sent through the contact form.",
+        description: "Mesazhet e dërguara nga formulari i kontaktit.",
       },
     ],
   },
   {
-    group: "System",
+    group: "Sistemi",
     sections: [
       {
         key: "users",
-        label: "Users",
+        label: "Përdoruesit",
         href: adminRoutes.users,
         icon: Users,
-        description: "Administrator accounts and roles.",
+        description: "Llogaritë e administratorëve dhe rolet.",
       },
       {
         key: "settings",
-        label: "Settings",
+        label: "Cilësimet",
         href: adminRoutes.settings,
         icon: Settings,
-        description: "Company details, languages and site settings.",
+        description: "Të dhënat e kompanisë, gjuhët dhe cilësimet e faqes.",
       },
     ],
   },

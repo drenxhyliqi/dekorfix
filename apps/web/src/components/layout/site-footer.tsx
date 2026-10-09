@@ -28,7 +28,7 @@ export async function SiteFooter() {
     { label: t.nav.projects, path: routes.projects },
     { label: t.nav.projectStudio, path: routes.projectStudio },
     { label: t.nav.calculator, path: routes.calculator },
-    { label: t.nav.whereToBuy, path: routes.whereToBuy },
+    { label: t.nav.export, path: routes.export },
     { label: t.nav.about, path: routes.about },
     { label: t.nav.contact, path: routes.contact },
   ];
@@ -43,12 +43,12 @@ export async function SiteFooter() {
             </Link>
             <p className="mt-8 max-w-sm text-small text-text-secondary">{t.footer.description}</p>
             <ButtonLink
-              href={href(routes.requestQuote)}
+              href={href(routes.contactForm())}
               variant="secondary"
               className="mt-10"
               trailingIcon={<ArrowRight aria-hidden className="size-4" strokeWidth={1.75} />}
             >
-              {t.nav.requestQuote}
+              {t.nav.talk}
             </ButtonLink>
           </div>
 

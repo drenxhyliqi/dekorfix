@@ -66,7 +66,6 @@ export function ProductHero({
   const lineWords = lines.map((line) => line.split(" ").filter(Boolean));
   const totalWords = lineWords.flat().length;
   const afterHeadline = WORD_DELAY + totalWords * WORD_STAGGER + 200;
-  const [maker, place] = copy.label.split(" · ");
   const trust = [
     { icon: BadgeCheck, text: copy.trust.iso },
     { icon: MapPin, text: copy.trust.made },
@@ -107,15 +106,7 @@ export function ProductHero({
       </div>
 
       <div className="container-page relative flex min-h-[calc(100svh-4rem)] flex-col items-center justify-center pb-28 pt-16 text-center xl:min-h-[calc(100svh-4.5rem)]">
-        <p className="hh-rise hh-badge" style={{ "--rise": "0ms" } as CSSProperties}>
-          <span aria-hidden className="hh-badge-dot" />
-          <span>
-            {maker}
-            {place && <span className="hidden sm:inline text-text-tertiary"> · {place}</span>}
-          </span>
-        </p>
-
-        <h1 id="hero-title" className="hh-title mt-8 text-balance text-text md:mt-10">
+        <h1 id="hero-title" className="hh-title text-balance text-text">
           {lineWords.map((words, lineIndex) => {
             const before = lineWords.slice(0, lineIndex).flat().length;
             const sub = lineIndex === lineWords.length - 1;

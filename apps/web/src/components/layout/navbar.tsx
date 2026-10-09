@@ -183,11 +183,11 @@ function Navbar({ model, pathname }: { model: NavModel; pathname: string | null 
           </div>
           <div className="ml-3 hidden sm:block">
             <ButtonLink
-              href={model.requestQuoteHref}
+              href={model.talkHref}
               size="sm"
               trailingIcon={<ArrowRight aria-hidden className="size-4" strokeWidth={1.75} />}
             >
-              {nav.requestQuote}
+              {nav.talk}
             </ButtonLink>
           </div>
           <button

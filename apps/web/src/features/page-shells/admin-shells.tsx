@@ -28,13 +28,13 @@ type IdParams = Promise<{ id: string }>;
 export function adminDetailShell(key: "products" | "solutions" | "projects" | "resources") {
   const section = adminSections[key];
   const item = section.item ?? "item";
-  const metadata: Metadata = { title: `Edit ${item}` };
+  const metadata: Metadata = { title: `Ndrysho ${item}` };
 
   function Page({ params }: { params: IdParams }) {
     return (
       <>
         <AdminPageHeader
-          title={`Edit ${item}`}
+          title={`Ndrysho ${item}`}
           description={section.description}
           meta={
             <Suspense fallback={<Badge variant="outline">ID …</Badge>}>

@@ -2,9 +2,10 @@
  * Layer system (classes prefixed `ls-`; the project's Turbopack rule compiles
  * every .css file as global CSS, so CSS modules are not used).
  *
- * A drawn wall (layer-wall.tsx) beside the steps. LayerWatcher paints each
- * layer on with the scroll and marks layers, packshot rows and steps as
- * done / active / next (`data-state`); the finished wall fades in last.
+ * A 3D house (layer-house/) beside the steps. LayerWatcher feeds it the
+ * scroll progress, so each layer rises up the walls, and marks the stage
+ * labels, packshot rows and steps as done / active / next (`data-state`).
+ * Without WebGL the drawn wall (layer-wall.tsx) is shown instead.
  */
 
 /* ---- Layout ----------------------------------------------------------------- */
@@ -81,6 +82,93 @@
   height: auto;
 }
 
+/* ---- The 3D house ------------------------------------------------------------- */
+
+.ls-house {
+  position: relative;
+  aspect-ratio: 640 / 520;
+  /* A soft sky behind the house. */
+  background: linear-gradient(180deg, #e2ebf0 0%, #eef1f0 58%);
+}
+
+.ls-house canvas {
+  display: block;
+}
+
+.ls-house > .ls-wall {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+}
+
+/* While three.js loads: a soft shimmer. */
+.ls-house-loading {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 30%, rgb(255 255 255 / 0.6) 50%, transparent 70%);
+  background-size: 200% 100%;
+  animation: ls-shimmer 1.4s linear infinite;
+}
+
+@keyframes ls-shimmer {
+  from {
+    background-position: 150% 0;
+  }
+  to {
+    background-position: -50% 0;
+  }
+}
+
+/* The stage on screen, top left: only the current one is shown. */
+.ls-house-stages {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  pointer-events: none;
+}
+
+.ls-house-stage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.75rem 0.375rem 0.375rem;
+  border-radius: var(--radius-sm);
+  background: rgb(255 255 255 / 0.88);
+  box-shadow: 0 0.5rem 1.25rem -0.75rem rgb(13 13 12 / 0.35);
+  backdrop-filter: blur(6px);
+  color: var(--color-text);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  translate: 0 -0.375rem;
+  transition:
+    opacity 0.35s var(--ease-out),
+    translate 0.35s var(--ease-out);
+}
+
+.ls-house-stage[data-state="active"] {
+  opacity: 1;
+  translate: 0 0;
+}
+
+.ls-house-number {
+  display: inline-flex;
+  min-width: 1.625rem;
+  height: 1.625rem;
+  align-items: center;
+  justify-content: center;
+  padding-inline: 0.25rem;
+  border-radius: 3px;
+  background: var(--color-brand);
+  color: #fff;
+  font-size: 0.6875rem;
+  font-variant-numeric: tabular-nums;
+}
+
 /* Numbered tags over each strip; the current one in brand red. */
 .ls-tag {
   opacity: 1;
@@ -130,7 +218,7 @@
 }
 
 .ls-swatch--all {
-  background: conic-gradient(#c9535a 0 25%, #a29f98 0 50%, #d8d5ce 0 75%, #e3d0af 0);
+  background: conic-gradient(#c9535a 0 20%, #a29f98 0 40%, #e0392f 0 60%, #d8d5ce 0 80%, #e3d0af 0);
 }
 
 /* ---- The current step's products -------------------------------------------- */
@@ -182,6 +270,16 @@
 @media (min-width: 1024px) {
   .ls-step {
     min-height: 72svh;
+  }
+
+  /*
+   * The finished house ends the section, where the pinned visual stops: the
+   * last step is as tall as the visual, and its text is centred on the house
+   * (above the product row), not on the whole visual.
+   */
+  .ls-step:last-child {
+    min-height: calc(100svh - 9rem);
+    padding-bottom: calc(clamp(4.5rem, 12svh, 9rem) + clamp(0.75rem, 2.5svh, 2.5rem) + 2.5rem);
   }
 }
 
@@ -236,7 +334,12 @@
 @media (prefers-reduced-motion: reduce) {
   .ls-tag,
   .ls-pack-row,
-  .ls-step {
+  .ls-step,
+  .ls-house-stage {
     transition: none;
+  }
+
+  .ls-house-loading {
+    animation: none;
   }
 }

@@ -59,7 +59,7 @@ export function FormsShowcase() {
       <div className="flex justify-end gap-3 border-t border-border pt-8">
         <Button variant="secondary">Cancel</Button>
         <Button type="submit" variant="accent">
-          Request a Quote
+          Contact us
         </Button>
       </div>
     </form>

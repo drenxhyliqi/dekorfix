@@ -21,7 +21,7 @@ const SEAL_CIRCUMFERENCE = 2 * Math.PI * SEAL_RADIUS;
  */
 export function ClosingCta({ t, locale }: { t: Dictionary; locale: Locale }) {
   const copy = t.home.cta;
-  const quoteHref = localizePath(locale, routes.requestQuote);
+  const quoteHref = localizePath(locale, routes.contactForm("project"));
   // The question mark in brand red.
   const question = copy.title.endsWith("?") ? copy.title.slice(0, -1) : copy.title;
   const asks = copy.title.endsWith("?");

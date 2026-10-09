@@ -8,7 +8,8 @@ import { getProducts } from "@/content/products";
 import { localizePath, type Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries/en";
 
-import { LAYER_COLORS, LayerWall } from "./layer-wall";
+import { LayerHouse } from "./layer-house/layer-house";
+import { LAYER_COLORS } from "./layer-wall";
 import { LayerWatcher } from "./layer-watcher";
 import "./layer-system.css";
 
@@ -23,6 +24,10 @@ const STEPS = [
     path: routes.productCategory("adhesives"),
   },
   {
+    products: ["fiberglass-mesh-red", "fiberglass-mesh-white"],
+    path: routes.productCategory("mesh"),
+  },
+  {
     products: ["confix", "gletex", "niveler"],
     path: routes.productCategory("plasters"),
   },
@@ -30,9 +35,9 @@ const STEPS = [
 ] as const;
 
 /**
- * Homepage "layer by layer" section. A drawn wall stays in view while the steps
- * scroll past: each step wipes its layer onto the wall, in a colour taken from
- * its products, and shows those products; the last step shows the finished wall.
+ * Homepage "layer by layer" section. A 3D house stays in view while the steps
+ * scroll past: each step applies its layer to the walls and shows its
+ * products; the last step shows the finished house.
  */
 export function LayerSystem({ t, locale }: { t: Dictionary; locale: Locale }) {
   const copy = t.home.system;
@@ -78,7 +83,15 @@ export function LayerSystem({ t, locale }: { t: Dictionary; locale: Locale }) {
           <div className="ls-pin grid gap-x-12 lg:grid-cols-12">
             <div aria-hidden className="ls-visual lg:col-span-6">
               <div className="ls-wall-frame">
-                <LayerWall />
+                <LayerHouse
+                  stages={[
+                    ...steps.map((step, index) => ({
+                      number: String(index + 1).padStart(2, "0"),
+                      title: step.copy.title,
+                    })),
+                    { number: "✓", title: copy.finished.title },
+                  ]}
+                />
               </div>
               <div className="ls-packs">
                 {steps.map((step, index) => (

@@ -1,0 +1,231 @@
+[
+  {
+    "slug": "styrofix",
+    "name": "Styrofix",
+    "category": "adhesives",
+    "unit": "pack",
+    "summary_sq": "Ngjitës për stiropor",
+    "summary_en": "Adhesive for EPS insulation boards",
+    "image": "/images/products/styrofix.webp",
+    "pack_sizes_kg": [],
+    "coverage_min_m2_per_kg": null,
+    "coverage_max_m2_per_kg": null,
+    "position": 10
+  },
+  {
+    "slug": "styrofiber",
+    "name": "Styrofiber",
+    "category": "adhesives",
+    "unit": "pack",
+    "summary_sq": "Ngjitës për stiropor me fibra",
+    "summary_en": "Fibre-reinforced adhesive for EPS boards",
+    "image": "/images/products/styrofiber.webp",
+    "pack_sizes_kg": [],
+    "coverage_min_m2_per_kg": null,
+    "coverage_max_m2_per_kg": null,
+    "position": 20
+  },
+  {
+    "slug": "sipofix",
+    "name": "Sipofix",
+    "category": "adhesives",
+    "unit": "pack",
+    "summary_sq": "Ngjitës për blloka siporeksi",
+    "summary_en": "Adhesive for aerated concrete blocks",
+    "image": "/images/products/sipofix.webp",
+    "pack_sizes_kg": [],
+    "coverage_min_m2_per_kg": null,
+    "coverage_max_m2_per_kg": null,
+    "position": 30
+  },
+  {
+    "slug": "thermofix",
+    "name": "Thermofix",
+    "category": "adhesives",
+    "unit": "pack",
+    "summary_sq": "Ngjitës termorezistues për pllaka",
+    "summary_en": "Heat-resistant tile adhesive",
+    "image": "/images/products/thermofix.webp",
+    "pack_sizes_kg": [
+      25
+    ],
+    "coverage_min_m2_per_kg": null,
+    "coverage_max_m2_per_kg": null,
+    "position": 40
+  },
+  {
+    "slug": "cerafix",
+    "name": "Cerafix",
+    "category": "adhesives",
+    "unit": "pack",
+    "summary_sq": "Ngjitës për qeramikë",
+    "summary_en": "Ceramic tile adhesive",
+    "image": "/images/products/cerafix.webp",
+    "pack_sizes_kg": [
+      25
+    ],
+    "coverage_min_m2_per_kg": null,
+    "coverage_max_m2_per_kg": null,
+    "position": 50
+  },
+  {
+    "slug": "megafix",
+    "name": "Megafix",
+    "category": "adhesives",
+    "unit": "pack",
+    "summary_sq": "Ngjitës special për pllaka",
+    "summary_en": "Special tile adhesive",
+    "image": "/images/products/megafix.webp",
+    "pack_sizes_kg": [
+      25
+    ],
+    "coverage_min_m2_per_kg": null,
+    "coverage_max_m2_per_kg": null,
+    "position": 60
+  },
+  {
+    "slug": "fasader",
+    "name": "Fasader",
+    "category": "facades",
+    "unit": "pack",
+    "summary_sq": "Fasadë dekorative",
+    "summary_en": "Decorative facade render",
+    "image": "/images/products/fasader.webp",
+    "pack_sizes_kg": [],
+    "coverage_min_m2_per_kg": null,
+    "coverage_max_m2_per_kg": null,
+    "position": 70
+  },
+  {
+    "slug": "baza",
+    "name": "Baza",
+    "category": "bases",
+    "unit": "pack",
+    "summary_sq": "Bazë për beton",
+    "summary_en": "Primer for concrete",
+    "image": "/images/products/baza.webp",
+    "pack_sizes_kg": [
+      5,
+      15,
+      20
+    ],
+    "coverage_min_m2_per_kg": 5,
+    "coverage_max_m2_per_kg": 6.67,
+    "position": 80
+  },
+  {
+    "slug": "beton-kontakt",
+    "name": "Beton Kontakt",
+    "category": "bases",
+    "unit": "pack",
+    "summary_sq": "Beton kontakt",
+    "summary_en": "Bonding primer for concrete",
+    "image": "/images/products/beton-kontakt.webp",
+    "pack_sizes_kg": [
+      5,
+      20
+    ],
+    "coverage_min_m2_per_kg": 2,
+    "coverage_max_m2_per_kg": 4,
+    "position": 90
+  },
+  {
+    "slug": "fasadex",
+    "name": "Fasadex",
+    "category": "paints",
+    "unit": "pack",
+    "summary_sq": "Ngjyrë dispersive e brendshme",
+    "summary_en": "Interior dispersion paint",
+    "image": "/images/products/fasadex.webp",
+    "pack_sizes_kg": [
+      25
+    ],
+    "coverage_min_m2_per_kg": 3.5,
+    "coverage_max_m2_per_kg": 4,
+    "position": 100
+  },
+  {
+    "slug": "premium",
+    "name": "Premium",
+    "category": "paints",
+    "unit": "pack",
+    "summary_sq": "Ngjyrë e brendshme",
+    "summary_en": "Interior paint",
+    "image": "/images/products/premium.webp",
+    "pack_sizes_kg": [],
+    "coverage_min_m2_per_kg": null,
+    "coverage_max_m2_per_kg": null,
+    "position": 110
+  },
+  {
+    "slug": "confix",
+    "name": "Confix",
+    "category": "plasters",
+    "unit": "pack",
+    "summary_sq": "Llaç i gatshëm",
+    "summary_en": "Ready-mixed plaster",
+    "image": "/images/products/confix.webp",
+    "pack_sizes_kg": [
+      25
+    ],
+    "coverage_min_m2_per_kg": null,
+    "coverage_max_m2_per_kg": null,
+    "position": 120
+  },
+  {
+    "slug": "gletex",
+    "name": "Gletex",
+    "category": "plasters",
+    "unit": "pack",
+    "summary_sq": "Glet cilësor",
+    "summary_en": "High-quality skim coat",
+    "image": "/images/products/gletex.webp",
+    "pack_sizes_kg": [
+      20
+    ],
+    "coverage_min_m2_per_kg": null,
+    "coverage_max_m2_per_kg": null,
+    "position": 130
+  },
+  {
+    "slug": "niveler",
+    "name": "Niveler",
+    "category": "plasters",
+    "unit": "pack",
+    "summary_sq": "Masë rrafshuese",
+    "summary_en": "Levelling compound",
+    "image": "/images/products/niveler.webp",
+    "pack_sizes_kg": [
+      25
+    ],
+    "coverage_min_m2_per_kg": null,
+    "coverage_max_m2_per_kg": null,
+    "position": 140
+  },
+  {
+    "slug": "fiberglass-mesh-red",
+    "name": "Fiberglass Mesh Red",
+    "category": "mesh",
+    "unit": "roll",
+    "summary_sq": "Rrjetë fiberglass rezistente ndaj alkaleve, e kuqe",
+    "summary_en": "Alkali-resistant fiberglass mesh, red",
+    "image": "/images/products/fiberglass-mesh-red.webp",
+    "pack_sizes_kg": [],
+    "coverage_min_m2_per_kg": null,
+    "coverage_max_m2_per_kg": null,
+    "position": 150
+  },
+  {
+    "slug": "fiberglass-mesh-white",
+    "name": "Fiberglass Mesh White",
+    "category": "mesh",
+    "unit": "roll",
+    "summary_sq": "Rrjetë fiberglass rezistente ndaj alkaleve, e bardhë",
+    "summary_en": "Alkali-resistant fiberglass mesh, white",
+    "image": "/images/products/fiberglass-mesh-white.webp",
+    "pack_sizes_kg": [],
+    "coverage_min_m2_per_kg": null,
+    "coverage_max_m2_per_kg": null,
+    "position": 160
+  }
+]

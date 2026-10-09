@@ -41,6 +41,9 @@ class Settings(BaseSettings):
     postgres_password: str = ""
     database_echo: bool = False
 
+    # Uploaded files (product images), served at /media. A volume in Docker.
+    media_root: Path = API_ROOT / "media"
+
     # Comma-separated in the environment, e.g. "http://localhost:3000,https://dekorfix.net".
     cors_origins: Annotated[list[str], NoDecode] = []
 

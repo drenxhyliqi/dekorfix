@@ -73,16 +73,32 @@ to the visitor's preferred language. All paths live in `src/config/routes.ts`.
 /[lang]/privacy  /terms  /cookies
 /[lang]/design-system        internal component reference (noindex)
 
+/admin/login                 admin sign-in
 /admin                       dashboard (separate root layout, not localized, noindex)
 /admin/products[/id]  /admin/categories  /admin/solutions[/id]  /admin/projects[/id]
 /admin/resources[/id] /admin/calculator  /admin/quotes  /admin/contacts
 /admin/users  /admin/settings
 ```
 
-**Admin access:** there is no authentication yet, so `/admin` is not linked
-from the public site. `src/proxy.ts` allows it in development and returns 404
-in production unless `ADMIN_PREVIEW=true`. Replace that check with a session
-check when admin login is built.
+**Admin access:** `/admin` needs a signed-in admin (`/admin/login`). The API
+keeps users and sessions (`/api/v1/auth/login`, `/me`, `/logout`; scrypt password
+hashes; 7-day sessions; 5 failed attempts lock an email for 15 minutes). The web
+app keeps the session token in an httpOnly cookie, and `src/proxy.ts` checks it
+with the API on every admin request. Create an admin (the password is asked for):
+
+```bash
+docker compose exec api python -m app.cli create-admin --email you@dekorfix.net --name "Your Name"
+docker compose exec api python -m app.cli set-password --email you@dekorfix.net
+```
+
+The dashboard (`/admin`) reads `GET /api/v1/admin/dashboard?days=7|30|90`. To
+preview it on an empty development database, add clearly marked demo orders and
+messages (names "Demo …", emails `@demo.invalid`; refused in production), and
+remove exactly those again with `--clear`:
+
+```bash
+docker compose exec api python -m app.cli seed-demo          # or: seed-demo --clear
+```
 
 ## Web app structure & design system
 
@@ -175,7 +191,6 @@ Copy `.env.example` to `.env`. `.env` is git-ignored and must never be committed
 | `NEXT_PUBLIC_API_URL`                        | Web              | API URL used by the browser. Inlined at **build** time, so never put secrets here. |
 | `API_INTERNAL_URL`                           | Web (server)     | API URL used by the Next.js server. Set by Compose to `http://api:8000`. |
 | `SITE_URL`                                   | Web (server)     | Public origin for canonical and Open Graph URLs.                       |
-| `ADMIN_PREVIEW`                              | Web (server)     | `true` opens `/admin` in production builds. Temporary, until admin auth exists. |
 
 ## Quality checks
 

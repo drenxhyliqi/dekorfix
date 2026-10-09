@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 
+import { layerProgress } from "./layer-progress";
 import { PAINT_OVERHANG, PAINT_STROKES, WALL_WIDTH } from "./layer-wall";
 
 /** How far each stroke starts after the one before it, as a share of the layer's progress. */
@@ -11,6 +12,7 @@ const NARROW = "(max-width: 1023px)";
 /**
  * Drives the "layer by layer" section from the scroll. Renders nothing.
  *
+ * - Shares each step's progress with the 3D house (layer-progress.ts).
  * - Paints each layer on as its step progresses: the layer's strokes grow left
  *   to right from its own edge, one after another, and recede when scrolling
  *   back. With the last step the finish is rolled over the whole wall, then
@@ -31,6 +33,7 @@ export function LayerWatcher({ sectionId }: { sectionId: string }) {
     const steps = Array.from(section.querySelectorAll<HTMLElement>("[data-step]"));
     const stateful = Array.from(section.querySelectorAll<HTMLElement | SVGElement>("[data-layer]"));
     const strokes = Array.from(section.querySelectorAll<SVGRectElement>("[data-paint]"));
+    const stages = Array.from(section.querySelectorAll<HTMLElement>("[data-stage]"));
     const windowPane = section.querySelector<SVGGElement>(".ls-window");
     const narrow = window.matchMedia(NARROW);
     const clamp = (value: number) => Math.min(1, Math.max(0, value));
@@ -72,6 +75,15 @@ export function LayerWatcher({ sectionId }: { sectionId: string }) {
       frame = 0;
       const { progress, active } = measure();
       show(active);
+      // The 3D house reads these on its next frame.
+      layerProgress.values = progress;
+      layerProgress.active = active;
+      // The house's label names the layer going on now, which leads the step text a little.
+      let stage = 0;
+      progress.forEach((value, index) => {
+        if (value > 0.04) stage = index;
+      });
+      for (const el of stages) el.dataset.state = Number(el.dataset.stage) === stage ? "active" : "next";
       progress.forEach((value, layer) => {
         let p = value;
         // The finished wall: the finish is rolled over the first 60%, then the window appears.

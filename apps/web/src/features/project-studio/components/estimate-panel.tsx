@@ -82,7 +82,7 @@ export function EstimatePanel() {
       </div>
 
       <ButtonLink
-        href={`${localizePath(locale, routes.requestQuote)}?from=project-studio`}
+        href={localizePath(locale, routes.contactForm("project"))}
         variant="accent"
         size="lg"
         className="mt-8 w-full"

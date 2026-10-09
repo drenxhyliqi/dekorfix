@@ -10,6 +10,8 @@ export interface NavLinkItem {
 
 export interface NavMenuItem extends NavLinkItem {
   description?: string;
+  /** A product packshot for the mobile menu's tiles. */
+  image?: string;
 }
 
 export type NavMenuKey = "products" | "finder";
@@ -17,16 +19,9 @@ export type NavMenuKey = "products" | "finder";
 export interface NavMenu {
   heading: string;
   items: NavMenuItem[];
+  /** One line under the heading. */
+  intro: string;
   all: NavLinkItem;
-  /** Feature teaser shown beside the links. */
-  promo: {
-    eyebrow: string;
-    title: string;
-    text: string;
-    cta: string;
-    href: string;
-    badge?: string;
-  };
 }
 
 /** Serializable navigation model built on the server and passed to client UI. */
@@ -36,7 +31,8 @@ export interface NavModel {
   primary: Array<NavLinkItem & { menu?: NavMenuKey; accent?: boolean; exact?: boolean }>;
   menus: Record<NavMenuKey, NavMenu>;
   contactHref: string;
-  requestQuoteHref: string;
+  /** The contact form, for the header's main button. */
+  talkHref: string;
   searchHref: string;
   loginHref: string;
   contact: {

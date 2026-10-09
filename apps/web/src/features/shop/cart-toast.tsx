@@ -1,6 +1,6 @@
 "use client";
 
-import { CircleCheck, X } from "lucide-react";
+import { ChevronRight, CircleCheck, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
@@ -14,8 +14,9 @@ const SHOW_MS = 4000;
 const LEAVE_MS = 200;
 
 /**
- * "Added to cart" toast: confirms an addition without opening the cart panel
- * (only the header's cart button does that). A new addition replaces it.
+ * "Added to cart" notification: a small one-line confirmation that opens the
+ * cart when tapped, without opening the cart panel (only the header's cart
+ * button does that). A new addition replaces it.
  */
 export function CartToast() {
   const { toast, dismissToast, products, copy, links } = useCart();
@@ -64,38 +65,35 @@ export function CartToast() {
           onFocus={() => setPaused(true)}
           onBlur={() => setPaused(false)}
         >
-          <span className="relative size-14 shrink-0 overflow-hidden rounded-xs border border-border bg-surface-muted">
-            <Image src={product.image} alt="" fill sizes="56px" className="object-contain p-1" />
-          </span>
-          <div className="min-w-0 flex-1">
-            <p className="flex items-center gap-1.5 text-small font-medium text-text">
-              <CircleCheck aria-hidden className="size-4 shrink-0 text-brand" strokeWidth={1.75} />
-              {copy.added}
-            </p>
-            <p className="mt-0.5 truncate text-small text-text-secondary">
-              {toast.quantity} × {product.name}
-              {toast.more > 0 && <span className="text-text-tertiary"> {copy.toastMore.replace("{n}", String(toast.more))}</span>}
-            </p>
-            <div className="flex items-end justify-between gap-3">
-              <p className="min-w-0 text-caption tabular-nums text-text-tertiary">
-                {format.packLine(product.unit, toast.packKg)}
-              </p>
-              <Link
-                href={links.cart}
-                onClick={() => close(toast.id)}
-                className="shrink-0 text-small font-medium text-text underline underline-offset-4 hover:text-brand-text"
-              >
-                {copy.cart.view}
-              </Link>
-            </div>
-          </div>
+          {/* The whole notification opens the cart. */}
+          <Link href={links.cart} onClick={() => close(toast.id)} className="sh-toast-link group/toast">
+            <span className="relative size-9 shrink-0 overflow-hidden rounded-xs bg-surface-muted">
+              <Image src={product.image} alt="" fill sizes="36px" className="object-contain p-0.5" />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="flex items-center gap-1.5 text-small font-medium leading-tight text-text">
+                <CircleCheck aria-hidden className="size-3.5 shrink-0 text-brand" strokeWidth={2} />
+                {copy.added}
+              </span>
+              <span className="mt-0.5 block truncate text-caption leading-tight text-text-secondary">
+                {toast.quantity} × {product.name} · {format.packLine(product.unit, toast.packKg)}
+                {toast.more > 0 && ` ${copy.toastMore.replace("{n}", String(toast.more))}`}
+              </span>
+            </span>
+            <span className="sr-only">{copy.cart.view}</span>
+            <ChevronRight
+              aria-hidden
+              className="size-4 shrink-0 text-text-tertiary transition-transform duration-200 group-hover/toast:translate-x-0.5 group-hover/toast:text-text"
+              strokeWidth={1.75}
+            />
+          </Link>
           <button
             type="button"
             onClick={() => close(toast.id)}
             aria-label={copy.dismiss}
-            className="-mr-1.5 inline-flex size-8 shrink-0 items-center justify-center self-start rounded-sm text-text-tertiary transition-colors duration-150 hover:bg-surface-muted hover:text-text"
+            className="inline-flex size-7 shrink-0 items-center justify-center rounded-sm text-text-tertiary transition-colors duration-150 hover:bg-surface-muted hover:text-text"
           >
-            <X aria-hidden className="size-4" strokeWidth={1.75} />
+            <X aria-hidden className="size-3.5" strokeWidth={1.75} />
           </button>
         </div>
       )}
