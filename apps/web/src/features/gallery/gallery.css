@@ -1,0 +1,217 @@
+/*
+ * Gallery (classes prefixed `gl-`; every .css file is compiled as global CSS,
+ * so CSS modules are not used).
+ */
+
+.gl-chip {
+  display: inline-flex;
+  height: 2.5rem;
+  align-items: center;
+  gap: 0.625rem;
+  padding-inline: 1rem 0.5rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  font-size: 0.9375rem;
+  white-space: nowrap;
+  transition:
+    background-color 0.2s,
+    border-color 0.2s,
+    color 0.2s;
+}
+
+.gl-chip:hover {
+  border-color: var(--color-text);
+}
+
+.gl-chip-count {
+  display: inline-grid;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  place-items: center;
+  padding-inline: 0.375rem;
+  border-radius: var(--radius-xs);
+  background: var(--color-surface-muted);
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+}
+
+.gl-chip--current {
+  border-color: var(--color-inverse);
+  background: var(--color-inverse);
+  color: var(--color-inverse-text);
+}
+
+.gl-chip--current .gl-chip-count {
+  background: var(--color-brand);
+  color: #fff;
+}
+
+/* ---- Masonry grid: photos keep their own proportions -------------------------- */
+
+.gl-grid {
+  columns: 1;
+  column-gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .gl-grid {
+    columns: 2;
+  }
+}
+
+@media (min-width: 1024px) {
+  .gl-grid {
+    columns: 3;
+    column-gap: 1.5rem;
+  }
+}
+
+.gl-item {
+  margin-bottom: 1rem;
+  break-inside: avoid;
+  animation: gl-in 0.7s var(--ease-out) calc(var(--i) * 50ms) both;
+}
+
+@media (min-width: 1024px) {
+  .gl-item {
+    margin-bottom: 1.5rem;
+  }
+}
+
+@keyframes gl-in {
+  from {
+    opacity: 0;
+    translate: 0 1.25rem;
+  }
+}
+
+.gl-tile {
+  position: relative;
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-muted);
+  cursor: zoom-in;
+}
+
+.gl-photo {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: scale 0.7s var(--ease-out);
+}
+
+.gl-tile:hover .gl-photo,
+.gl-tile:focus-visible .gl-photo {
+  scale: 1.03;
+}
+
+.gl-zoom {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  display: inline-flex;
+  width: 2.25rem;
+  height: 2.25rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  background: var(--color-background);
+  color: var(--color-text);
+  opacity: 0;
+  translate: 0 -0.25rem;
+  transition:
+    opacity 0.25s,
+    translate 0.25s var(--ease-out);
+}
+
+.gl-tile:hover .gl-zoom,
+.gl-tile:focus-visible .gl-zoom {
+  opacity: 1;
+  translate: 0;
+}
+
+/* ---- Viewer: full screen, on a light backdrop ----------------------------- */
+
+.gl-viewer {
+  width: 100%;
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: rgb(255 255 255 / 0.97);
+  color: var(--color-text);
+}
+
+.gl-viewer::backdrop {
+  background: rgb(255 255 255 / 0.6);
+  backdrop-filter: blur(8px);
+}
+
+.gl-viewer[open] {
+  animation: gl-fade 0.25s var(--ease-out);
+}
+
+@keyframes gl-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+.gl-full {
+  animation: gl-fade 0.35s var(--ease-out);
+}
+
+.gl-control {
+  display: inline-flex;
+  width: 2.75rem;
+  height: 2.75rem;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-background);
+  color: var(--color-text);
+  transition:
+    background-color 0.15s,
+    border-color 0.15s,
+    color 0.15s;
+}
+
+.gl-control:hover {
+  border-color: var(--color-inverse);
+  background: var(--color-inverse);
+  color: var(--color-inverse-text);
+}
+
+/* Side arrows from tablet up; phones get arrows under the photo instead. */
+.gl-step {
+  position: absolute;
+  top: 50%;
+  z-index: 1;
+  display: none;
+  translate: 0 -50%;
+}
+
+@media (min-width: 640px) {
+  .gl-step {
+    display: inline-flex;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gl-item,
+  .gl-viewer[open],
+  .gl-full {
+    animation: none;
+  }
+
+  .gl-photo {
+    transition: none;
+  }
+}

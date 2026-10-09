@@ -1,4 +1,4 @@
-import { productCategories, primaryNav, solutionAreas } from "@/config/navigation";
+import { finderJobs, productCategories, primaryNav } from "@/config/navigation";
 import { routes } from "@/config/routes";
 import { company } from "@/config/site";
 import { localizePath } from "@/i18n/config";
@@ -42,14 +42,15 @@ export async function SiteHeader() {
           badge: m.comingSoon,
         },
       },
-      solutions: {
-        heading: m.solutionAreas,
-        items: solutionAreas.map((area) => ({
-          key: area.key,
-          label: t.solutionAreas[area.key],
-          href: href(area.path),
+      finder: {
+        heading: m.finderHeading,
+        items: finderJobs.map((job) => ({
+          key: job.key,
+          label: t.finder.jobs[job.key].title,
+          description: t.finder.jobs[job.key].text,
+          href: href(job.path),
         })),
-        all: { key: "all", label: m.allSolutions, href: href(routes.solutions) },
+        all: { key: "all", label: m.finderAll, href: href(routes.finder) },
         promo: {
           eyebrow: m.calculatorEyebrow,
           title: m.calculatorTitle,

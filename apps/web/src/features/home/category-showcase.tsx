@@ -16,9 +16,10 @@ import "./category-showcase.css";
 const MAX_PACKS = 3;
 
 /**
- * Homepage product range: the five Dekorfix categories as cards, Adhesives as
- * the tall feature card. Each card fans out real packshots from its category
- * and links to that category in the catalog.
+ * Homepage product range: the Dekorfix categories as cards, Adhesives as the
+ * tall feature card beside four compact ones, and the sixth (Mesh) as a wide
+ * card across the row below. Each card fans out real packshots from its
+ * category and links to that category in the catalog.
  */
 export function CategoryShowcase({ t, locale }: { t: Dictionary; locale: Locale }) {
   const copy = t.home.range;
@@ -48,19 +49,28 @@ export function CategoryShowcase({ t, locale }: { t: Dictionary; locale: Locale 
           </Link>
         </header>
 
-        <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 lg:grid-rows-2">
+        <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {productCategories.map((category, index) => {
             const feature = index === 0;
+            const wide = index === 5;
             const name = t.productCategories[category.key].name;
             const packs = products.filter((product) => product.category === category.key).slice(0, MAX_PACKS);
             return (
               <li
                 key={category.key}
-                className={cn("cs-reveal", feature && "md:col-span-2 lg:col-span-1 lg:row-span-2")}
+                className={cn(
+                  "cs-reveal",
+                  feature && "md:col-span-2 lg:col-span-1 lg:row-span-2",
+                  wide && "md:col-span-2 lg:col-span-3",
+                )}
               >
                 <Link
                   href={localizePath(locale, category.path)}
-                  className={cn("cs-card group/card", feature ? "cs-card--feature" : "cs-card--compact")}
+                  className={cn(
+                    "cs-card group/card",
+                    feature ? "cs-card--feature" : "cs-card--compact",
+                    wide && "cs-card--wide",
+                  )}
                 >
                   <div className="cs-copy">
                     <span className="text-small tabular-nums text-text-tertiary">

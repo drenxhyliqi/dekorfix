@@ -41,7 +41,7 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Skip Next internals and any file with an extension (icons, images, fonts),
-  // but still handle /.well-known/* (see above).
-  matcher: ["/((?!_next|.*\\..*).*)", "/.well-known/:path*"],
+  // Skip Next internals, route handlers under /api and any file with an extension
+  // (icons, images, fonts), but still handle /.well-known/* (see above).
+  matcher: ["/((?!_next|api/|.*\\..*).*)", "/.well-known/:path*"],
 };

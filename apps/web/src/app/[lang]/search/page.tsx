@@ -2,10 +2,9 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
-import { productCategories } from "@/config/navigation";
+import { finderJobs, productCategories } from "@/config/navigation";
 import { routes } from "@/config/routes";
 import { products } from "@/content/products";
-import { solutions } from "@/content/solutions";
 import { SiteSearch, SiteSearchFromUrl, type SearchItem, type SiteSearchProps } from "@/features/search/site-search";
 import { localizePath } from "@/i18n/config";
 import { getDictionary, getLocale } from "@/i18n/get-dictionary";
@@ -21,7 +20,6 @@ export default async function SearchPage() {
   const [locale, t] = await Promise.all([getLocale(), getDictionary()]);
   const href = (path: string) => localizePath(locale, path);
   const copy = t.searchPage;
-  const firstImage = (slugs: string[]) => products.find((product) => slugs.includes(product.slug))?.image;
 
   const items: SearchItem[] = [
     ...products.map((product) => ({
@@ -34,14 +32,13 @@ export default async function SearchPage() {
       href: href(routes.product(product.slug)),
       image: product.image,
     })),
-    ...solutions.map((solution) => ({
-      id: `solution-${solution.key}`,
+    ...finderJobs.map((job) => ({
+      id: `finder-${job.key}`,
       group: "solutions" as const,
-      title: t.solutionCopy[solution.key].title,
-      text: t.solutionCopy[solution.key].text,
-      keywords: solution.products.join(" "),
-      href: href(routes.solution(solution.slug)),
-      image: firstImage(solution.products),
+      title: t.finder.jobs[job.key].title,
+      text: t.finder.jobs[job.key].text,
+      href: href(job.path),
+      image: products.find((product) => product.slug === t.finder.jobs[job.key].image)?.image,
     })),
     ...productCategories.map((category) => ({
       id: `category-${category.key}`,
@@ -56,7 +53,9 @@ export default async function SearchPage() {
       [
         ["home", routes.home],
         ["products", routes.products],
-        ["solutions", routes.solutions],
+        ["finder", routes.finder],
+        ["projects", routes.projects],
+        ["whereToBuy", routes.whereToBuy],
         ["projectStudio", routes.projectStudio],
         ["about", routes.about],
         ["contact", routes.contact],
@@ -75,7 +74,7 @@ export default async function SearchPage() {
     suggestions: ["Styrofiber", "Cerafix", "Gletex", "Fasadex", "Beton Kontakt"],
     browse: [
       { label: t.catalog.all, href: href(routes.products) },
-      { label: t.nav.solutions, href: href(routes.solutions) },
+      { label: t.nav.finder, href: href(routes.finder) },
       { label: t.nav.projectStudio, href: href(routes.projectStudio) },
       { label: t.nav.contact, href: href(routes.contact) },
     ],

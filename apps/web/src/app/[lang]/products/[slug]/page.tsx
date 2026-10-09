@@ -6,7 +6,6 @@ import { notFound } from "next/navigation";
 import { Suspense, type CSSProperties } from "react";
 
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
-import { ButtonLink } from "@/components/ui/button";
 import { productCategories } from "@/config/navigation";
 import { routes } from "@/config/routes";
 import { getProduct, products, type ProductSummary } from "@/content/products";
@@ -14,6 +13,7 @@ import { LAYER_COLORS } from "@/features/home/layer-wall";
 import { formatCoverage, formatPacks, LAYER_OF_CATEGORY, toTile } from "@/features/products/catalog-data";
 import { ProductTile } from "@/features/products/product-tile";
 import { WallFit } from "@/features/products/wall-fit";
+import { AddToCart } from "@/features/shop/add-to-cart";
 import { localizePath } from "@/i18n/config";
 import { getDictionary, getLocale } from "@/i18n/get-dictionary";
 import { pageMetadata } from "@/lib/metadata";
@@ -131,19 +131,15 @@ async function ProductDetail({ params }: Pick<Props, "params">) {
               </dl>
             )}
 
-            <div className="mt-10 flex flex-wrap gap-3">
-              <ButtonLink
-                href={href(routes.requestQuote)}
-                variant="accent"
-                size="lg"
-                trailingIcon={<ArrowRight aria-hidden className="size-4" strokeWidth={1.75} />}
-              >
-                {t.home.cta.primary}
-              </ButtonLink>
-              <ButtonLink href={href(routes.contact)} variant="secondary" size="lg">
-                {t.home.cta.secondary}
-              </ButtonLink>
-            </div>
+            <section aria-label={t.shop.add} className="mt-10 border-t border-border pt-8">
+              <AddToCart slug={product.slug} />
+              <p className="mt-6 text-small text-text-secondary">
+                {t.shop.cart.priceNote}{" "}
+                <Link href={href(routes.contact)} className="font-medium text-text underline underline-offset-4">
+                  {t.home.cta.secondary}
+                </Link>
+              </p>
+            </section>
 
             {/* Where it goes: the wall from the homepage, painted up to this product's layer. */}
             <section aria-labelledby="fit-title" className="mt-14 border-t border-border pt-10">

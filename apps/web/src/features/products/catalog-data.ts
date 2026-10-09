@@ -45,6 +45,8 @@ export const LAYER_OF_CATEGORY: Record<ProductCategoryKey, number> = {
   bases: 0,
   adhesives: 1,
   plasters: 2,
+  // Embedded in the base coat or plaster.
+  mesh: 2,
   facades: 3,
   paints: 3,
 };

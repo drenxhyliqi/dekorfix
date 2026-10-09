@@ -5,15 +5,11 @@ import { HelpBand } from "@/components/layout/help-band";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { productCategories } from "@/config/navigation";
 import { routes } from "@/config/routes";
-import { products } from "@/content/products";
-import { categoryOrder, toTile } from "@/features/products/catalog-data";
-import {
-  CatalogFromUrl,
-  ProductCatalog,
-  type CatalogCategory,
-  type CatalogItem,
-  type CatalogProps,
-} from "@/features/products/product-catalog";
+import { solutions } from "@/content/solutions";
+import { categoryOrder } from "@/features/products/catalog-data";
+import { NO_FILTERS } from "@/features/shop/model";
+import { ShopCatalog, ShopCatalogFromUrl, type ShopCatalogProps } from "@/features/shop/shop-catalog";
+import { shopProducts } from "@/features/shop/shop-products";
 import { localizePath } from "@/i18n/config";
 import { getDictionary, getLocale } from "@/i18n/get-dictionary";
 import { pageMetadata } from "@/lib/metadata";
@@ -29,27 +25,18 @@ export default async function ProductsPage() {
   const copy = t.catalog;
 
   // Products in catalog order: by category, then as listed.
-  const items: CatalogItem[] = [...products]
-    .sort((a, b) => categoryOrder.indexOf(a.category) - categoryOrder.indexOf(b.category))
-    .map((product) => ({ ...toTile(product, t, locale), category: product.category }));
-  const categories: CatalogCategory[] = productCategories.map((category) => ({
-    key: category.key,
-    label: t.productCategories[category.key].name,
-    description: t.productCategories[category.key].description,
-    href: href(category.path),
-    count: items.filter((item) => item.category === category.key).length,
-  }));
-  const catalog: CatalogProps = {
-    items,
-    categories,
-    allHref: href(routes.products),
-    labels: {
-      filter: copy.filterLabel,
-      all: copy.all,
-      count: copy.count,
-      countOne: copy.countOne,
-      view: t.home.featured.view,
-    },
+  const items = shopProducts(t, locale).sort(
+    (a, b) => categoryOrder.indexOf(a.category) - categoryOrder.indexOf(b.category),
+  );
+  const catalog: ShopCatalogProps = {
+    products: items,
+    categories: productCategories.map((category) => ({
+      key: category.key,
+      label: t.productCategories[category.key].name,
+      description: t.productCategories[category.key].description,
+    })),
+    uses: solutions.map((solution) => ({ key: solution.key, label: t.solutionCopy[solution.key].title })),
+    labels: { all: copy.all, count: copy.count, countOne: copy.countOne, view: t.home.featured.view },
   };
 
   return (
@@ -73,15 +60,15 @@ export default async function ProductsPage() {
           <div className="lg:col-span-4">
             <p className="text-lead text-text-secondary">{t.home.hero.description}</p>
             <p className="mt-4 text-small tabular-nums text-text-tertiary">
-              {copy.summary.replace("{products}", String(items.length)).replace("{groups}", String(categories.length))}
+              {copy.summary.replace("{products}", String(items.length)).replace("{groups}", String(catalog.categories.length))}
             </p>
           </div>
         </div>
       </header>
 
-      {/* Prerendered with every product; the address's ?category= filters it in the browser. */}
-      <Suspense fallback={<ProductCatalog {...catalog} category={null} />}>
-        <CatalogFromUrl {...catalog} />
+      {/* Prerendered with every product; the address's filters (?q=, ?category=, …) apply in the browser. */}
+      <Suspense fallback={<ShopCatalog {...catalog} filters={NO_FILTERS} />}>
+        <ShopCatalogFromUrl {...catalog} />
       </Suspense>
 
       <HelpBand t={t} locale={locale} />

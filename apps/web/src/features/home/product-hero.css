@@ -2,8 +2,9 @@
  * Product hero (classes prefixed `hh-`; the project's Turbopack rule compiles
  * every .css file as global CSS, so CSS modules are not used).
  *
- * On white, packshots float slowly around the copy at three depths (sharp and
- * close, softly blurred, far and faded). A white pool keeps the copy legible.
+ * Packshots float around the copy at three depths. Their blur and shadow are
+ * baked into the images, so each one is a single moving layer: transform and
+ * opacity only, which the GPU composites without repainting.
  */
 
 .hh-floaters {
@@ -11,6 +12,7 @@
   inset: 0;
   z-index: -1;
   pointer-events: none;
+  contain: strict;
 }
 
 /* A white pool behind the copy, so a packshot drifting near it never fights
@@ -27,46 +29,98 @@
   position: absolute;
   left: var(--x);
   top: var(--y);
-  width: clamp(var(--min), calc(var(--size) * 1vw), 22rem);
-  translate: -50% -50%;
+  width: var(--w);
+  margin-left: calc(var(--w) / -2);
+  translate: 0 -50%;
   opacity: var(--opacity);
-  /* Sideways roam on a longer cycle than the bob below: the two never line up,
-     so each packshot traces a path that keeps changing. */
+  will-change: transform;
+  /* One animation for the whole path: a long roam with a bob and tilt on top,
+     on a cycle of its own, so no two packshots move in step. */
   animation:
     hh-enter 1.6s cubic-bezier(0.22, 1, 0.36, 1) var(--enter) both,
-    hh-wander calc(var(--cycle) * 1.7) ease-in-out calc(var(--cycle) * -0.8) infinite;
+    hh-drift calc(var(--cycle) * 1.6) ease-in-out calc(var(--cycle) * -0.7) infinite;
 }
 
-/* Blur and float on the same element, so the browser can move the blurred
-   layer without redrawing it every frame. */
 .hh-pack {
   display: block;
   width: 100%;
   height: auto;
-  filter: blur(var(--blur)) drop-shadow(0 1.5rem 1.75rem rgb(13 13 12 / var(--shadow)));
   rotate: var(--rotate);
-  will-change: transform;
-  animation: hh-float var(--cycle) ease-in-out calc(var(--cycle) * -0.5) infinite;
 }
 
-/* ---- Headline ------------------------------------------------------------- */
+/* Off screen, nothing moves. */
+.hh[data-paused] .hh-floater {
+  animation-play-state: paused;
+}
+
+/* ---- Badge, headline, copy ------------------------------------------------- */
+
+.hh-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.5rem 0.875rem 0.5rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: rgb(255 255 255 / 0.85);
+  color: var(--color-text);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  box-shadow: 0 0.5rem 1.5rem -1rem rgb(13 13 12 / 0.3);
+}
+
+.hh-badge-dot {
+  position: relative;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 1px;
+  background: var(--color-brand);
+}
+
+.hh-badge-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--color-brand);
+  animation: hh-ping 2.4s var(--ease-out) 2s infinite;
+}
 
 .hh-title {
   font-size: clamp(2.75rem, 0.5rem + 9.5vw, 8rem);
-  font-weight: 600;
-  line-height: 0.92;
-  letter-spacing: -0.05em;
+  font-weight: 650;
+  line-height: 0.9;
+  letter-spacing: -0.055em;
 }
 
-/* The closing sentence: smaller, lighter and grey under the bold lines. */
+/* The closing sentence: lighter, grey, smaller under the bold lines. */
 .hh-title-sub {
   display: block;
-  margin-top: 0.22em;
-  font-size: 0.56em;
-  font-weight: 500;
-  line-height: 1;
-  letter-spacing: -0.035em;
-  color: var(--color-text-tertiary);
+  margin-top: 0.28em;
+  font-size: 0.5em;
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  color: var(--color-text-secondary);
+}
+
+/* Its last word gets a brand-red underline that draws in after the headline. */
+.hh-mark {
+  position: relative;
+  color: var(--color-text);
+}
+
+.hh-mark::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0.02em;
+  left: 0;
+  height: 0.08em;
+  background: var(--color-brand);
+  transform-origin: left;
+  animation: hh-underline 0.9s cubic-bezier(0.65, 0, 0.2, 1) var(--mark) both;
 }
 
 /* Each word rises out of its own mask. The padding keeps accents and descenders
@@ -74,8 +128,8 @@
 .hh-word {
   display: inline-block;
   overflow: clip;
-  padding: 0.08em 0.03em 0.14em;
-  margin: -0.08em -0.03em -0.14em;
+  padding: 0.08em 0.03em 0.16em;
+  margin: -0.08em -0.03em -0.16em;
   vertical-align: top;
 }
 
@@ -88,8 +142,173 @@
   animation: hh-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) var(--rise, 0ms) both;
 }
 
+/* ---- Buttons --------------------------------------------------------------------- */
+
+.hh-btn {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  height: 3.5rem;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  transition:
+    translate 0.35s var(--ease-out),
+    box-shadow 0.35s var(--ease-out),
+    border-color 0.2s,
+    color 0.2s;
+}
+
+.hh-btn:hover {
+  translate: 0 -2px;
+}
+
+.hh-btn:active {
+  translate: 0 0;
+}
+
+/* Full width on phones: the label left, the arrow at the far right. */
+.hh-btn--primary {
+  justify-content: space-between;
+  padding: 0 0.5rem 0 1.5rem;
+  background: var(--color-brand);
+  color: #fff;
+  box-shadow: 0 0.75rem 1.75rem -0.75rem rgb(228 30 37 / 0.6);
+}
+
+/* A darker sweep fills the button from the left on hover. */
+.hh-btn--primary::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--color-brand-hover);
+  transform-origin: left;
+  scale: 0 1;
+  transition: scale 0.45s var(--ease-out);
+}
+
+.hh-btn--primary:hover::before {
+  scale: 1 1;
+}
+
+.hh-btn--primary:hover {
+  box-shadow: 0 1rem 2.25rem -0.75rem rgb(228 30 37 / 0.7);
+}
+
+/* The arrow leaves to the right and a new one comes in from the left. */
+.hh-btn-icon {
+  position: relative;
+  display: inline-flex;
+  width: 2.5rem;
+  height: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: calc(var(--radius-sm) - 2px);
+  background: rgb(255 255 255 / 0.16);
+}
+
+.hh-arrow {
+  transition: translate 0.4s var(--ease-out);
+}
+
+.hh-arrow--next {
+  position: absolute;
+  translate: -2.5rem 0;
+}
+
+.hh-btn--primary:hover .hh-arrow {
+  translate: 2.5rem 0;
+}
+
+.hh-btn--primary:hover .hh-arrow--next {
+  translate: 0 0;
+}
+
+.hh-btn--ghost {
+  padding: 0 1.5rem;
+  border: 1px solid var(--color-border-strong);
+  background: rgb(255 255 255 / 0.9);
+  color: var(--color-text);
+}
+
+.hh-btn--ghost:hover {
+  border-color: var(--color-text);
+  box-shadow: 0 0.75rem 1.5rem -1rem rgb(13 13 12 / 0.35);
+}
+
+.hh-btn:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+/* ---- Scroll cue ----------------------------------------------------------------- */
+
+.hh-scroll {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 50%;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.5rem 1rem;
+  color: var(--color-text-tertiary);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  translate: -50% 0;
+  animation: hh-rise 0.9s var(--ease-out) 2.2s both;
+  transition:
+    opacity 0.4s,
+    color 0.2s;
+}
+
+.hh-scroll:hover {
+  color: var(--color-text);
+}
+
+.hh[data-scrolled] .hh-scroll {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* A thin track with a red segment sliding down it, again and again. */
+.hh-track {
+  position: relative;
+  display: block;
+  width: 2px;
+  height: 2.75rem;
+  overflow: hidden;
+  background: var(--color-border);
+}
+
+.hh-track-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--color-brand);
+  animation: hh-track 1.8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+/* ---- Entrance timing ----------------------------------------------------------- */
+
 /* Wait for the intro to clear before the hero plays its entrance. */
-html:not([data-intro-skip]):has(.intro-loader:not([hidden]):not([data-state="done"])) :is(.hh-rise, .hh-floater, .hh-word > span) {
+html:not([data-intro-skip]):has(.intro-loader:not([hidden]):not([data-state="done"]))
+  :is(.hh-rise, .hh-floater, .hh-word > span, .hh-scroll) {
+  animation-play-state: paused;
+}
+
+/* Pseudo-elements cannot go inside :is(), so the underline gets its own rule. */
+html:not([data-intro-skip]):has(.intro-loader:not([hidden]):not([data-state="done"])) .hh-mark::after {
   animation-play-state: paused;
 }
 
@@ -100,29 +319,19 @@ html:not([data-intro-skip]):has(.intro-loader:not([hidden]):not([data-state="don
   }
 }
 
-@keyframes hh-wander {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0);
-  }
-  25% {
-    transform: translate3d(calc(var(--wander) * 0.7), calc(var(--wander) * -0.3), 0);
-  }
-  50% {
-    transform: translate3d(calc(var(--wander) * -0.4), calc(var(--wander) * 0.35), 0);
-  }
-  75% {
-    transform: translate3d(calc(var(--wander) * -0.9), calc(var(--wander) * -0.15), 0);
-  }
-}
-
-@keyframes hh-float {
+@keyframes hh-drift {
   0%,
   100% {
     transform: translate3d(0, 0, 0) rotate(0deg);
   }
+  25% {
+    transform: translate3d(calc(var(--wander) * 0.7), calc(var(--drift) * -1.1rem), 0) rotate(calc(var(--drift) * 2deg));
+  }
   50% {
-    transform: translate3d(0, calc(var(--drift) * -1.25rem), 0) rotate(calc(var(--drift) * 3deg));
+    transform: translate3d(calc(var(--wander) * -0.4), calc(var(--drift) * 0.6rem), 0) rotate(calc(var(--drift) * -1.5deg));
+  }
+  75% {
+    transform: translate3d(calc(var(--wander) * -0.9), calc(var(--drift) * -0.8rem), 0) rotate(calc(var(--drift) * 2.5deg));
   }
 }
 
@@ -139,11 +348,49 @@ html:not([data-intro-skip]):has(.intro-loader:not([hidden]):not([data-state="don
   }
 }
 
+@keyframes hh-underline {
+  from {
+    scale: 0 1;
+  }
+}
+
+@keyframes hh-ping {
+  70%,
+  100% {
+    opacity: 0;
+    scale: 2.6;
+  }
+}
+
+@keyframes hh-track {
+  0% {
+    translate: 0 -100%;
+  }
+  60%,
+  100% {
+    translate: 0 100%;
+  }
+}
+
+/* Short screens: no room for the cue under the buttons. */
+@media (max-height: 640px) {
+  .hh-scroll {
+    display: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hh-floater,
-  .hh-pack,
   .hh-rise,
-  .hh-word > span {
+  .hh-word > span,
+  .hh-mark::after,
+  .hh-badge-dot::after,
+  .hh-track-fill,
+  .hh-scroll {
     animation: none;
+  }
+
+  .hh-floater {
+    opacity: var(--opacity);
   }
 }

@@ -33,6 +33,13 @@
   grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
 }
 
+/* Wide (the sixth card, a full row): the stack keeps a compact card's width. */
+@media (min-width: 768px) {
+  .cs-card--wide {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 24rem);
+  }
+}
+
 /* Feature: copy on top, a larger stack below. */
 .cs-card--feature {
   min-height: 30rem;

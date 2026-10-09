@@ -12,7 +12,7 @@ export interface NavMenuItem extends NavLinkItem {
   description?: string;
 }
 
-export type NavMenuKey = "products" | "solutions";
+export type NavMenuKey = "products" | "finder";
 
 export interface NavMenu {
   heading: string;

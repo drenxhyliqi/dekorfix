@@ -1,3 +1,4 @@
+import { JOB_IDS, type JobId } from "@/features/finder/model";
 import type { Dictionary } from "@/i18n/dictionaries/en";
 
 import { routes } from "./routes";
@@ -13,40 +14,34 @@ export type NavKey = keyof Dictionary["nav"];
 export const primaryNav: ReadonlyArray<{
   key: NavKey;
   path: string;
-  menu?: "products" | "solutions";
+  menu?: "products" | "finder";
   /** Active only on the exact path (the homepage would otherwise match everything). */
   exact?: boolean;
 }> = [
   { key: "home", path: routes.home, exact: true },
   { key: "products", path: routes.products, menu: "products" },
-  { key: "solutions", path: routes.solutions, menu: "solutions" },
+  { key: "finder", path: routes.finder, menu: "finder" },
   { key: "projects", path: routes.projects },
   { key: "projectStudio", path: routes.projectStudio },
-  { key: "resources", path: routes.resources },
+  { key: "whereToBuy", path: routes.whereToBuy },
   { key: "about", path: routes.about },
 ];
 
 export type ProductCategoryKey = keyof Dictionary["productCategories"];
 
-/** Dekorfix product categories, as organised on dekorfix.net. */
+/** Dekorfix product categories: the five on dekorfix.net, then the fiberglass mesh. */
 export const productCategories: ReadonlyArray<{ key: ProductCategoryKey; path: string }> = (
-  ["adhesives", "facades", "bases", "paints", "plasters"] as const
+  ["adhesives", "facades", "bases", "paints", "plasters", "mesh"] as const
 ).map((key) => ({ key, path: routes.productCategory(key) }));
 
-export type SolutionKey = keyof Dictionary["solutionAreas"];
+/** Task keys of content/solutions.ts (the catalog's "Use" filter). */
+export type SolutionKey = keyof Dictionary["solutionCopy"];
 
-/** Solutions by task (see content/solutions.ts), in the order a building goes up. */
-export const solutionAreas: ReadonlyArray<{ key: SolutionKey; path: string }> = (
-  [
-    ["preparation", "concrete-preparation"],
-    ["masonry", "aerated-concrete-blocks"],
-    ["insulation", "insulation-boards"],
-    ["tiling", "laying-tiles"],
-    ["smoothing", "plaster-and-levelling"],
-    ["painting", "interior-painting"],
-    ["facade", "facade-finish"],
-  ] as const
-).map(([key, slug]) => ({ key, path: routes.solution(slug) }));
+/** The jobs the product finder starts from, each opening the finder on that job. */
+export const finderJobs: ReadonlyArray<{ key: JobId; path: string }> = JOB_IDS.map((key) => ({
+  key,
+  path: routes.finderJob(key),
+}));
 
 export const legalNav: ReadonlyArray<{ key: keyof Dictionary["legal"]; path: string }> = [
   { key: "privacy", path: routes.privacy },
