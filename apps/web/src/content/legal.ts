@@ -1,10 +1,11 @@
 import { company } from "@/config/site";
+import { CART_STORAGE_KEY } from "@/features/shop/model";
 import type { Locale } from "@/i18n/config";
 
 /*
  * DRAFT legal texts, written from what this website actually does (no cookies,
- * no analytics, no forms; two browser-storage items; external links only on
- * click) and from Kosovo's Law No. 06/L-082 on Protection of Personal Data.
+ * no analytics; shop orders sent to Dekorfix; assistant messages sent to OpenAI; three browser-storage items;
+ * external links only on click) and from Kosovo's Law No. 06/L-082 on Protection of Personal Data.
  * To be reviewed and approved by Dekorfix, ideally with legal counsel, before
  * the site goes live. Update `updated` with every change.
  */
@@ -29,7 +30,7 @@ export interface LegalDoc {
 }
 
 /** Date of the current version, shown at the top of each page. */
-export const LEGAL_UPDATED = { en: "8 October 2026", sq: "8 tetor 2026" } as const;
+export const LEGAL_UPDATED = { en: "9 October 2026", sq: "9 tetor 2026" } as const;
 
 const address = {
   en: `${company.legalName}, Zona Industriale, Shirokë, 23000 Suharekë, Kosovo`,
@@ -60,10 +61,22 @@ export const legalDocs: Record<Locale, Record<LegalKey, LegalDoc>> = {
           title: "What this website collects",
           blocks: [
             {
-              p: "This website has no accounts, forms or analytics, and it does not set cookies. We do not ask you for personal data to use it.",
+              p: "This website has no accounts or analytics, and it does not set cookies. You can browse it without giving us any personal data; we only receive it when you send an order.",
             },
             {
               p: "Like every website, it is delivered by servers that receive technical data with each request, such as your IP address, the page requested, the time and your browser type. Our hosting provider may keep this data in server logs for a short time to keep the website secure and working.",
+            },
+          ],
+        },
+        {
+          id: "orders",
+          title: "When you send an order",
+          blocks: [
+            {
+              p: "When you order through the shop, we receive your name, phone number and email, the company, business number, delivery address and notes if you give them, and the products and quantities you ordered.",
+            },
+            {
+              p: "We use this to contact you to confirm prices, availability, delivery and payment, to deliver the order, and to keep the records the law requires. We keep order records for as long as those obligations last.",
             },
           ],
         },
@@ -72,7 +85,10 @@ export const legalDocs: Record<Locale, Record<LegalKey, LegalDoc>> = {
           title: "What stays in your browser",
           blocks: [
             {
-              p: "Two features keep a small amount of data in your own browser, not on our servers: one remembers that the opening animation has been shown, and Project Studio saves the house you plan. The cookie policy describes both.",
+              p: "Three features keep a small amount of data in your own browser: one remembers that the opening animation has been shown, Project Studio saves the house you plan, and the shop keeps your cart. The cart reaches us only when you send an order. The cookie policy describes all three.",
+            },
+            {
+              p: "The “Find the nearest” button on the points-of-sale page asks your browser for your location, and only when you press it. The location is used in your browser to pick the nearest store; it is not sent to Dekorfix or stored.",
             },
           ],
         },
@@ -95,7 +111,7 @@ export const legalDocs: Record<Locale, Record<LegalKey, LegalDoc>> = {
             {
               list: [
                 "our legitimate interest in running a secure, working website and answering enquiries;",
-                "steps you ask us to take before a contract, such as preparing an offer;",
+                "steps you ask us to take before or under a contract, such as preparing an offer or handling your order;",
                 "our legal obligations, for example for accounting.",
               ],
             },
@@ -106,10 +122,13 @@ export const legalDocs: Record<Locale, Record<LegalKey, LegalDoc>> = {
           title: "Who receives it",
           blocks: [
             {
-              p: "We do not sell personal data. It may be processed on our behalf, and only on our instructions, by the providers that host this website and our email.",
+              p: "We do not sell personal data. It may be processed on our behalf, and only on our instructions, by the providers that host this website, its order system and our email.",
             },
             {
               p: "Links to Google Maps, Facebook and Instagram open those services, which then process data under their own privacy policies.",
+            },
+            {
+              p: "If you use the website assistant (“Ask Dekorfix”), your messages are sent to our AI provider, OpenAI, only to write the answer. Dekorfix does not store the conversation; it is gone when you close or reload the page. Please do not share personal data in the chat.",
             },
           ],
         },
@@ -173,7 +192,7 @@ export const legalDocs: Record<Locale, Record<LegalKey, LegalDoc>> = {
           title: "Offers and orders",
           blocks: [
             {
-              p: "Nothing on this website is a binding offer. Prices, availability and orders are agreed directly with Dekorfix.",
+              p: "Orders sent through the shop are requests, and nothing on this website is a binding offer. An order becomes binding only when Dekorfix has confirmed the price, availability and delivery with you. Nothing is paid online.",
             },
           ],
         },
@@ -234,7 +253,7 @@ export const legalDocs: Record<Locale, Record<LegalKey, LegalDoc>> = {
           title: "Storage in your browser",
           blocks: [
             {
-              p: "Two features use your browser's own storage. The data stays on your device and is not sent to Dekorfix.",
+              p: "Three features use your browser's own storage. The data stays on your device; the cart is sent to Dekorfix only when you send an order.",
             },
             {
               table: {
@@ -251,6 +270,12 @@ export const legalDocs: Record<Locale, Record<LegalKey, LegalDoc>> = {
                     "Local storage",
                     "Saves the house you plan in Project Studio, so you can come back to it.",
                     "Until you clear it in your browser",
+                  ],
+                  [
+                    CART_STORAGE_KEY,
+                    "Local storage",
+                    "Keeps the products in your cart between visits.",
+                    "Until you send the order, empty the cart or clear it in your browser",
                   ],
                 ],
               },
@@ -280,7 +305,7 @@ export const legalDocs: Record<Locale, Record<LegalKey, LegalDoc>> = {
           title: "Removing stored data",
           blocks: [
             {
-              p: "You can delete this data at any time in your browser's settings, under site data or storage for this website. Clearing it resets Project Studio.",
+              p: "You can delete this data at any time in your browser's settings, under site data or storage for this website. Clearing it resets Project Studio and empties your cart.",
             },
           ],
         },
@@ -315,10 +340,22 @@ export const legalDocs: Record<Locale, Record<LegalKey, LegalDoc>> = {
           title: "Çfarë mbledh kjo faqe",
           blocks: [
             {
-              p: "Kjo faqe nuk ka llogari, formularë apo analitikë dhe nuk vendos cookies. Nuk ju kërkojmë të dhëna personale për ta përdorur.",
+              p: "Kjo faqe nuk ka llogari apo analitikë dhe nuk vendos cookies. Mund ta shfletoni pa na dhënë të dhëna personale; i marrim vetëm kur dërgoni një porosi.",
             },
             {
               p: "Si çdo faqe interneti, ajo shërbehet nga serverë që me çdo kërkesë marrin të dhëna teknike, si adresa IP, faqja e kërkuar, koha dhe lloji i shfletuesit. Ofruesi ynë i hostimit mund t'i ruajë këto të dhëna për një kohë të shkurtër në regjistrat e serverit, për ta mbajtur faqen të sigurt dhe funksionale.",
+            },
+          ],
+        },
+        {
+          id: "orders",
+          title: "Kur dërgoni një porosi",
+          blocks: [
+            {
+              p: "Kur porositni përmes shitores, marrim emrin, numrin e telefonit dhe email-in tuaj, kompaninë, numrin e biznesit, adresën e dërgesës dhe shënimet nëse i jepni, si dhe produktet dhe sasitë që keni porositur.",
+            },
+            {
+              p: "I përdorim për t'ju kontaktuar për të konfirmuar çmimet, disponueshmërinë, dërgesën dhe pagesën, për ta dorëzuar porosinë dhe për të mbajtur evidencat që kërkon ligji. Evidencat e porosive i ruajmë për aq kohë sa zgjasin këto detyrime.",
             },
           ],
         },
@@ -327,7 +364,10 @@ export const legalDocs: Record<Locale, Record<LegalKey, LegalDoc>> = {
           title: "Çfarë mbetet në shfletuesin tuaj",
           blocks: [
             {
-              p: "Dy funksione ruajnë një sasi të vogël të dhënash në shfletuesin tuaj, jo në serverët tanë: njëri mban mend që animacioni hyrës është shfaqur, ndërsa Project Studio ruan shtëpinë që planifikoni. Politika e cookies i përshkruan të dyja.",
+              p: "Tri funksione ruajnë një sasi të vogël të dhënash në shfletuesin tuaj: njëri mban mend që animacioni hyrës është shfaqur, Project Studio ruan shtëpinë që planifikoni dhe shitorja ruan shportën tuaj. Shporta na arrin vetëm kur dërgoni një porosi. Politika e cookies i përshkruan të treja.",
+            },
+            {
+              p: "Butoni “Gjej më të afërtën” në faqen e pikave të shitjes i kërkon shfletuesit vendndodhjen tuaj, dhe vetëm kur e shtypni. Vendndodhja përdoret në shfletuesin tuaj për të gjetur pikën më të afërt; nuk i dërgohet Dekorfix dhe nuk ruhet.",
             },
           ],
         },
@@ -350,7 +390,7 @@ export const legalDocs: Record<Locale, Record<LegalKey, LegalDoc>> = {
             {
               list: [
                 "interesi ynë legjitim për të mbajtur një faqe të sigurt e funksionale dhe për t'iu përgjigjur pyetjeve;",
-                "hapat që na kërkoni t'i ndërmarrim para një kontrate, si përgatitja e një oferte;",
+                "hapat që na kërkoni t'i ndërmarrim para ose sipas një kontrate, si përgatitja e një oferte ose trajtimi i porosisë suaj;",
                 "detyrimet tona ligjore, për shembull për kontabilitet.",
               ],
             },
@@ -361,10 +401,13 @@ export const legalDocs: Record<Locale, Record<LegalKey, LegalDoc>> = {
           title: "Kush i merr",
           blocks: [
             {
-              p: "Nuk i shesim të dhënat personale. Ato mund të përpunohen në emrin tonë, dhe vetëm sipas udhëzimeve tona, nga ofruesit që hostojnë këtë faqe dhe postën tonë elektronike.",
+              p: "Nuk i shesim të dhënat personale. Ato mund të përpunohen në emrin tonë, dhe vetëm sipas udhëzimeve tona, nga ofruesit që hostojnë këtë faqe, sistemin e saj të porosive dhe postën tonë elektronike.",
             },
             {
               p: "Lidhjet për në Google Maps, Facebook dhe Instagram hapin ato shërbime, të cilat më pas i përpunojnë të dhënat sipas politikave të tyre të privatësisë.",
+            },
+            {
+              p: "Nëse përdorni asistentin e faqes (“Pyet Dekorfix”), mesazhet tuaja i dërgohen ofruesit tonë të AI-së, OpenAI, vetëm për të shkruar përgjigjen. Dekorfix nuk e ruan bisedën; ajo humbet kur e mbyllni ose rifreskoni faqen. Ju lutemi mos ndani të dhëna personale në bisedë.",
             },
           ],
         },
@@ -430,7 +473,7 @@ export const legalDocs: Record<Locale, Record<LegalKey, LegalDoc>> = {
           title: "Ofertat dhe porositë",
           blocks: [
             {
-              p: "Asgjë në këtë faqe nuk është ofertë detyruese. Çmimet, disponueshmëria dhe porositë merren vesh drejtpërdrejt me Dekorfix.",
+              p: "Porositë e dërguara përmes shitores janë kërkesa dhe asgjë në këtë faqe nuk është ofertë detyruese. Porosia bëhet detyruese vetëm kur Dekorfix ju ka konfirmuar çmimin, disponueshmërinë dhe dërgesën. Asgjë nuk paguhet online.",
             },
           ],
         },
@@ -491,7 +534,7 @@ export const legalDocs: Record<Locale, Record<LegalKey, LegalDoc>> = {
           title: "Ruajtja në shfletuesin tuaj",
           blocks: [
             {
-              p: "Dy funksione përdorin hapësirën e ruajtjes së vetë shfletuesit tuaj. Të dhënat mbeten në pajisjen tuaj dhe nuk i dërgohen Dekorfix.",
+              p: "Tri funksione përdorin hapësirën e ruajtjes së vetë shfletuesit tuaj. Të dhënat mbeten në pajisjen tuaj; shporta i dërgohet Dekorfix vetëm kur dërgoni porosinë.",
             },
             {
               table: {
@@ -508,6 +551,12 @@ export const legalDocs: Record<Locale, Record<LegalKey, LegalDoc>> = {
                     "Ruajtje lokale",
                     "Ruan shtëpinë që planifikoni në Project Studio, që të mund t'i riktheheni.",
                     "Deri sa ta fshini në shfletues",
+                  ],
+                  [
+                    CART_STORAGE_KEY,
+                    "Ruajtje lokale",
+                    "Ruan produktet në shportën tuaj nga një vizitë në tjetrën.",
+                    "Deri sa ta dërgoni porosinë, ta zbrazni shportën ose ta fshini në shfletues",
                   ],
                 ],
               },
@@ -537,7 +586,7 @@ export const legalDocs: Record<Locale, Record<LegalKey, LegalDoc>> = {
           title: "Fshirja e të dhënave të ruajtura",
           blocks: [
             {
-              p: "Këto të dhëna mund t'i fshini në çdo kohë te cilësimet e shfletuesit, te të dhënat ose hapësira e ruajtjes për këtë faqe. Fshirja e tyre e rikthen Project Studio në gjendjen fillestare.",
+              p: "Këto të dhëna mund t'i fshini në çdo kohë te cilësimet e shfletuesit, te të dhënat ose hapësira e ruajtjes për këtë faqe. Fshirja e tyre e rikthen Project Studio në gjendjen fillestare dhe e zbraz shportën.",
             },
           ],
         },

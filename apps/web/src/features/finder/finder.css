@@ -1,0 +1,505 @@
+/*
+ * Product finder (classes prefixed `pf-`; every .css file is compiled as
+ * global CSS, so CSS modules are not used).
+ */
+
+/* ---- Progress and answers -------------------------------------------------------- */
+
+.pf-seg {
+  position: relative;
+  height: 3px;
+  flex: 1;
+  overflow: hidden;
+  border-radius: 1px;
+  background: var(--color-border);
+}
+
+.pf-seg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--color-inverse);
+  transform-origin: left;
+  scale: 0 1;
+  transition: scale 0.6s var(--ease-out);
+}
+
+.pf-seg[data-state="done"]::after {
+  scale: 1 1;
+}
+
+.pf-seg[data-state="current"]::after {
+  background: var(--color-brand);
+  scale: 1 1;
+}
+
+.pf-chip {
+  display: inline-flex;
+  height: 2rem;
+  align-items: center;
+  padding-inline: 0.75rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-muted);
+  color: var(--color-text);
+  font-size: 0.875rem;
+  transition: background-color 0.15s;
+  animation: pf-pop 0.35s var(--ease-out);
+}
+
+.pf-chip:hover {
+  background: var(--color-surface-strong);
+}
+
+@keyframes pf-pop {
+  from {
+    opacity: 0;
+    scale: 0.9;
+  }
+}
+
+/* ---- Stage transitions: slide in from the side the customer is heading -------- */
+
+.pf-stage {
+  animation: pf-forward 0.55s var(--ease-out);
+}
+
+.pf-stage[data-direction="back"] {
+  animation-name: pf-back;
+}
+
+@keyframes pf-forward {
+  from {
+    opacity: 0;
+    translate: 2.5rem 0;
+  }
+}
+
+@keyframes pf-back {
+  from {
+    opacity: 0;
+    translate: -2.5rem 0;
+  }
+}
+
+.pf-rise {
+  animation: pf-rise 0.6s var(--ease-out) calc(0.08s + var(--i) * 60ms) both;
+}
+
+@keyframes pf-rise {
+  from {
+    opacity: 0;
+    translate: 0 1rem;
+  }
+}
+
+/* ---- Job cards ----------------------------------------------------------------- */
+
+.pf-job {
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-muted);
+  text-align: left;
+  transition:
+    border-color 0.3s,
+    background-color 0.3s,
+    translate 0.4s var(--ease-out),
+    box-shadow 0.4s var(--ease-out);
+}
+
+.pf-job:hover,
+.pf-job:focus-visible {
+  border-color: var(--color-text);
+  background: var(--color-background);
+  translate: 0 -0.25rem;
+  box-shadow: 0 1.25rem 2.5rem -1.25rem rgb(13 13 12 / 0.25);
+}
+
+.pf-job-key {
+  position: absolute;
+  top: 0.875rem;
+  left: 1rem;
+  z-index: 1;
+  color: var(--color-text-tertiary);
+  font-size: 0.8125rem;
+}
+
+.pf-job-shot {
+  position: relative;
+  display: block;
+  height: 11rem;
+  margin-top: 1.5rem;
+}
+
+.pf-job-pack {
+  padding: 0.5rem 1.5rem 0;
+  filter: drop-shadow(0 1rem 1rem rgb(13 13 12 / 0.16));
+  transition:
+    translate 0.6s var(--ease-out),
+    rotate 0.6s var(--ease-out),
+    scale 0.6s var(--ease-out);
+}
+
+.pf-job:hover .pf-job-pack,
+.pf-job:focus-visible .pf-job-pack {
+  translate: 0 -6%;
+  rotate: -4deg;
+  scale: 1.06;
+}
+
+.pf-job-copy {
+  display: block;
+  padding: 1rem 1.25rem 1.25rem;
+}
+
+.pf-job-arrow {
+  position: absolute;
+  top: 0.875rem;
+  right: 1rem;
+  color: var(--color-text-tertiary);
+  transition:
+    color 0.25s,
+    translate 0.35s var(--ease-out);
+}
+
+.pf-job:hover .pf-job-arrow,
+.pf-job:focus-visible .pf-job-arrow {
+  color: var(--color-brand);
+  translate: 0.25rem 0;
+}
+
+/* Phones: a row per job, packshot on the left. */
+@media (max-width: 639px) {
+  .pf-job {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .pf-job-shot {
+    width: 6.5rem;
+    height: 6.5rem;
+    flex: none;
+    margin: 0;
+  }
+
+  .pf-job-pack {
+    padding: 0.75rem;
+  }
+
+  .pf-job-key {
+    display: none;
+  }
+
+  .pf-job-arrow {
+    top: 50%;
+    translate: 0 -50%;
+  }
+
+  .pf-job:hover .pf-job-arrow {
+    translate: 0.25rem -50%;
+  }
+
+  .pf-job-copy {
+    padding-right: 2.75rem;
+  }
+}
+
+/* ---- Question options ------------------------------------------------------------ */
+
+.pf-option {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 1.5rem 3.5rem 1.5rem 1.5rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-background);
+  text-align: left;
+  transition:
+    border-color 0.2s,
+    background-color 0.2s,
+    box-shadow 0.2s,
+    scale 0.2s var(--ease-out);
+}
+
+.pf-option:hover,
+.pf-option:focus-visible {
+  border-color: var(--color-text);
+  box-shadow: inset 0 0 0 1px var(--color-text);
+}
+
+.pf-option:active {
+  scale: 0.985;
+}
+
+.pf-option[aria-pressed="true"] {
+  border-color: var(--color-inverse);
+  background: var(--color-surface-muted);
+  box-shadow: inset 0 0 0 1px var(--color-inverse);
+}
+
+.pf-option-key {
+  display: inline-grid;
+  width: 1.75rem;
+  height: 1.75rem;
+  margin-bottom: 1rem;
+  place-items: center;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-xs);
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+  font-weight: 600;
+  transition:
+    background-color 0.2s,
+    border-color 0.2s,
+    color 0.2s;
+}
+
+.pf-option:hover .pf-option-key,
+.pf-option[aria-pressed="true"] .pf-option-key {
+  border-color: var(--color-inverse);
+  background: var(--color-inverse);
+  color: var(--color-inverse-text);
+}
+
+.pf-option-check {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  display: inline-flex;
+  width: 1.75rem;
+  height: 1.75rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-xs);
+  background: var(--color-brand);
+  color: #fff;
+  opacity: 0;
+  scale: 0.5;
+  transition:
+    opacity 0.2s,
+    scale 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.pf-option[aria-pressed="true"] .pf-option-check {
+  opacity: 1;
+  scale: 1;
+}
+
+.pf-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: color 0.15s;
+}
+
+.pf-back:hover {
+  color: var(--color-text);
+}
+
+/* ---- Result: the system as a timeline ----------------------------------------- */
+
+.pf-step {
+  position: relative;
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr);
+  gap: 1rem;
+  animation: pf-rise 0.7s var(--ease-out) calc(0.1s + var(--i) * 110ms) both;
+}
+
+/* The rail between nodes grows down as each step arrives. */
+.pf-step::before {
+  content: "";
+  position: absolute;
+  top: 2.75rem;
+  bottom: 0.25rem;
+  left: calc(1.25rem - 1px);
+  width: 2px;
+  background: var(--color-border);
+  transform-origin: top;
+  animation: pf-rail 0.8s var(--ease-out) calc(0.3s + var(--i) * 110ms) both;
+}
+
+.pf-step:last-child::before {
+  display: none;
+}
+
+@keyframes pf-rail {
+  from {
+    scale: 1 0;
+  }
+}
+
+.pf-node {
+  display: inline-flex;
+  width: 2.5rem;
+  height: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  background: var(--color-inverse);
+  color: var(--color-inverse-text);
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.pf-node--next {
+  border: 1px dashed var(--color-border-strong);
+  background: transparent;
+  color: var(--color-text);
+}
+
+.pf-product {
+  position: relative;
+  display: flex;
+  gap: 1rem;
+  padding: 0.875rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-background);
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.pf-product a {
+  position: relative;
+  z-index: 1;
+}
+
+/* A choice: the whole card selects; the product link stays on top. */
+.pf-pick {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 0.75rem;
+  border-radius: inherit;
+  color: transparent;
+}
+
+.pf-pick svg {
+  box-sizing: content-box;
+  padding: 0.3rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-xs);
+  background: var(--color-background);
+  transition:
+    background-color 0.2s,
+    border-color 0.2s,
+    color 0.2s;
+}
+
+.pf-product--choice:hover {
+  border-color: var(--color-text-tertiary);
+}
+
+.pf-product--choice:has([aria-pressed="true"]) {
+  border-color: var(--color-inverse);
+  box-shadow: inset 0 0 0 1px var(--color-inverse);
+}
+
+.pf-pick[aria-pressed="true"] svg {
+  border-color: var(--color-brand);
+  background: var(--color-brand);
+  color: #fff;
+}
+
+.pf-pick:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.pf-next {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-height: 2.5rem;
+  color: var(--color-text);
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: left;
+}
+
+.pf-next:hover {
+  color: var(--color-brand-text);
+}
+
+/* ---- Summary --------------------------------------------------------------------- */
+
+.pf-summary {
+  padding: 1.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-muted);
+  animation: pf-rise 0.7s var(--ease-out) 0.25s both;
+}
+
+@media (min-width: 768px) {
+  .pf-summary {
+    padding: 2rem;
+  }
+}
+
+.pf-add,
+.pf-secondary {
+  display: flex;
+  width: 100%;
+  height: 3.25rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  font-weight: 500;
+  transition:
+    background-color 0.15s,
+    border-color 0.15s;
+}
+
+.pf-add {
+  background: var(--color-brand);
+  color: #fff;
+}
+
+.pf-add:hover {
+  background: var(--color-brand-hover);
+}
+
+.pf-secondary {
+  height: 2.75rem;
+  border: 1px solid var(--color-border-strong);
+  color: var(--color-text);
+  font-size: 0.9375rem;
+}
+
+.pf-secondary:hover {
+  border-color: var(--color-text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pf-stage,
+  .pf-rise,
+  .pf-step,
+  .pf-step::before,
+  .pf-summary,
+  .pf-chip {
+    animation: none;
+  }
+
+  .pf-seg::after,
+  .pf-job,
+  .pf-job-pack {
+    transition: none;
+  }
+}

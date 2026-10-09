@@ -24,11 +24,11 @@ export async function SiteFooter() {
   const href = (path: string) => localizePath(locale, path);
 
   const exploreLinks = [
-    { label: t.nav.solutions, path: routes.solutions },
+    { label: t.nav.finder, path: routes.finder },
     { label: t.nav.projects, path: routes.projects },
     { label: t.nav.projectStudio, path: routes.projectStudio },
     { label: t.nav.calculator, path: routes.calculator },
-    { label: t.nav.resources, path: routes.resources },
+    { label: t.nav.whereToBuy, path: routes.whereToBuy },
     { label: t.nav.about, path: routes.about },
     { label: t.nav.contact, path: routes.contact },
   ];

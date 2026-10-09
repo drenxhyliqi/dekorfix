@@ -69,6 +69,9 @@ services:
       # Next.js server → API (container network).
       API_INTERNAL_URL: http://api:8000
       SITE_URL: ${SITE_URL:-http://localhost:${WEB_PORT:-3000}}
+      # Website assistant (server only, never sent to the browser).
+      OPEN_AI_KEY: ${OPEN_AI_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-}
     ports:
       - "${WEB_PORT:-3000}:3000"
     volumes:

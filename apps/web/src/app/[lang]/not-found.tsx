@@ -12,7 +12,7 @@ export default async function NotFound() {
   const [locale, t] = await Promise.all([getLocale(), getDictionary()]);
   const suggestions = [
     { label: t.nav.products, path: routes.products },
-    { label: t.nav.solutions, path: routes.solutions },
+    { label: t.nav.finder, path: routes.finder },
     { label: t.nav.projectStudio, path: routes.projectStudio },
     { label: t.nav.contact, path: routes.contact },
   ];

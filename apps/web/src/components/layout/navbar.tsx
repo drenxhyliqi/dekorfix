@@ -15,6 +15,7 @@ import {
 
 import { Logo } from "@/components/brand/logo";
 import { ButtonLink } from "@/components/ui/button";
+import { CartButton } from "@/features/shop/cart-drawer";
 import { cn } from "@/lib/utils";
 
 import { LanguageLinks } from "./language-switcher";
@@ -175,6 +176,7 @@ function Navbar({ model, pathname }: { model: NavModel; pathname: string | null 
           <IconLink href={model.loginHref} label={nav.login} current={loginActive}>
             <UserRound aria-hidden className="size-[1.125rem]" strokeWidth={1.5} />
           </IconLink>
+          <CartButton />
           <div className="hidden items-center xl:flex">
             <span aria-hidden className="mx-3 h-5 w-px bg-border" />
             <LanguageLinks current={model.locale} label={a11y.language} pathname={pathname} />

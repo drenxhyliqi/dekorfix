@@ -1,8 +1,6 @@
 /*
- * Site intro overlay (see intro-loader.tsx). States, set by the component:
- *   (none)    dark screen, waiting for the font to measure the word
- *   drawing   the pen writes DEKORFIX in outline
- *   done      the screen fades away
+ * Site intro overlay (see intro-loader.tsx). The pen starts with the first
+ * paint; the component sets data-state="done" to fade the screen away.
  */
 
 .intro-loader {
@@ -13,6 +11,9 @@
   place-items: center;
   padding-inline: var(--spacing-gutter);
   background: #ffffff;
+  /* Touch scrolling would otherwise move the page underneath (iOS ignores overflow on <html>). */
+  touch-action: none;
+  overscroll-behavior: contain;
   transition:
     opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
     visibility 0.7s;
@@ -26,20 +27,22 @@
 }
 
 .intro-loader-word {
+  display: block;
   width: min(86vw, 56rem);
   height: auto;
+  max-height: 60vh;
   overflow: visible;
-  visibility: hidden;
 }
 
-.intro-loader[data-state] .intro-loader-word {
-  visibility: visible;
+.intro-loader-pen {
+  /* Set before first paint from the word's size on screen; the fallback suits a phone. */
+  stroke-width: var(--intro-pen, 30px);
 }
 
-.intro-loader-text {
-  font-kerning: none;
-  font-variant-ligatures: none;
-  letter-spacing: 0;
+.intro-loader-pen path {
+  animation-name: intro-loader-draw;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
 }
 
 /* Seen this session, or reduced motion: no intro at all. */
@@ -50,6 +53,12 @@ html[data-intro-skip] .intro-loader {
 @media (prefers-reduced-motion: reduce) {
   .intro-loader {
     display: none;
+  }
+}
+
+@keyframes intro-loader-draw {
+  to {
+    stroke-dashoffset: 0;
   }
 }
 

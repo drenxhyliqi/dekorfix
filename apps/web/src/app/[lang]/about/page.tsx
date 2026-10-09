@@ -115,7 +115,7 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      {/* What we make: the five groups, each to its catalog view. */}
+      {/* What we make: the product groups, each to its catalog view. */}
       <section aria-labelledby="range-title" className="border-t border-border">
         <div className="container-page py-section-sm">
           <div className="grid gap-6 lg:grid-cols-12 lg:items-end">

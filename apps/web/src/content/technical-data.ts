@@ -27,4 +27,7 @@ export const technicalData: Record<string, ProductTechnicalData> = {
   styrofix: { slug: "styrofix", packSizesKg: [], coverage: null },
   styrofiber: { slug: "styrofiber", packSizesKg: [], coverage: null },
   fasader: { slug: "fasader", packSizesKg: [], coverage: null },
+  // Sold in rolls; roll size and weight (g/m²) not published yet.
+  "fiberglass-mesh-red": { slug: "fiberglass-mesh-red", packSizesKg: [], coverage: null },
+  "fiberglass-mesh-white": { slug: "fiberglass-mesh-white", packSizesKg: [], coverage: null },
 };

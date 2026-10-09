@@ -10,9 +10,9 @@ import { humanizeSlug, pageMetadata } from "@/lib/metadata";
 
 export interface DetailKind {
   /** Dictionary page key for the single item, e.g. "product". */
-  item: "product" | "solution" | "project" | "resource";
+  item: "product" | "project";
   /** Dictionary page/nav key of the parent listing. */
-  listing: "products" | "solutions" | "projects" | "resources";
+  listing: "products" | "projects";
   listingPath: string;
   itemPath: (slug: string) => string;
   notice: keyof Dictionary["placeholder"];

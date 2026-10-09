@@ -1,0 +1,121 @@
+/*
+ * Floating social rail (classes prefixed `sr-`; every .css file is compiled as
+ * global CSS, so CSS modules are not used).
+ */
+
+/* Flush with the left edge and 44px wide: from 1280px up the page's side
+   margin is wider than that, so the rail never covers content. */
+.sr-rail {
+  position: fixed;
+  top: 50%;
+  left: 0;
+  z-index: 40;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  translate: 0 -50%;
+}
+
+@media (min-width: 1280px) {
+  .sr-rail {
+    display: flex;
+  }
+}
+
+.sr-line {
+  width: 1px;
+  height: 2.5rem;
+  background: linear-gradient(to bottom, transparent, var(--color-border-strong));
+  animation: sr-in 0.8s var(--ease-out) 1.4s both;
+}
+
+.sr-line:last-child {
+  background: linear-gradient(to top, transparent, var(--color-border-strong));
+}
+
+.sr-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  padding: 0.25rem;
+  border: 1px solid var(--color-border);
+  border-left: 0;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  background: rgb(255 255 255 / 0.92);
+  box-shadow: 0 0.75rem 2rem -1rem rgb(13 13 12 / 0.3);
+}
+
+.sr-list > li {
+  animation: sr-in 0.6s var(--ease-out) calc(1.5s + var(--i) * 90ms) both;
+}
+
+.sr-link {
+  position: relative;
+  display: inline-flex;
+  width: 2.25rem;
+  height: 2.25rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: calc(var(--radius-sm) - 2px);
+  color: var(--color-text-secondary);
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+}
+
+.sr-link:hover,
+.sr-link:focus-visible {
+  background: var(--color-inverse);
+  color: var(--color-inverse-text);
+}
+
+.sr-link--call {
+  background: var(--color-brand);
+  color: #fff;
+}
+
+.sr-link--call:hover,
+.sr-link--call:focus-visible {
+  background: var(--color-brand-hover);
+}
+
+/* The label slides out to the right on hover. */
+.sr-tip {
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 0.75rem);
+  padding: 0.375rem 0.625rem;
+  border-radius: var(--radius-xs);
+  background: var(--color-inverse);
+  color: var(--color-inverse-text);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  translate: -0.375rem -50%;
+  transition:
+    opacity 0.2s,
+    translate 0.3s var(--ease-out);
+}
+
+.sr-link:hover .sr-tip,
+.sr-link:focus-visible .sr-tip {
+  opacity: 1;
+  translate: 0 -50%;
+}
+
+@keyframes sr-in {
+  from {
+    opacity: 0;
+    translate: -1rem 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sr-line,
+  .sr-list > li {
+    animation: none;
+  }
+}

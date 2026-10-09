@@ -4,6 +4,8 @@ import type { Locale } from "@/i18n/config";
 /**
  * Real Dekorfix products, as listed on dekorfix.net. Names and short
  * descriptors come from that site (English descriptors are translations).
+ * The fiberglass meshes are not on dekorfix.net yet: their names and
+ * descriptors come from the roll labels (packshots supplied by Dekorfix).
  * Temporary static source for the homepage; the catalog phase moves this
  * to the API. No technical data, prices or specifications here.
  */
@@ -116,6 +118,20 @@ export const products: ProductSummary[] = [
     category: "plasters",
     image: image("niveler"),
     summary: { sq: "Masë rrafshuese", en: "Levelling compound" },
+  },
+  {
+    slug: "fiberglass-mesh-red",
+    name: "Fiberglass Mesh Red",
+    category: "mesh",
+    image: image("fiberglass-mesh-red"),
+    summary: { sq: "Rrjetë fiberglass rezistente ndaj alkaleve, e kuqe", en: "Alkali-resistant fiberglass mesh, red" },
+  },
+  {
+    slug: "fiberglass-mesh-white",
+    name: "Fiberglass Mesh White",
+    category: "mesh",
+    image: image("fiberglass-mesh-white"),
+    summary: { sq: "Rrjetë fiberglass rezistente ndaj alkaleve, e bardhë", en: "Alkali-resistant fiberglass mesh, white" },
   },
 ];
 

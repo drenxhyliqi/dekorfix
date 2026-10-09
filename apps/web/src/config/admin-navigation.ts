@@ -8,6 +8,7 @@ import {
   Mail,
   Package,
   Settings,
+  ShoppingBag,
   Tags,
   Users,
   type LucideIcon,
@@ -23,6 +24,7 @@ export type AdminSectionKey =
   | "projects"
   | "resources"
   | "calculator"
+  | "orders"
   | "quotes"
   | "contacts"
   | "users"
@@ -111,6 +113,13 @@ export const adminNavigation: ReadonlyArray<{ group: string; sections: AdminSect
   {
     group: "Requests",
     sections: [
+      {
+        key: "orders",
+        label: "Orders",
+        href: adminRoutes.orders,
+        icon: ShoppingBag,
+        description: "Orders sent from the website shop, to confirm with each customer.",
+      },
       {
         key: "quotes",
         label: "Quotes",
